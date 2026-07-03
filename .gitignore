@@ -23,6 +23,8 @@
 # misc
 .DS_Store
 *.pem
+/shipping_containers/
+reference/
 
 # debug
 npm-debug.log*
