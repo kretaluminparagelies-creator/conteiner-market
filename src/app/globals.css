@@ -227,6 +227,10 @@ body {
   transform-style: preserve-3d;
 }
 
+.carousel-perspective-item {
+  transform-style: preserve-3d;
+}
+
 .category-card-shine {
   isolation: isolate;
 }
@@ -251,12 +255,112 @@ body {
   transform: translateX(130%);
 }
 
+@keyframes nav-shine-sweep {
+  0%,
+  68% {
+    transform: translateX(-140%);
+    opacity: 0;
+  }
+  74% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(140%);
+    opacity: 0;
+  }
+}
+
+@keyframes nav-accent-glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 5px rgba(224, 112, 48, 0.35));
+  }
+  50% {
+    filter: drop-shadow(0 0 14px rgba(224, 112, 48, 0.7));
+  }
+}
+
+.nav-brand-live {
+  isolation: isolate;
+}
+
+.nav-brand-live::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(90deg, #e07030, #e07030aa, transparent);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.nav-brand-live::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 42%,
+    rgba(255, 255, 255, 0.09) 49%,
+    rgba(224, 112, 48, 0.32) 51%,
+    transparent 58%
+  );
+  animation: nav-shine-sweep 4.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.animate-nav-accent-glow {
+  animation: nav-accent-glow 2.8s ease-in-out infinite;
+}
+
+.nav-link-active {
+  animation: nav-link-text-glow 2.8s ease-in-out infinite;
+}
+
+.nav-link-active::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--nav-link-accent);
+  animation: nav-link-bar-glow 2.8s ease-in-out infinite;
+}
+
+@keyframes nav-link-text-glow {
+  0%,
+  100% {
+    text-shadow: 0 0 6px var(--nav-link-glow);
+  }
+  50% {
+    text-shadow: 0 0 14px var(--nav-link-glow);
+  }
+}
+
+@keyframes nav-link-bar-glow {
+  0%,
+  100% {
+    opacity: 0.7;
+    box-shadow: 0 0 6px var(--nav-link-glow);
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 12px var(--nav-link-glow);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-glow-pulse,
   .animate-glow-pulse-slow,
   .scroll-line,
   .hero-float,
-  .animate-tap-nudge {
+  .animate-tap-nudge,
+  .animate-nav-accent-glow,
+  .nav-brand-live::after,
+  .nav-link-active,
+  .nav-link-active::after {
     animation: none !important;
   }
 

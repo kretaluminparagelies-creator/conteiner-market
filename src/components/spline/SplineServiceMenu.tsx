@@ -8,12 +8,13 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { Application, SplineEvent } from "@splinetool/runtime";
-import { resolveSplineMenuRoute, splineMenu } from "@/lib/constants/spline-menu";
+import type { Application } from "@splinetool/runtime";
+import { splineMenu } from "@/lib/constants/spline-menu";
 import { useIsDesktop } from "@/lib/hooks/useIsDesktop";
 import { useLocale } from "@/lib/i18n/locale-context";
+import { navigateSplineRoute } from "@/lib/spline/navigate-spline-route";
 import { lockCameraZoom, setupSplineMenu } from "@/lib/spline/setupSplineMenu";
 
 const SPLINE_HINT_KEY = "cm-spline-hint-seen";
@@ -68,6 +69,7 @@ type SplineServiceMenuProps = {
 
 export function SplineServiceMenu({ className, variant = "section" }: SplineServiceMenuProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const { t } = useLocale();
   const isDesktop = useIsDesktop(768);
   const cleanupRef = useRef<(() => void) | null>(null);
@@ -147,9 +149,9 @@ export function SplineServiceMenu({ className, variant = "section" }: SplineServ
 
   const navigate = useCallback(
     (href: string) => {
-      router.push(href);
+      navigateSplineRoute(href, pathname, router.push);
     },
-    [router],
+    [router, pathname],
   );
 
   const handleLoad = useCallback(
@@ -166,14 +168,9 @@ export function SplineServiceMenu({ className, variant = "section" }: SplineServ
     if (appRef.current) lockCameraZoom(appRef.current);
   }, []);
 
-  const handleMouseDown = useCallback(
-    (event: SplineEvent) => {
-      dismissHint();
-      const href = resolveSplineMenuRoute(event.target.name);
-      if (href) navigate(href);
-    },
-    [navigate, dismissHint],
-  );
+  const handleMouseDown = useCallback(() => {
+    dismissHint();
+  }, [dismissHint]);
 
   const handlePointerDown = useCallback(() => {
     dismissHint();

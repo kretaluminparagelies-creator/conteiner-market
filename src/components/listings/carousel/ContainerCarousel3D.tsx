@@ -7,9 +7,9 @@
 
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, type CSSProperties } from "react";
 import { CarouselNavButton } from "@/components/listings/carousel/CarouselNavButton";
 import { ContainerCarouselCard } from "@/components/listings/carousel/ContainerCarouselCard";
 import { listingCarousel } from "@/lib/constants/listing-carousel";
@@ -54,11 +54,18 @@ export function ContainerCarousel3D({ listings, onListingClick }: ContainerCarou
   const cardWidth = isMobile ? listingCarousel.cardWidthMobile : listingCarousel.cardWidthDesktop;
 
   return (
-    <div className="relative flex w-full flex-col items-center overflow-visible px-1 md:px-4">
+    <div
+      className="relative flex w-full flex-col items-center overflow-visible px-1 md:px-4"
+      style={
+        {
+          "--cm-carousel-nav-inset": `${listingCarousel.navInsetDesktop}px`,
+        } as CSSProperties
+      }
+    >
       <CarouselNavButton
         onClick={prev}
         ariaLabel="Previous listing"
-        className="absolute top-[42%] left-0 z-50 -translate-y-1/2 md:left-[calc(50%-280px)]"
+        className="absolute top-[42%] left-0 z-50 -translate-y-1/2 md:left-[calc(50%-var(--cm-carousel-nav-inset))]"
       >
         <ChevronLeft className="h-5 w-5" strokeWidth={2} />
       </CarouselNavButton>
@@ -66,7 +73,7 @@ export function ContainerCarousel3D({ listings, onListingClick }: ContainerCarou
       <CarouselNavButton
         onClick={next}
         ariaLabel="Next listing"
-        className="absolute top-[42%] right-0 z-50 -translate-y-1/2 md:right-[calc(50%-280px)]"
+        className="absolute top-[42%] right-0 z-50 -translate-y-1/2 md:right-[calc(50%-var(--cm-carousel-nav-inset))]"
       >
         <ChevronRight className="h-5 w-5" strokeWidth={2} />
       </CarouselNavButton>
@@ -76,33 +83,28 @@ export function ContainerCarousel3D({ listings, onListingClick }: ContainerCarou
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#ffffff12_0%,#e0703014_35%,transparent_70%)]"
       />
 
-      <div className="carousel-perspective relative flex h-[400px] w-full items-center justify-center md:h-[480px]">
-        <AnimatePresence mode="sync" initial={false}>
-          {listings.map((listing, index) => {
+      <div
+        className="carousel-perspective relative flex w-full items-center justify-center"
+        style={{ height: isMobile ? listingCarousel.stageHeightMobile : listingCarousel.stageHeightDesktop }}
+      >
+        {listings.map((listing, index) => {
             const offset = wrapOffset(index - currentIndex, listings.length);
             const isCenter = offset === 0;
             const isVisible = Math.abs(offset) <= listingCarousel.visibleSideCount;
-            if (!isVisible) return null;
 
             return (
               <motion.div
                 key={listing.id}
                 layout={false}
-                initial={
-                  reduceMotion
-                    ? false
-                    : { opacity: 0, scale: 0.5, z: -1000 }
-                }
+                initial={false}
                 animate={{
-                  opacity: isCenter ? 1 : 0.72 - Math.abs(offset) * 0.1,
-                  scale: isCenter ? 1 : 0.9 - Math.abs(offset) * 0.03,
+                  opacity: isVisible ? (isCenter ? 1 : 0.72 - Math.abs(offset) * 0.1) : 0,
+                  scale: isVisible ? (isCenter ? 1 : 0.9 - Math.abs(offset) * 0.03) : 0.82,
                   x: offset * xStep,
                   z: isCenter ? 0 : -350 - Math.abs(offset) * 90,
                   rotateY: reduceMotion ? 0 : offset * 38,
-                  zIndex: 50 - Math.abs(offset),
-                  filter: isCenter ? "brightness(1.02)" : "brightness(0.95)",
+                  zIndex: isVisible ? 50 - Math.abs(offset) : 0,
                 }}
-                exit={reduceMotion ? undefined : { opacity: 0, scale: 0.5, z: -1000 }}
                 transition={
                   reduceMotion
                     ? { duration: 0.01 }
@@ -110,6 +112,7 @@ export function ContainerCarousel3D({ listings, onListingClick }: ContainerCarou
                 }
                 drag={reduceMotion ? false : "x"}
                 dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.16}
                 onDragEnd={(_, info) => {
                   if (info.offset.x > listingCarousel.dragThreshold) prev();
                   else if (info.offset.x < -listingCarousel.dragThreshold) next();
@@ -118,10 +121,11 @@ export function ContainerCarousel3D({ listings, onListingClick }: ContainerCarou
                   if (!isCenter) setCurrentIndex(index);
                   else if (onListingClick) onListingClick(listing);
                 }}
-                className="absolute cursor-grab active:cursor-grabbing"
+                className="carousel-perspective-item absolute cursor-grab active:cursor-grabbing"
                 style={{
                   width: cardWidth,
                   transformStyle: "preserve-3d",
+                  pointerEvents: isVisible ? "auto" : "none",
                 }}
               >
                 <div
@@ -136,7 +140,6 @@ export function ContainerCarousel3D({ listings, onListingClick }: ContainerCarou
               </motion.div>
             );
           })}
-        </AnimatePresence>
       </div>
 
       <div className="relative z-50 mt-2 flex items-center justify-center md:mt-4">

@@ -18,6 +18,8 @@ export type Listing = {
   location: string;
   listingType: ListingType;
   image: string;
+  /** Gallery slides for detail modal — falls back to repeated `image` */
+  images?: string[];
   description: string;
   active: boolean;
 };

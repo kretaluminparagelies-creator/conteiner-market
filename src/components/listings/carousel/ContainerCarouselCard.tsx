@@ -11,15 +11,12 @@ import { MapPin, Package } from "lucide-react";
 import { useState } from "react";
 import { ContainerSVG } from "@/components/ui/ContainerSVG";
 import { useLocale } from "@/lib/i18n/locale-context";
+import { shouldShowListingPhoto } from "@/lib/utils/listing-image";
 import type { CarouselListingItem } from "@/lib/types/listing-carousel";
 
 type ContainerCarouselCardProps = CarouselListingItem & {
   isCenter?: boolean;
 };
-
-function isPlaceholderImage(src: string): boolean {
-  return src.includes("placeholder");
-}
 
 export function ContainerCarouselCard({
   title,
@@ -34,7 +31,7 @@ export function ContainerCarouselCard({
   const { t } = useLocale();
   const isRent = listingType === "rent";
   const [imageFailed, setImageFailed] = useState(false);
-  const showPhoto = Boolean(image) && !isPlaceholderImage(image) && !imageFailed;
+  const showPhoto = shouldShowListingPhoto(image, imageFailed);
 
   return (
     <div
@@ -48,7 +45,7 @@ export function ContainerCarouselCard({
           : "border-cm-border/60",
       ].join(" ")}
     >
-      <div className="relative h-[280px] overflow-hidden bg-cm-carousel-photo md:h-[340px]">
+      <div className="relative h-[340px] overflow-hidden bg-cm-carousel-photo md:h-[420px]">
         <div
           aria-hidden="true"
           className="absolute inset-0 bg-linear-to-br from-cm-carousel-photo via-cm-carousel-visual to-[#587898]"
@@ -74,7 +71,7 @@ export function ContainerCarouselCard({
               ].join(" ")}
             />
             <div className="absolute inset-0 flex items-center justify-center">
-              <ContainerSVG tinted={isRent} className="relative z-10 h-20 w-auto md:h-24" />
+              <ContainerSVG tinted={isRent} className="relative z-10 h-24 w-auto md:h-28" />
             </div>
           </>
         )}

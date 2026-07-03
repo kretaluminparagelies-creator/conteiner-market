@@ -7,8 +7,8 @@
 
 "use client";
 
-import { useRouter } from "next/navigation";
-import { ContainerCarousel3D } from "@/components/listings/carousel/ContainerCarousel3D";
+import { useEffect } from "react";
+import { ListingsCarouselBrowse } from "@/components/listings/ListingsCarouselBrowse";
 import { Button } from "@/components/ui/Button";
 import {
   featuredListingsLimit,
@@ -16,17 +16,31 @@ import {
 } from "@/lib/constants/listing-carousel";
 import { getFeaturedListings } from "@/lib/data/listings";
 import { useLocale } from "@/lib/i18n/locale-context";
-import { mapListingsToCarousel } from "@/lib/utils/map-listing-carousel";
+import {
+  offersCarouselSectionId,
+  scrollToOffersCarousel,
+} from "@/lib/spline/navigate-spline-route";
 
 export function ListingsPreview() {
   const { t } = useLocale();
-  const router = useRouter();
-  const listings = mapListingsToCarousel(getFeaturedListings(featuredListingsLimit));
+  const listings = getFeaturedListings(featuredListingsLimit);
+
+  useEffect(() => {
+    if (window.location.hash !== `#${offersCarouselSectionId}`) return;
+
+    const section = document.getElementById(offersCarouselSectionId);
+    if (!section) return;
+
+    requestAnimationFrame(() => scrollToOffersCarousel(section));
+  }, []);
 
   if (!showFeaturedListings || listings.length === 0) return null;
 
   return (
-    <section id="listings" className="relative overflow-hidden bg-cm-bg px-[6%] py-20 md:py-24">
+    <section
+      id="prosfores"
+      className="relative scroll-mt-[60px] overflow-hidden bg-cm-bg px-[6%] pt-10 pb-16 md:pt-12 md:pb-20"
+    >
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,#ffffff10_0%,transparent_42%)]"
@@ -41,7 +55,7 @@ export function ListingsPreview() {
       />
 
       <div className="relative z-10 mx-auto max-w-6xl">
-        <div className="mb-8 flex flex-col items-start justify-between gap-6 sm:mb-10 sm:flex-row sm:items-end">
+        <div className="mb-5 flex flex-col items-start justify-between gap-4 sm:mb-6 sm:flex-row sm:items-end">
           <div className="text-center sm:text-left">
             <p className="mb-3 font-mono text-[10px] tracking-[0.25em] text-cm-accent uppercase">
               {t.listings.eyebrow}
@@ -55,10 +69,7 @@ export function ListingsPreview() {
           </Button>
         </div>
 
-        <ContainerCarousel3D
-          listings={listings}
-          onListingClick={() => router.push("/listings")}
-        />
+        <ListingsCarouselBrowse listings={listings} />
       </div>
     </section>
   );

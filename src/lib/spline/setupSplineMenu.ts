@@ -6,11 +6,15 @@
  */
 
 import type { Application, SplineEvent } from "@splinetool/runtime";
-import { resolveSplineMenuRoute, splineMenu } from "@/lib/constants/spline-menu";
+import { resolveSplineMenuRouteFromEvent, splineMenu } from "@/lib/constants/spline-menu";
 
 export type SplineNavigateHandler = (href: string) => void;
 
 const LOCKED_ZOOM = splineMenu.lockedZoom;
+
+function buildObjectNamesById(app: Application): Map<string, string> {
+  return new Map(app.getAllObjects().map((obj) => [obj.uuid, obj.name]));
+}
 
 type OrbitControlsLike = {
   enableZoom?: boolean;
@@ -49,6 +53,8 @@ export function setupSplineMenu(app: Application, onNavigate: SplineNavigateHand
   app.setGlobalEvents(true);
   lockCameraZoom(app);
 
+  const objectNamesById = buildObjectNamesById(app);
+
   const blockWheel = (event: WheelEvent) => {
     event.preventDefault();
     event.stopPropagation();
@@ -67,7 +73,7 @@ export function setupSplineMenu(app: Application, onNavigate: SplineNavigateHand
   canvas.addEventListener("gestureend", blockGesture, { passive: false, capture: true });
 
   const handlePointer = (event: SplineEvent) => {
-    const href = resolveSplineMenuRoute(event.target.name);
+    const href = resolveSplineMenuRouteFromEvent(event, objectNamesById);
     if (href) onNavigate(href);
   };
 

@@ -7,11 +7,11 @@
 
 "use client";
 
-import Link from "next/link";
 import { LanguageToggle } from "@/components/layout/LanguageToggle";
+import { NavBrand } from "@/components/layout/NavBrand";
 import { NavLink } from "@/components/layout/NavLink";
-import { Button } from "@/components/ui/Button";
 import { useLocale } from "@/lib/i18n/locale-context";
+import Link from "next/link";
 
 export function Nav() {
   const { t } = useLocale();
@@ -29,13 +29,7 @@ export function Nav() {
       aria-label={t.nav.ariaLabel}
       className="fixed inset-x-0 top-0 z-[200] flex h-[60px] items-center justify-between border-b border-cm-border bg-cm-bg/92 px-[6%] backdrop-blur-[14px]"
     >
-      <Link href="/" className="font-display text-[17px] font-bold tracking-[0.08em]">
-        <span className="text-cm-accent">CONTAINER</span>
-        <span className="font-light text-cm-sub">MARKET</span>
-        <span className="ml-2 font-mono text-[10px] tracking-[0.2em] text-cm-muted">
-          GR
-        </span>
-      </Link>
+      <NavBrand />
 
       <div className="hidden items-center gap-7 lg:flex">
         {mainNav.slice(0, 4).map((item) => (
@@ -45,9 +39,25 @@ export function Nav() {
 
       <div className="flex items-center gap-2.5 sm:gap-3">
         <LanguageToggle />
-        <Button href="/epikoinonia" className="px-4 py-2 text-[13px] sm:px-5">
-          {t.nav.contact}
-        </Button>
+        <Link
+          href="/epikoinonia"
+          className={[
+            "nav-brand-live relative overflow-hidden rounded-[4px] border border-cm-accent/55",
+            "px-3 py-1.5 font-display text-[13px] font-bold tracking-[0.06em] sm:px-4",
+            "tag-sale shadow-[0_0_18px_#e0703033]",
+          ].join(" ")}
+        >
+          <span
+            aria-hidden="true"
+            className={[
+              "pointer-events-none absolute inset-0",
+              "bg-[radial-gradient(circle_at_10%_50%,#e0703022_0%,transparent_72%)]",
+            ].join(" ")}
+          />
+          <span className="relative animate-nav-accent-glow text-cm-accent">
+            {t.nav.contact}
+          </span>
+        </Link>
       </div>
     </nav>
   );

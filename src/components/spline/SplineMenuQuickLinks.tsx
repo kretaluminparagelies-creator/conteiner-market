@@ -18,7 +18,7 @@ export function SplineMenuQuickLinks({ className }: SplineMenuQuickLinksProps) {
   const { t } = useLocale();
 
   const links = [
-    { href: "/prosfores", label: t.spline.offers },
+    { href: "/listings", label: t.spline.offers },
     { href: "/enoikiasis-xoron", label: t.spline.spaceRent },
   ];
 

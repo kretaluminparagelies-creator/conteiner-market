@@ -38,9 +38,9 @@ export default function HomePage() {
     <PageShell>
       <JsonLd data={websiteSchema} />
       <Hero />
+      <ListingsPreview />
       <Categories />
       <Stats />
-      <ListingsPreview />
       <HowItWorks />
       <HomeCTA />
     </PageShell>

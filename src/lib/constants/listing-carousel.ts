@@ -12,11 +12,26 @@ export const showFeaturedListings = true;
 export const featuredListingsLimit = 9;
 
 export const listingCarousel = {
-  cardWidthMobile: 300,
-  cardWidthDesktop: 420,
-  xOffsetMobile: 150,
-  xOffsetDesktop: 360,
+  cardWidthMobile: 330,
+  cardWidthDesktop: 480,
+  xOffsetMobile: 165,
+  xOffsetDesktop: 400,
+  stageHeightMobile: 480,
+  stageHeightDesktop: 600,
+  navInsetDesktop: 340,
   visibleSideCount: 2,
   dragThreshold: 50,
-  spring: { stiffness: 120, damping: 25, mass: 1.1 },
+  spring: { stiffness: 150, damping: 24, mass: 0.85 },
+  detailPhoto: {
+    cardWidthMobile: 300,
+    cardWidthDesktop: 440,
+    xOffsetMobile: 155,
+    xOffsetDesktop: 265,
+    stageHeightMobile: 320,
+    stageHeightDesktop: 400,
+    photoHeightMobile: 290,
+    photoHeightDesktop: 365,
+    navInsetDesktop: 300,
+    visibleSideCount: 2,
+  },
 } as const;

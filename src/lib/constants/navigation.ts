@@ -28,9 +28,9 @@ export const mainNav: NavItem[] = [
     description: "Ενοικίαση κοντέινερ — ευέλικτοι όροι",
   },
   {
-    label: "Κατάλογος",
+    label: "Προσφορές",
     href: "/listings",
-    description: "Όλα τα διαθέσιμα κοντέινερ",
+    description: "Προσφορές μεταχειρισμένων κοντέινερ",
   },
   {
     label: "Επικοινωνία",
