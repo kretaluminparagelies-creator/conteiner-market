@@ -1,12 +1,12 @@
 import type { NextConfig } from "next";
-import { securityHeaders } from "@/lib/security/security-headers";
+import { getSecurityHeaders } from "@/lib/security/security-headers";
 
 const nextConfig: NextConfig = {
   async headers() {
     return [
       {
         source: "/:path*",
-        headers: securityHeaders,
+        headers: getSecurityHeaders(),
       },
     ];
   },
