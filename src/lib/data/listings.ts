@@ -22,6 +22,6 @@ export function getListingsByType(listingType: ListingType): Listing[] {
   return getAllListings().filter((listing) => listing.listingType === listingType);
 }
 
-export function getFeaturedListings(limit = 6): Listing[] {
+export function getFeaturedListings(limit = 9): Listing[] {
   return getAllListings().slice(0, limit);
 }

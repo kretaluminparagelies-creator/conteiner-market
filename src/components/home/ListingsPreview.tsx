@@ -1,30 +1,48 @@
 /**
  * @file ListingsPreview.tsx
- * @description Featured listings grid on the home page
+ * @description Featured listings 3D carousel on the home page
  * @author Katsoulakis
- * @copyright 2025 Katsoulakis. All rights reserved.
+ * @copyright 2026 Katsoulakis. All rights reserved.
  */
 
 "use client";
 
-import { ListingCard } from "@/components/listings/ListingCard";
+import { useRouter } from "next/navigation";
+import { ContainerCarousel3D } from "@/components/listings/carousel/ContainerCarousel3D";
 import { Button } from "@/components/ui/Button";
-import { TiltCard } from "@/components/ui/TiltCard";
+import {
+  featuredListingsLimit,
+  showFeaturedListings,
+} from "@/lib/constants/listing-carousel";
 import { getFeaturedListings } from "@/lib/data/listings";
 import { useLocale } from "@/lib/i18n/locale-context";
-import { useInView } from "@/lib/hooks/useInView";
-import { fadeUpStyle } from "@/lib/utils/motion";
+import { mapListingsToCarousel } from "@/lib/utils/map-listing-carousel";
 
 export function ListingsPreview() {
   const { t } = useLocale();
-  const { ref, visible } = useInView<HTMLElement>({ threshold: 0.05 });
-  const listings = getFeaturedListings();
+  const router = useRouter();
+  const listings = mapListingsToCarousel(getFeaturedListings(featuredListingsLimit));
+
+  if (!showFeaturedListings || listings.length === 0) return null;
 
   return (
-    <section ref={ref} className="bg-cm-surf px-[6%] py-20 md:py-24">
-      <div className="mx-auto max-w-6xl">
-        <div className="mb-12 flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
-          <div>
+    <section id="listings" className="relative overflow-hidden bg-cm-bg px-[6%] py-20 md:py-24">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,#ffffff10_0%,transparent_42%)]"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_60%,#4ab0e818_0%,transparent_48%)]"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(#243d5814_1px,transparent_1px),linear-gradient(90deg,#243d5814_1px,transparent_1px)] bg-size-[48px_48px]"
+      />
+
+      <div className="relative z-10 mx-auto max-w-6xl">
+        <div className="mb-8 flex flex-col items-start justify-between gap-6 sm:mb-10 sm:flex-row sm:items-end">
+          <div className="text-center sm:text-left">
             <p className="mb-3 font-mono text-[10px] tracking-[0.25em] text-cm-accent uppercase">
               {t.listings.eyebrow}
             </p>
@@ -37,17 +55,10 @@ export function ListingsPreview() {
           </Button>
         </div>
 
-        <div className="grid gap-0.5 md:grid-cols-2 lg:grid-cols-3">
-          {listings.map((listing, index) => (
-            <TiltCard
-              key={listing.id}
-              className="cursor-pointer overflow-hidden border border-cm-border bg-cm-card"
-              style={fadeUpStyle(visible, index * 0.1)}
-            >
-              <ListingCard listing={listing} />
-            </TiltCard>
-          ))}
-        </div>
+        <ContainerCarousel3D
+          listings={listings}
+          onListingClick={() => router.push("/listings")}
+        />
       </div>
     </section>
   );

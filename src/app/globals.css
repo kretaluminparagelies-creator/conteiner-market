@@ -11,6 +11,10 @@
   --cm-sub: #7a9ab8;
   --cm-muted: #3a6080;
   --cm-border: #243d58;
+  --cm-carousel-card: #3a5570;
+  --cm-carousel-visual: #6888a4;
+  --cm-carousel-panel: #344d65;
+  --cm-carousel-photo: #7896b0;
 }
 
 @theme inline {
@@ -24,6 +28,10 @@
   --color-cm-sub: var(--cm-sub);
   --color-cm-muted: var(--cm-muted);
   --color-cm-border: var(--cm-border);
+  --color-cm-carousel-card: var(--cm-carousel-card);
+  --color-cm-carousel-visual: var(--cm-carousel-visual);
+  --color-cm-carousel-panel: var(--cm-carousel-panel);
+  --color-cm-carousel-photo: var(--cm-carousel-photo);
   --font-sans: var(--font-inter);
   --font-display: var(--font-space-grotesk);
   --font-mono: var(--font-jetbrains-mono);
@@ -212,6 +220,11 @@ body {
 
 .animate-hint-fade {
   animation: hint-fade 0.45s ease forwards;
+}
+
+.carousel-perspective {
+  perspective: 2000px;
+  transform-style: preserve-3d;
 }
 
 .category-card-shine {
