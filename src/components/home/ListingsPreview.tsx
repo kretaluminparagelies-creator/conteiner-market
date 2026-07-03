@@ -9,21 +9,15 @@
 
 import { useEffect } from "react";
 import { ListingsCarouselBrowse } from "@/components/listings/ListingsCarouselBrowse";
-import { Button } from "@/components/ui/Button";
-import {
-  featuredListingsLimit,
-  showFeaturedListings,
-} from "@/lib/constants/listing-carousel";
-import { getFeaturedListings } from "@/lib/data/listings";
-import { useLocale } from "@/lib/i18n/locale-context";
+import { getAllListings } from "@/lib/data/listings";
+import { showFeaturedListings } from "@/lib/constants/listing-carousel";
 import {
   offersCarouselSectionId,
   scrollToOffersCarousel,
 } from "@/lib/nav/navigate-offers-route";
 
 export function ListingsPreview() {
-  const { t } = useLocale();
-  const listings = getFeaturedListings(featuredListingsLimit);
+  const listings = getAllListings();
 
   useEffect(() => {
     if (window.location.hash !== `#${offersCarouselSectionId}`) return;
@@ -55,20 +49,6 @@ export function ListingsPreview() {
       />
 
       <div className="relative z-10 mx-auto max-w-6xl">
-        <div className="mb-5 flex flex-col items-start justify-between gap-4 sm:mb-6 sm:flex-row sm:items-end">
-          <div className="text-center sm:text-left">
-            <p className="mb-3 font-mono text-[10px] tracking-[0.25em] text-cm-accent uppercase">
-              {t.listings.eyebrow}
-            </p>
-            <h2 className="font-display text-[clamp(1.375rem,3vw,2.375rem)] font-bold">
-              {t.listings.title}
-            </h2>
-          </div>
-          <Button href="/listings" variant="secondary" className="text-[13px]">
-            {t.listings.viewAll}
-          </Button>
-        </div>
-
         <ListingsCarouselBrowse listings={listings} />
       </div>
     </section>

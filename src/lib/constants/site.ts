@@ -16,6 +16,11 @@ export const site = {
   locale: "el_GR",
   language: "el",
   copyrightYear: 2026,
+  /** All containers are at / ship from our base — not per-listing */
+  headquarters: {
+    el: "Έδρα μας — Ελλάδα",
+    en: "Our headquarters — Greece",
+  },
 } as const;
 
 export const seoKeywords = [

@@ -7,6 +7,7 @@
 
 import type { Listing } from "@/lib/types/listing";
 import type { CarouselListingItem } from "@/lib/types/listing-carousel";
+import { resolveIsOffer } from "@/lib/utils/listing-carousel-filters";
 
 export function mapListingToCarousel(listing: Listing): CarouselListingItem {
   return {
@@ -18,6 +19,7 @@ export function mapListingToCarousel(listing: Listing): CarouselListingItem {
     unit: listing.unit,
     condition: listing.condition,
     listingType: listing.listingType,
+    isOffer: resolveIsOffer(listing),
     image: listing.image,
   };
 }

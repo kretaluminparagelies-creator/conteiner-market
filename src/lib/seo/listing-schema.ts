@@ -5,6 +5,7 @@
  * @copyright 2026 Katsoulakis. All rights reserved.
  */
 
+import { site } from "@/lib/constants/site";
 import type { Listing } from "@/lib/types/listing";
 
 export function createListingProductSchema(listing: Listing, siteUrl: string) {
@@ -38,24 +39,23 @@ export function createListingProductSchema(listing: Listing, siteUrl: string) {
 export function createListingPageMetadata(listing: Listing) {
   const dealLabel = listing.listingType === "rent" ? "Ενοικίαση" : "Αγορά";
   const title = `${listing.type} — ${dealLabel} ${listing.priceFormatted}${listing.unit}`;
-  const description = `${listing.description} · ${listing.location} · Container Market GR`;
+  const description = `${listing.description} · ${site.headquarters.el} · Container Market GR`;
 
   return {
     title,
     description,
     path: `/listings/${listing.slug}`,
-    keywords: [listing.type, listing.location, dealLabel, "κοντέινερ"],
+    keywords: [listing.type, dealLabel, "κοντέινερ"],
   };
 }
 
 export function createListingPageMetadataEn(listing: Listing) {
   const dealLabel = listing.listingType === "rent" ? "Rent" : "Buy";
   const condition = listing.conditionEn ?? listing.condition;
-  const location = listing.locationEn ?? listing.location;
   const descriptionText = listing.descriptionEn ?? listing.description;
   const unit = listing.unitEn ?? listing.unit;
   const title = `${listing.type} — ${dealLabel} ${listing.priceFormatted}${unit}`;
-  const description = `${descriptionText} · ${location} · ${condition} · Container Market GR`;
+  const description = `${descriptionText} · ${site.headquarters.en} · ${condition} · Container Market GR`;
 
   return { title, description };
 }

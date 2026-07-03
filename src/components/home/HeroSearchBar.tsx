@@ -36,6 +36,7 @@ export function HeroSearchBar({ className }: { className?: string }) {
     const params = new URLSearchParams();
     if (deal) params.set("deal", deal);
     if (size) params.set("size", size);
+    if (deal === "rent") params.set("tab", "rent");
     const query = params.toString();
     router.push(query ? `/listings?${query}` : "/listings");
   };

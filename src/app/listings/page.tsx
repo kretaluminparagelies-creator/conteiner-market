@@ -14,6 +14,7 @@ import {
   hasActiveFilters,
   parseListingFilters,
 } from "@/lib/utils/listing-filters";
+import { resolveInitialCarouselTab } from "@/lib/utils/listing-carousel-filters";
 import { el } from "@/lib/i18n/messages/el";
 import { createPageMetadata } from "@/lib/seo/metadata";
 import { site } from "@/lib/constants/site";
@@ -21,6 +22,7 @@ import { site } from "@/lib/constants/site";
 type ListingsSearchParams = {
   deal?: string | string[];
   size?: string | string[];
+  tab?: string | string[];
 };
 
 export const metadata = createPageMetadata({
@@ -35,8 +37,10 @@ export default async function ListingsPage({
 }: {
   searchParams: Promise<ListingsSearchParams>;
 }) {
-  const filters = parseListingFilters(await searchParams);
+  const rawParams = await searchParams;
+  const filters = parseListingFilters(rawParams);
   const isFiltered = hasActiveFilters(filters);
+  const initialTab = resolveInitialCarouselTab(rawParams);
   const listings = filterListings(getAllListings(), filters);
 
   const itemListSchema = {
@@ -67,7 +71,7 @@ export default async function ListingsPage({
   return (
     <PageShell>
       <JsonLd data={itemListSchema} />
-      <ListingsCatalogPage listings={listings} isFiltered={isFiltered} />
+      <ListingsCatalogPage listings={listings} isFiltered={isFiltered} initialTab={initialTab} />
     </PageShell>
   );
 }

@@ -16,5 +16,6 @@ export type CarouselListingItem = {
   unit: string;
   condition: string;
   listingType: ListingType;
+  isOffer?: boolean;
   image: string;
 };

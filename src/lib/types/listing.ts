@@ -7,6 +7,9 @@
 
 export type ListingType = "sale" | "rent";
 
+/** Stock age for carousel/catalog filters */
+export type StockCondition = "new" | "used";
+
 export type Listing = {
   id: string;
   slug: string;
@@ -20,6 +23,10 @@ export type Listing = {
   location: string;
   locationEn?: string;
   listingType: ListingType;
+  /** Καινούριο vs μεταχειρισμένο — για φίλτρο carousel */
+  stockCondition?: StockCondition;
+  /** Ειδική προσφορά — εμφανίζεται μόνο στο tab «Προσφορές» */
+  isOffer?: boolean;
   image: string;
   /** Gallery slides for detail modal — falls back to repeated `image` */
   images?: string[];

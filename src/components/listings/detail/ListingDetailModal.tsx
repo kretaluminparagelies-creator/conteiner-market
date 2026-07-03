@@ -1,6 +1,6 @@
 /**
  * @file ListingDetailModal.tsx
- * @description Full-screen modal for a single container listing
+ * @description Modal for a single container listing (carousel click)
  * @author Katsoulakis
  * @copyright 2026 Katsoulakis. All rights reserved.
  */
@@ -17,14 +17,9 @@ import type { Listing } from "@/lib/types/listing";
 type ListingDetailModalProps = {
   listing: Listing | null;
   onClose: () => void;
-  showViewAll?: boolean;
 };
 
-export function ListingDetailModal({
-  listing,
-  onClose,
-  showViewAll = true,
-}: ListingDetailModalProps) {
+export function ListingDetailModal({ listing, onClose }: ListingDetailModalProps) {
   const { t } = useLocale();
   const reduceMotion = useReducedMotion();
   const open = listing !== null;
@@ -50,7 +45,7 @@ export function ListingDetailModal({
     <AnimatePresence>
       {open && listing ? (
         <motion.div
-          className="fixed inset-0 z-[300] flex items-center justify-center px-4 py-10 sm:px-6 sm:py-12"
+          className="fixed inset-0 z-[300] grid place-items-center overflow-y-auto p-4 sm:p-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -67,10 +62,10 @@ export function ListingDetailModal({
             role="dialog"
             aria-modal="true"
             aria-labelledby="listing-detail-title"
-            className="relative z-10 w-full max-w-4xl overflow-hidden"
-            initial={reduceMotion ? false : { opacity: 0, y: 40, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={reduceMotion ? undefined : { opacity: 0, y: 24, scale: 0.98 }}
+            className="relative z-10 my-auto w-full max-w-4xl translate-y-4 overflow-hidden sm:translate-y-7"
+            initial={reduceMotion ? false : { opacity: 0, scale: 0.97 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={reduceMotion ? undefined : { opacity: 0, scale: 0.97 }}
             transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
             onClick={(event) => event.stopPropagation()}
           >
@@ -90,7 +85,7 @@ export function ListingDetailModal({
             <div id="listing-detail-title" className="sr-only">
               {listing.type}
             </div>
-            <ListingDetailContent listing={listing} onClose={onClose} showViewAll={showViewAll} />
+            <ListingDetailContent listing={listing} />
           </motion.div>
         </motion.div>
       ) : null}

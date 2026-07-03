@@ -8,7 +8,6 @@
 "use client";
 
 import { MapPin } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { ListingDetailPhotoCarousel } from "@/components/listings/detail/ListingDetailPhotoCarousel";
 import { useLocale } from "@/lib/i18n/locale-context";
@@ -16,31 +15,19 @@ import type { Listing } from "@/lib/types/listing";
 
 type ListingDetailContentProps = {
   listing: Listing;
-  onClose: () => void;
-  showViewAll?: boolean;
 };
 
-export function ListingDetailContent({
-  listing,
-  onClose,
-  showViewAll = true,
-}: ListingDetailContentProps) {
+export function ListingDetailContent({ listing }: ListingDetailContentProps) {
   const { t } = useLocale();
-  const router = useRouter();
   const isRent = listing.listingType === "rent";
-
-  const handleViewAll = () => {
-    onClose();
-    router.push("/listings");
-  };
 
   return (
     <div className="overflow-hidden rounded-xl border border-cm-border bg-cm-card">
-      <div className="px-3 pt-4 pb-3 md:px-5 md:pt-6 md:pb-4">
+      <div className="p-4 md:p-5">
         <ListingDetailPhotoCarousel listing={listing} />
       </div>
 
-      <div className="space-y-3 border-t border-cm-border/50 px-3 py-3 md:px-4 md:py-3.5">
+      <div className="space-y-3 border-t border-cm-border/50 p-4 md:p-5">
         <div className="flex flex-wrap items-start justify-between gap-2">
           <div className="min-w-0">
             <div className="mb-1.5 flex flex-wrap gap-1.5">
@@ -91,18 +78,6 @@ export function ListingDetailContent({
           <Button href="/epikoinonia" className="px-4 py-2 text-xs">
             {t.listings.detailContact}
           </Button>
-          <Button href={`/listings/${listing.slug}`} variant="secondary" className="px-4 py-2 text-xs">
-            {t.listings.viewPage}
-          </Button>
-          {showViewAll ? (
-            <Button variant="secondary" className="px-4 py-2 text-xs" onClick={handleViewAll}>
-              {t.listings.viewAll}
-            </Button>
-          ) : (
-            <Button variant="secondary" className="px-4 py-2 text-xs" onClick={onClose}>
-              {t.listings.detailClose}
-            </Button>
-          )}
         </div>
       </div>
     </div>

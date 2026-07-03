@@ -1,23 +1,26 @@
 /**
  * @file listings.ts
- * @description Local data layer for container listings (Supabase-ready shape)
+ * @description Public listing API — delegates to active repository
  * @author Katsoulakis
- * @copyright 2025 Katsoulakis. All rights reserved.
+ * @copyright 2026 Katsoulakis. All rights reserved.
  */
 
-import listingsData from "@/data/listings.json";
+import { listingRepository } from "@/lib/repositories";
+import { resolveListingLocation } from "@/lib/utils/listing-location";
 import type { Listing, ListingType } from "@/lib/types/listing";
 import type { Locale } from "@/lib/i18n/types";
 
-const listings = listingsData as Listing[];
-
 export function localizeListing(listing: Listing, locale: Locale): Listing {
-  if (locale === "el") return listing;
+  const hq = resolveListingLocation(listing.location, locale);
+
+  if (locale === "el") {
+    return { ...listing, location: hq };
+  }
 
   return {
     ...listing,
     condition: listing.conditionEn ?? listing.condition,
-    location: listing.locationEn ?? listing.location,
+    location: hq,
     description: listing.descriptionEn ?? listing.description,
     unit: listing.unitEn ?? listing.unit,
   };
@@ -28,17 +31,17 @@ export function localizeListings(listingsToLocalize: Listing[], locale: Locale):
 }
 
 export function getAllListings(): Listing[] {
-  return listings.filter((listing) => listing.active);
+  return listingRepository.getAll();
 }
 
 export function getListingBySlug(slug: string): Listing | undefined {
-  return getAllListings().find((listing) => listing.slug === slug);
+  return listingRepository.getBySlug(slug);
 }
 
 export function getListingsByType(listingType: ListingType): Listing[] {
-  return getAllListings().filter((listing) => listing.listingType === listingType);
+  return listingRepository.getByType(listingType);
 }
 
 export function getFeaturedListings(limit = 9): Listing[] {
-  return getAllListings().slice(0, limit);
+  return listingRepository.getFeatured(limit);
 }

@@ -90,12 +90,21 @@ export const en: Messages = {
     detailContact: "Contact",
     detailDescription: "Description",
     catalogHint:
-      "Our containers for sale or rent — swipe or tap, click the center card for details.",
+      "Our containers — filter by special offers, new, used, or rent. Swipe or tap, click the center card for details.",
     noResults: "No containers match these criteria.",
+    noTabResults: "No containers in this category.",
     clearFilters: "Clear filters",
     resultsHint: "Search results",
     backToListings: "← Back to offers",
     viewPage: "Full page →",
+    offerBadge: "Offer",
+    tabs: {
+      ariaLabel: "Catalog filters",
+      offers: "Offers",
+      new: "New",
+      used: "Used",
+      rent: "Rent",
+    },
   },
   heroSearch: {
     title: "Find a container",
@@ -153,7 +162,7 @@ export const en: Messages = {
       {
         question: "What does location on an offer mean?",
         answer:
-          "It shows where the container is or ships from. Search does not filter by city — contact us for availability.",
+          "All containers are at our headquarters — we deliver nationwide. We do not filter by city; location shows where we operate from.",
       },
       {
         question: "Why are there no photos?",
@@ -229,7 +238,7 @@ export const en: Messages = {
       description: "Flexible storage and logistics solutions — from 1 month, all types.",
       body: "We rent our own shipping containers — for projects, seasonal needs, or long-term storage. Dry, reefer, open top. Browse Offers or ask us about availability and monthly rates.",
       ctaLabel: "Browse containers for rent →",
-      ctaHref: "/listings",
+      ctaHref: "/listings?tab=rent",
     },
     enoikiasisXoron: {
       metaTitle: "Storage Space Rental",

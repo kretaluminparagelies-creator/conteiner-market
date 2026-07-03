@@ -78,7 +78,7 @@ function ListingDetailPhotoCarouselView({ listing }: ListingDetailPhotoCarouselP
 
   return (
     <div
-      className="relative flex w-full flex-col items-center overflow-visible rounded-lg bg-cm-carousel-photo/25 px-2 py-1 md:px-3"
+      className="relative flex w-full flex-col items-center overflow-visible rounded-lg bg-cm-carousel-photo/25 p-2 md:p-3"
       style={
         {
           "--cm-detail-photo-nav-inset": `${config.navInsetDesktop}px`,

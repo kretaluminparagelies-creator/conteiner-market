@@ -25,6 +25,7 @@ export function ContainerCarouselCard({
   unit,
   condition,
   listingType,
+  isOffer = false,
   image,
   isCenter = false,
 }: ContainerCarouselCardProps) {
@@ -82,6 +83,11 @@ export function ContainerCarouselCard({
         />
 
         <div className="absolute top-3 left-3 z-10 flex flex-wrap gap-2">
+          {isOffer ? (
+            <span className="rounded-full bg-cm-accent px-3 py-1 font-mono text-[9px] tracking-[0.14em] text-white uppercase shadow-sm">
+              {t.listings.offerBadge}
+            </span>
+          ) : null}
           <span
             className={[
               "rounded-full px-3 py-1 font-mono text-[9px] tracking-[0.14em] uppercase shadow-sm",

@@ -11,7 +11,7 @@ function buildProductionContentSecurityPolicy(): string {
     "default-src 'self'",
     "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' 'unsafe-eval'",
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: blob:",
+    "img-src 'self' data: blob: https://images.pexels.com https://images.unsplash.com",
     "font-src 'self' https://fonts.gstatic.com",
     "connect-src 'self'",
     "worker-src 'self' blob:",

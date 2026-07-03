@@ -8,21 +8,29 @@
 "use client";
 
 import Link from "next/link";
-import { ListingsCarouselBrowse } from "@/components/listings/ListingsCarouselBrowse";
+import { Suspense } from "react";
+import { ListingsCatalogCarousel } from "@/components/listings/ListingsCatalogCarousel";
 import { useLocale } from "@/lib/i18n/locale-context";
+import type { ListingCarouselTab } from "@/lib/utils/listing-carousel-filters";
+import { defaultListingCarouselTab } from "@/lib/utils/listing-carousel-filters";
 import type { Listing } from "@/lib/types/listing";
 
 type ListingsCatalogPageProps = {
   listings: Listing[];
   isFiltered?: boolean;
+  initialTab?: ListingCarouselTab;
 };
 
-export function ListingsCatalogPage({ listings, isFiltered = false }: ListingsCatalogPageProps) {
+export function ListingsCatalogPage({
+  listings,
+  isFiltered = false,
+  initialTab,
+}: ListingsCatalogPageProps) {
   const { t } = useLocale();
   const hasResults = listings.length > 0;
 
   return (
-    <section id="prosfores" className="relative overflow-hidden bg-cm-bg px-[6%] py-20 md:py-24">
+    <section id="prosfores" className="relative overflow-hidden bg-cm-bg px-[6%] py-16 md:py-20">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,#ffffff10_0%,transparent_42%)]"
@@ -37,17 +45,26 @@ export function ListingsCatalogPage({ listings, isFiltered = false }: ListingsCa
       />
 
       <div className="relative z-10 mx-auto max-w-6xl">
-        <p className="mb-3 font-mono text-[10px] tracking-[0.25em] text-cm-accent uppercase">
-          {isFiltered ? t.listings.resultsHint : t.listings.eyebrow}
-        </p>
-        <h1 className="font-display text-[clamp(1.75rem,4vw,3rem)] font-bold">
-          {t.listings.title}
-        </h1>
-        <p className="mt-4 max-w-2xl text-cm-sub">{t.listings.catalogHint}</p>
+        {isFiltered ? (
+          <p className="mb-6 font-mono text-[10px] tracking-[0.25em] text-cm-accent uppercase">
+            {t.listings.resultsHint}
+          </p>
+        ) : null}
 
         {hasResults ? (
-          <div className="mt-10">
-            <ListingsCarouselBrowse listings={listings} showViewAllInModal={false} />
+          <div>
+            <Suspense
+              fallback={
+                <div className="rounded-xl border border-cm-border bg-cm-card/40 p-12 text-center text-cm-sub">
+                  …
+                </div>
+              }
+            >
+              <ListingsCatalogCarousel
+                listings={listings}
+                initialTab={initialTab ?? defaultListingCarouselTab}
+              />
+            </Suspense>
           </div>
         ) : (
           <div className="mt-12 flex flex-col items-start gap-4 rounded-xl border border-cm-border bg-cm-card/50 p-8">
