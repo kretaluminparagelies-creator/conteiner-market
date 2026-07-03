@@ -7,9 +7,10 @@
 
 type ContainerSVGProps = {
   tinted?: boolean;
+  className?: string;
 };
 
-export function ContainerSVG({ tinted = false }: ContainerSVGProps) {
+export function ContainerSVG({ tinted = false, className = "h-16 w-auto opacity-75" }: ContainerSVGProps) {
   const stroke = tinted ? "#4ab0e8" : "#e07030";
 
   return (
@@ -17,7 +18,7 @@ export function ContainerSVG({ tinted = false }: ContainerSVGProps) {
       viewBox="0 0 240 130"
       fill="none"
       aria-hidden="true"
-      className="h-16 w-auto opacity-75"
+      className={className}
     >
       <rect
         x="12"

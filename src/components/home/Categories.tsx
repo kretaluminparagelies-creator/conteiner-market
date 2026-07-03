@@ -32,7 +32,7 @@ export function Categories() {
           {t.categories.title}
         </h2>
 
-        <CategoryCards visible={visible} />
+        <CategoryCards />
       </div>
     </section>
   );

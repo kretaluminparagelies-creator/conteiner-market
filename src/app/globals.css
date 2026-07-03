@@ -214,6 +214,30 @@ body {
   animation: hint-fade 0.45s ease forwards;
 }
 
+.category-card-shine {
+  isolation: isolate;
+}
+
+.category-card-shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    105deg,
+    transparent 42%,
+    rgba(255, 255, 255, 0.07) 50%,
+    transparent 58%
+  );
+  transform: translateX(-130%);
+  transition: transform 0.75s ease;
+  pointer-events: none;
+}
+
+.category-card-shine:hover::after {
+  transform: translateX(130%);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-glow-pulse,
   .animate-glow-pulse-slow,
@@ -221,5 +245,9 @@ body {
   .hero-float,
   .animate-tap-nudge {
     animation: none !important;
+  }
+
+  .category-card-shine::after {
+    display: none;
   }
 }
