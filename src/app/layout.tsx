@@ -42,7 +42,8 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang={site.language}
+      lang="el"
+      suppressHydrationWarning
       className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full">{children}</body>

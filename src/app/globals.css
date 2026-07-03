@@ -1,16 +1,16 @@
 @import "tailwindcss";
 
 :root {
-  --cm-bg: #08111e;
-  --cm-card: #0d1c2e;
-  --cm-surf: #0f2035;
+  --cm-bg: #0e1828;
+  --cm-card: #152438;
+  --cm-surf: #1a2d45;
   --cm-steel: #1a3050;
   --cm-accent: #e07030;
   --cm-rent: #4ab0e8;
   --cm-text: #eef2f7;
   --cm-sub: #7a9ab8;
   --cm-muted: #3a6080;
-  --cm-border: #182d45;
+  --cm-border: #243d58;
 }
 
 @theme inline {
@@ -185,11 +185,41 @@ body {
   transform-style: preserve-3d;
 }
 
+@keyframes tap-nudge {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+}
+
+@keyframes hint-fade {
+  from {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, 6px);
+  }
+}
+
+.animate-tap-nudge {
+  animation: tap-nudge 1.8s ease-in-out infinite;
+}
+
+.animate-hint-fade {
+  animation: hint-fade 0.45s ease forwards;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-glow-pulse,
   .animate-glow-pulse-slow,
   .scroll-line,
-  .hero-float {
+  .hero-float,
+  .animate-tap-nudge {
     animation: none !important;
   }
 }

@@ -5,22 +5,31 @@
  * @copyright 2025 Katsoulakis. All rights reserved.
  */
 
+"use client";
+
 import Link from "next/link";
-import { splineMenuServices } from "@/lib/constants/spline-menu";
+import { useLocale } from "@/lib/i18n/locale-context";
 
 type SplineMenuQuickLinksProps = {
   className?: string;
 };
 
 export function SplineMenuQuickLinks({ className }: SplineMenuQuickLinksProps) {
+  const { t } = useLocale();
+
+  const links = [
+    { href: "/prosfores", label: t.spline.offers },
+    { href: "/enoikiasis-xoron", label: t.spline.spaceRent },
+  ];
+
   return (
     <nav
-      aria-label="Γρήγορη επιλογή υπηρεσίας"
+      aria-label={t.spline.quickLinksAria}
       className={["mt-6 flex flex-wrap items-center justify-center gap-3", className]
         .filter(Boolean)
         .join(" ")}
     >
-      {splineMenuServices.map((item) => (
+      {links.map((item) => (
         <Link
           key={item.href}
           href={item.href}

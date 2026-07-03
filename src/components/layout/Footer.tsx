@@ -5,12 +5,22 @@
  * @copyright 2025 Katsoulakis. All rights reserved.
  */
 
+"use client";
+
 import { FooterCredit } from "@/components/layout/FooterCredit";
 import { FooterLink } from "@/components/layout/FooterLink";
-import { footerLegal } from "@/lib/constants/navigation";
+import { useLocale } from "@/lib/i18n/locale-context";
 import { site } from "@/lib/constants/site";
 
 export function Footer() {
+  const { t } = useLocale();
+
+  const footerLegal = [
+    { href: "/oroi", label: t.footer.terms },
+    { href: "/aporrito", label: t.footer.privacy },
+    { href: "/cookies", label: t.footer.cookies },
+  ];
+
   return (
     <footer className="flex flex-col items-center gap-5 border-t border-cm-border bg-cm-bg px-[6%] py-8">
       <div className="flex w-full flex-col items-center justify-between gap-4 sm:flex-row">
@@ -26,7 +36,7 @@ export function Footer() {
         </div>
 
         <div className="font-mono text-[11px] text-cm-muted">
-          © {site.copyrightYear} {site.author} · Ελλάδα
+          © {site.copyrightYear} {site.author} · {t.footer.country}
         </div>
       </div>
 

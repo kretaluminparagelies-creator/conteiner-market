@@ -22,7 +22,7 @@ export const splineMenu = {
   activeScene: "https://prod.spline.design/6R5uXHVx8-T4bb3U/scene.splinecode",
   heroHeightClass: "h-full min-h-[220px] w-full lg:min-h-[420px]",
   heightClass: "h-[min(80vh,720px)] min-h-[560px]",
-  backgroundColor: "#08111e",
+  backgroundColor: "#0e1828",
   lockedZoom: 0.68,
   routes: {
     "Drop 1": "/prosfores",

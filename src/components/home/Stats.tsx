@@ -8,11 +8,13 @@
 "use client";
 
 import { CountUp } from "@/components/ui/CountUp";
-import { stats } from "@/lib/constants/home";
+import { statDefinitions } from "@/lib/constants/home";
+import { useLocale } from "@/lib/i18n/locale-context";
 import { useInView } from "@/lib/hooks/useInView";
 import { fadeUpStyle } from "@/lib/utils/motion";
 
 export function Stats() {
+  const { t } = useLocale();
   const { ref, visible } = useInView<HTMLDivElement>({ threshold: 0.2 });
 
   return (
@@ -20,12 +22,12 @@ export function Stats() {
       ref={ref}
       className="grid grid-cols-2 border-y border-cm-border bg-cm-card md:grid-cols-4"
     >
-      {stats.map((stat, index) => (
+      {statDefinitions.map((stat, index) => (
         <div
-          key={stat.label}
+          key={stat.key}
           className={[
             "px-5 py-11 text-center",
-            index < stats.length - 1 ? "border-cm-border md:border-r" : "",
+            index < statDefinitions.length - 1 ? "border-cm-border md:border-r" : "",
             index % 2 === 0 ? "border-r md:border-r" : "",
             index < 2 ? "border-b md:border-b-0" : "",
           ].join(" ")}
@@ -34,7 +36,7 @@ export function Stats() {
           <div className="font-display text-[46px] leading-none font-bold text-cm-accent">
             <CountUp end={stat.end} suffix={stat.suffix} run={visible} />
           </div>
-          <div className="mt-1.5 text-[13px] text-cm-sub">{stat.label}</div>
+          <div className="mt-1.5 text-[13px] text-cm-sub">{t.stats[stat.key]}</div>
         </div>
       ))}
     </div>

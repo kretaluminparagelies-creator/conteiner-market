@@ -5,7 +5,10 @@
  * @copyright 2025 Katsoulakis. All rights reserved.
  */
 
+"use client";
+
 import { ContainerSVG } from "@/components/ui/ContainerSVG";
+import { useLocale } from "@/lib/i18n/locale-context";
 import type { Listing } from "@/lib/types/listing";
 
 type ListingCardProps = {
@@ -13,6 +16,7 @@ type ListingCardProps = {
 };
 
 export function ListingCard({ listing }: ListingCardProps) {
+  const { t } = useLocale();
   const isRent = listing.listingType === "rent";
 
   return (
@@ -26,7 +30,7 @@ export function ListingCard({ listing }: ListingCardProps) {
             isRent ? "tag-rent" : "tag-sale",
           ].join(" ")}
         >
-          {isRent ? "Ενοικίαση" : "Πώληση"}
+          {isRent ? t.listings.rent : t.listings.sale}
         </span>
       </div>
 

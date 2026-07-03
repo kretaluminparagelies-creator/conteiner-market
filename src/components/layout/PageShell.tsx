@@ -7,6 +7,8 @@
 
 import { Footer } from "@/components/layout/Footer";
 import { Nav } from "@/components/layout/Nav";
+import { Providers } from "@/components/layout/Providers";
+import { SiteVersion } from "@/components/layout/SiteVersion";
 import type { ReactNode } from "react";
 
 type PageShellProps = {
@@ -15,10 +17,13 @@ type PageShellProps = {
 
 export function PageShell({ children }: PageShellProps) {
   return (
-    <div className="min-h-screen bg-cm-bg text-cm-text">
-      <Nav />
-      <main className="pt-[60px]">{children}</main>
-      <Footer />
-    </div>
+    <Providers>
+      <div className="min-h-screen bg-cm-bg text-cm-text">
+        <Nav />
+        <main className="pt-[60px]">{children}</main>
+        <Footer />
+        <SiteVersion />
+      </div>
+    </Providers>
   );
 }

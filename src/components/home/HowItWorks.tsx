@@ -7,11 +7,12 @@
 
 "use client";
 
-import { steps } from "@/lib/constants/home";
+import { useLocale } from "@/lib/i18n/locale-context";
 import { useInView } from "@/lib/hooks/useInView";
 import { fadeUpStyle, slideInStyle } from "@/lib/utils/motion";
 
 export function HowItWorks() {
+  const { t } = useLocale();
   const { ref, visible } = useInView<HTMLElement>({ threshold: 0.05 });
 
   return (
@@ -21,21 +22,23 @@ export function HowItWorks() {
           className="mb-4 font-mono text-[10px] tracking-[0.25em] text-cm-accent uppercase"
           style={fadeUpStyle(visible, 0)}
         >
-          Διαδικασία
+          {t.howItWorks.eyebrow}
         </p>
         <h2
           className="mb-16 font-display text-[clamp(1.5rem,3.5vw,2.75rem)] font-bold md:mb-[72px]"
           style={fadeUpStyle(visible, 0.1)}
         >
-          Πώς λειτουργεί
+          {t.howItWorks.title}
         </h2>
 
-        {steps.map((step, index) => (
+        {t.howItWorks.steps.map((step, index) => (
           <div
             key={step.number}
             className={[
               "grid grid-cols-[72px_1fr] gap-7",
-              index < steps.length - 1 ? "mb-12 border-b border-cm-border pb-12" : "",
+              index < t.howItWorks.steps.length - 1
+                ? "mb-12 border-b border-cm-border pb-12"
+                : "",
             ].join(" ")}
             style={slideInStyle(visible, index * 0.2)}
           >

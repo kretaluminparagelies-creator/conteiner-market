@@ -9,7 +9,7 @@
 
 import Link from "next/link";
 import { TiltCard } from "@/components/ui/TiltCard";
-import { categories } from "@/lib/constants/home";
+import { useLocale } from "@/lib/i18n/locale-context";
 import { fadeUpStyle } from "@/lib/utils/motion";
 
 type CategoryCardsProps = {
@@ -17,9 +17,11 @@ type CategoryCardsProps = {
 };
 
 export function CategoryCards({ visible = true }: CategoryCardsProps) {
+  const { t } = useLocale();
+
   return (
     <div className="grid gap-0.5 md:grid-cols-3">
-      {categories.map((category, index) => (
+      {t.categories.items.map((category, index) => (
         <Link key={category.href} href={category.href} className="block">
           <TiltCard
             showTopBar

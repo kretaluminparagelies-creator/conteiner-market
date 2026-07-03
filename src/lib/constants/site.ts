@@ -12,10 +12,10 @@ export const site = {
   description:
     "Container Market — η εταιρεία σας για αγορά, πώληση και ενοικίαση shipping containers στην Ελλάδα. Άμεση επαφή, ανταγωνιστικές τιμές, παράδοση σε όλη τη χώρα.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
-  author: "Katsoulakis",
+  author: "Logiworkpass P.C.",
   locale: "el_GR",
   language: "el",
-  copyrightYear: 2025,
+  copyrightYear: 2026,
 } as const;
 
 export const seoKeywords = [

@@ -9,11 +9,12 @@
 
 import { useEffect, useState } from "react";
 import { HeroVisualRow } from "@/components/home/HeroVisualRow";
-import { heroTicker, heroTickerDurationSec, heroWords } from "@/lib/constants/home";
-import { site } from "@/lib/constants/site";
+import { heroTickerDurationSec } from "@/lib/constants/home";
+import { useLocale } from "@/lib/i18n/locale-context";
 import { heroEnterStyle } from "@/lib/utils/motion";
 
 export function Hero() {
+  const { t } = useLocale();
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -45,7 +46,7 @@ export function Hero() {
           className="animate-ticker flex whitespace-nowrap"
           style={{ animationDuration: `${heroTickerDurationSec}s` }}
         >
-          {[heroTicker, heroTicker].map((text, index) => (
+          {[t.hero.ticker, t.hero.ticker].map((text, index) => (
             <span
               key={index}
               className="font-mono text-[10px] tracking-[0.25em] text-cm-muted"
@@ -65,20 +66,20 @@ export function Hero() {
               transition: "opacity 0.5s 0.1s",
             }}
           >
-            Ελληνική αγορά κοντέινερ
+            {t.hero.eyebrow}
           </p>
 
           <h1 className="font-display text-[clamp(1.625rem,3.2vw,2.5rem)] leading-none font-bold">
             <span className="inline-flex flex-nowrap items-baseline gap-x-[0.35em]">
-              {heroWords.map((word, index) => (
+              {t.hero.words.map((word, index) => (
                 <span key={word} className="inline-flex shrink-0 items-baseline gap-x-[0.35em]">
                   <span
                     className={index === 2 ? "text-cm-accent" : "text-cm-text"}
                     style={heroEnterStyle(ready, index * 0.15 + 0.2)}
                   >
-                    {word.replace(".", "")}
+                    {word}
                   </span>
-                  {index < heroWords.length - 1 ? (
+                  {index < t.hero.words.length - 1 ? (
                     <span aria-hidden="true" className="font-light text-cm-muted">
                       ·
                     </span>
@@ -96,9 +97,9 @@ export function Hero() {
               transition: "opacity 0.7s 0.7s, transform 0.7s 0.7s cubic-bezier(0.16, 1, 0.3, 1)",
             }}
           >
-            {site.nameFull} — shipping containers στην Ελλάδα.
+            {t.hero.subtitleLine1}
             <br />
-            Άμεση επαφή. Χωρίς ενδιάμεσους.
+            {t.hero.subtitleLine2}
           </p>
         </div>
 
@@ -121,7 +122,7 @@ export function Hero() {
           transition: "opacity 1s 1.5s",
         }}
       >
-        <span className="font-mono text-[9px] tracking-[0.3em] text-cm-muted">SCROLL</span>
+        <span className="font-mono text-[9px] tracking-[0.3em] text-cm-muted">{t.hero.scroll}</span>
         <div className="scroll-line h-9 w-px bg-linear-to-b from-cm-muted to-transparent" />
       </div>
     </section>

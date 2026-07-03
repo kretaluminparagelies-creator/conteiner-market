@@ -11,10 +11,12 @@ import { ListingCard } from "@/components/listings/ListingCard";
 import { Button } from "@/components/ui/Button";
 import { TiltCard } from "@/components/ui/TiltCard";
 import { getFeaturedListings } from "@/lib/data/listings";
+import { useLocale } from "@/lib/i18n/locale-context";
 import { useInView } from "@/lib/hooks/useInView";
 import { fadeUpStyle } from "@/lib/utils/motion";
 
 export function ListingsPreview() {
+  const { t } = useLocale();
   const { ref, visible } = useInView<HTMLElement>({ threshold: 0.05 });
   const listings = getFeaturedListings();
 
@@ -24,14 +26,14 @@ export function ListingsPreview() {
         <div className="mb-12 flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
           <div>
             <p className="mb-3 font-mono text-[10px] tracking-[0.25em] text-cm-accent uppercase">
-              Διαθέσιμα
+              {t.listings.eyebrow}
             </p>
             <h2 className="font-display text-[clamp(1.375rem,3vw,2.375rem)] font-bold">
-              Διαθέσιμα κοντέινερ
+              {t.listings.title}
             </h2>
           </div>
           <Button href="/listings" variant="secondary" className="text-[13px]">
-            Δες όλα →
+            {t.listings.viewAll}
           </Button>
         </div>
 
