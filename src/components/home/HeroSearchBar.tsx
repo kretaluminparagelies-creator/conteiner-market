@@ -1,6 +1,6 @@
 /**
  * @file HeroSearchBar.tsx
- * @description Hero container finder — deal / size / location → /listings
+ * @description Hero container finder — deal / size → /listings
  * @author Katsoulakis
  * @copyright 2026 Katsoulakis. All rights reserved.
  */

@@ -8,7 +8,7 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import { createPageMetadata } from "@/lib/seo/metadata";
-import { site } from "@/lib/constants/site";
+import { el } from "@/lib/i18n/messages/el";
 import "./globals.css";
 
 const inter = Inter({
@@ -30,8 +30,8 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = createPageMetadata({
-  title: `${site.nameFull} — ${site.tagline}`,
-  description: site.description,
+  title: el.pages.home.metaTitle,
+  description: el.pages.home.metaDescription,
   path: "/",
 });
 

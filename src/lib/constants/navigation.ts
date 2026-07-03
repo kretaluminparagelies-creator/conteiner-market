@@ -15,22 +15,22 @@ export const mainNav: NavItem[] = [
   {
     label: "Αγορά",
     href: "/agora",
-    description: "Αγορά κοντέινερ — καινούρια και μεταχειρισμένα",
+    description: "Αγορά κοντέινερ — αγοράστε δικά μας containers",
   },
   {
     label: "Πώληση",
     href: "/polisi",
-    description: "Πώληση κοντέινερ — ανταγωνιστικές τιμές",
+    description: "Πουλήστε το κοντέινερ σας σε εμάς",
   },
   {
     label: "Ενοικίαση",
     href: "/enoikiasi",
-    description: "Ενοικίαση κοντέινερ — ευέλικτοι όροι",
+    description: "Ενοικιάστε δικά μας κοντέινερ",
   },
   {
     label: "Προσφορές",
     href: "/listings",
-    description: "Προσφορές μεταχειρισμένων κοντέινερ",
+    description: "Διαθέσιμα κοντέινερ προς αγορά ή ενοικίαση",
   },
   {
     label: "Επικοινωνία",

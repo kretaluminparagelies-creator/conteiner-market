@@ -1,35 +1,31 @@
 /**
- * @file navigate-spline-route.ts
- * @description Spline menu navigation — scroll to offers carousel on home
+ * @file navigate-offers-route.ts
+ * @description Nav to listings — smooth scroll to home offers section when already on /
  * @author Katsoulakis
  * @copyright 2026 Katsoulakis. All rights reserved.
  */
 
-import { splineMenuOffersHref } from "@/lib/constants/spline-menu";
+export const listingsHref = "/listings";
 
 export const offersCarouselSectionId = "prosfores";
 
 const navHeightPx = 60;
-/** Breathing gap between the fixed nav and the section top */
 const sectionGapPx = 12;
 
 export function scrollToOffersCarousel(section: HTMLElement): void {
   const top =
-    section.getBoundingClientRect().top +
-    window.scrollY -
-    navHeightPx -
-    sectionGapPx;
+    section.getBoundingClientRect().top + window.scrollY - navHeightPx - sectionGapPx;
 
   window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
   window.history.replaceState(null, "", `/#${offersCarouselSectionId}`);
 }
 
-export function navigateSplineRoute(
+export function navigateOffersRoute(
   href: string,
   pathname: string,
   push: (url: string) => void,
 ): void {
-  if (href !== splineMenuOffersHref) {
+  if (href !== listingsHref) {
     push(href);
     return;
   }
@@ -42,5 +38,5 @@ export function navigateSplineRoute(
     }
   }
 
-  push(splineMenuOffersHref);
+  push(listingsHref);
 }

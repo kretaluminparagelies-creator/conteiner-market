@@ -8,6 +8,7 @@
 "use client";
 
 import { ContainerSVG } from "@/components/ui/ContainerSVG";
+import { localizeListing } from "@/lib/data/listings";
 import { useLocale } from "@/lib/i18n/locale-context";
 import type { Listing } from "@/lib/types/listing";
 
@@ -16,8 +17,9 @@ type ListingCardProps = {
 };
 
 export function ListingCard({ listing }: ListingCardProps) {
-  const { t } = useLocale();
-  const isRent = listing.listingType === "rent";
+  const { locale, t } = useLocale();
+  const item = localizeListing(listing, locale);
+  const isRent = item.listingType === "rent";
 
   return (
     <article className="overflow-hidden border border-cm-border bg-cm-card">
@@ -35,8 +37,8 @@ export function ListingCard({ listing }: ListingCardProps) {
       </div>
 
       <div className="p-5 pb-6">
-        <h2 className="font-display text-[17px] font-semibold">{listing.type}</h2>
-        <p className="mt-1 text-xs text-cm-sub">{listing.condition}</p>
+        <h2 className="font-display text-[17px] font-semibold">{item.type}</h2>
+        <p className="mt-1 text-xs text-cm-sub">{item.condition}</p>
         <div className="mt-4 flex items-baseline justify-between">
           <div>
             <span
@@ -45,13 +47,13 @@ export function ListingCard({ listing }: ListingCardProps) {
                 isRent ? "text-cm-rent" : "text-cm-accent",
               ].join(" ")}
             >
-              {listing.priceFormatted}
+              {item.priceFormatted}
             </span>
-            {listing.unit ? (
-              <span className="ml-1 text-[11px] text-cm-muted">{listing.unit}</span>
+            {item.unit ? (
+              <span className="ml-1 text-[11px] text-cm-muted">{item.unit}</span>
             ) : null}
           </div>
-          <span className="font-mono text-[11px] text-cm-muted">📍 {listing.location}</span>
+          <span className="font-mono text-[11px] text-cm-muted">📍 {item.location}</span>
         </div>
       </div>
     </article>

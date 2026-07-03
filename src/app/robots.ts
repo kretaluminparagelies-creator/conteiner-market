@@ -12,9 +12,10 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
       userAgent: "*",
-      allow: "/",
+      allow: ["/", "/llms.txt", "/ai.txt"],
       disallow: ["/admin/"],
     },
     sitemap: `${site.url}/sitemap.xml`,
+    host: site.url.replace(/^https?:\/\//, ""),
   };
 }

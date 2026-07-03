@@ -15,6 +15,26 @@ import { PageShell } from "@/components/layout/PageShell";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { site } from "@/lib/constants/site";
 
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: site.nameFull,
+  legalName: site.author,
+  url: site.url,
+  description: site.description,
+  areaServed: {
+    "@type": "Country",
+    name: "Greece",
+  },
+  contactPoint: {
+    "@type": "ContactPoint",
+    contactType: "customer service",
+    email: "info@containermarket.gr",
+    availableLanguage: ["Greek", "English"],
+    areaServed: "GR",
+  },
+};
+
 const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
@@ -25,17 +45,22 @@ const websiteSchema = {
   publisher: {
     "@type": "Organization",
     name: site.nameFull,
+    url: site.url,
   },
   potentialAction: {
     "@type": "SearchAction",
-    target: `${site.url}/listings?q={search_term_string}`,
-    "query-input": "required name=search_term_string",
+    target: {
+      "@type": "EntryPoint",
+      urlTemplate: `${site.url}/listings?deal={deal}&size={size}`,
+    },
+    "query-input": ["required name=deal", "optional name=size"],
   },
 };
 
 export default function HomePage() {
   return (
     <PageShell>
+      <JsonLd data={organizationSchema} />
       <JsonLd data={websiteSchema} />
       <Hero />
       <ListingsPreview />

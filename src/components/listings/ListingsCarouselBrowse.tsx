@@ -10,7 +10,8 @@
 import { useState } from "react";
 import { ContainerCarousel3D } from "@/components/listings/carousel/ContainerCarousel3D";
 import { ListingDetailModal } from "@/components/listings/detail/ListingDetailModal";
-import { getListingBySlug } from "@/lib/data/listings";
+import { getListingBySlug, localizeListing } from "@/lib/data/listings";
+import { useLocale } from "@/lib/i18n/locale-context";
 import { mapListingsToCarousel } from "@/lib/utils/map-listing-carousel";
 import type { CarouselListingItem } from "@/lib/types/listing-carousel";
 import type { Listing } from "@/lib/types/listing";
@@ -25,12 +26,14 @@ export function ListingsCarouselBrowse({
   listings,
   showViewAllInModal = true,
 }: ListingsCarouselBrowseProps) {
+  const { locale } = useLocale();
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
-  const carouselItems = mapListingsToCarousel(listings);
+  const localizedListings = listings.map((listing) => localizeListing(listing, locale));
+  const carouselItems = mapListingsToCarousel(localizedListings);
 
   const handleListingClick = (item: CarouselListingItem) => {
     const listing = getListingBySlug(item.slug);
-    if (listing) setSelectedListing(listing);
+    if (listing) setSelectedListing(localizeListing(listing, locale));
   };
 
   if (carouselItems.length === 0) return null;

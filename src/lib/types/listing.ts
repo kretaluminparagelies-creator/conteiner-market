@@ -12,14 +12,18 @@ export type Listing = {
   slug: string;
   type: string;
   condition: string;
+  conditionEn?: string;
   price: number;
   priceFormatted: string;
   unit: string;
+  unitEn?: string;
   location: string;
+  locationEn?: string;
   listingType: ListingType;
   image: string;
   /** Gallery slides for detail modal — falls back to repeated `image` */
   images?: string[];
   description: string;
+  descriptionEn?: string;
   active: boolean;
 };

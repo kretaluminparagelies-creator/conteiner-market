@@ -7,7 +7,6 @@
 
 "use client";
 
-import { FooterCredit } from "@/components/layout/FooterCredit";
 import { FooterLink } from "@/components/layout/FooterLink";
 import { useLocale } from "@/lib/i18n/locale-context";
 import { site } from "@/lib/constants/site";
@@ -16,6 +15,7 @@ export function Footer() {
   const { t } = useLocale();
 
   const footerLegal = [
+    { href: "/help", label: t.footer.help },
     { href: "/oroi", label: t.footer.terms },
     { href: "/aporrito", label: t.footer.privacy },
     { href: "/cookies", label: t.footer.cookies },
@@ -39,8 +39,6 @@ export function Footer() {
           © {site.copyrightYear} {site.author} · {t.footer.country}
         </div>
       </div>
-
-      <FooterCredit />
     </footer>
   );
 }

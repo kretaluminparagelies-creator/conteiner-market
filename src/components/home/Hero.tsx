@@ -1,6 +1,6 @@
 /**
  * @file Hero.tsx
- * @description Home page hero — title on top, Spline menu + GLB container below
+ * @description Home page hero — title on top, search + GLB container below
  * @author Katsoulakis
  * @copyright 2025 Katsoulakis. All rights reserved.
  */

@@ -28,6 +28,7 @@ export const en: Messages = {
   },
   footer: {
     country: "Greece",
+    help: "Help",
     terms: "Terms",
     privacy: "Privacy",
     cookies: "Cookies",
@@ -38,20 +39,11 @@ export const en: Messages = {
       "USED CONTAINER OFFERS  ·  STORAGE SPACE RENTAL  ·  CARGO WORTHY  ·  WIND & WATERTIGHT  ·  " +
       "DELIVERY NATIONWIDE  ·  500+ AVAILABLE  ·  32 PORTS & WAREHOUSES  ·  ONE-WAY LEASING  ·  " +
       "INSTANT QUOTE  ·  CONTAINER MARKET GR  ·  ",
-    eyebrow: "Greek container market",
+    eyebrow: "Containers from us",
     words: ["Buy", "Sell", "Rent"],
-    subtitleLine1: "Container Market GR — shipping containers in Greece.",
+    subtitleLine1: "We sell and rent our own containers across Greece.",
     subtitleLine2: "Direct contact. No middlemen.",
     scroll: "SCROLL",
-  },
-  spline: {
-    offers: "Container offers",
-    spaceRent: "Space rental",
-    quickLinksAria: "Quick service selection",
-    touchHint: "Tap to choose",
-    touchHintAria: "Interactive 3D menu — tap to select a service",
-    clickHint: "Click to choose",
-    clickHintAria: "Interactive 3D menu — click to select a service",
   },
   categories: {
     eyebrow: "What you need",
@@ -61,7 +53,7 @@ export const en: Messages = {
         tag: "BUY",
         title: "Buy",
         description:
-          "New & used containers for permanent purchase. Direct pricing from our company.",
+          "Buy our containers — new and used. Direct pricing, no middlemen.",
         note: "320+ available",
         href: "/agora",
       },
@@ -76,7 +68,7 @@ export const en: Messages = {
         tag: "RENT",
         title: "Rent",
         description:
-          "Flexible terms from 1 month. Reefers, open top, dry — all types available.",
+          "Rent our containers — flexible terms from 1 month. Dry, reefer, open top.",
         note: "180+ for rent",
         href: "/enoikiasi",
       },
@@ -89,7 +81,7 @@ export const en: Messages = {
     hubs: "Ports & warehouses",
   },
   listings: {
-    eyebrow: "Used",
+    eyebrow: "Available",
     title: "Offers",
     viewAll: "View all →",
     sale: "Sale",
@@ -97,10 +89,13 @@ export const en: Messages = {
     detailClose: "Close",
     detailContact: "Contact",
     detailDescription: "Description",
-    catalogHint: "Swipe or tap to browse offers — click the center card for details.",
+    catalogHint:
+      "Our containers for sale or rent — swipe or tap, click the center card for details.",
     noResults: "No containers match these criteria.",
     clearFilters: "Clear filters",
     resultsHint: "Search results",
+    backToListings: "← Back to offers",
+    viewPage: "Full page →",
   },
   heroSearch: {
     title: "Find a container",
@@ -112,6 +107,61 @@ export const en: Messages = {
     sizeAll: "All sizes",
     submit: "Search",
   },
+  help: {
+    eyebrow: "Help",
+    title: "Frequently asked questions",
+    intro:
+      "How to find our containers for sale or rent and contact us directly.",
+    contactCta: "Contact",
+    listingsCta: "Browse offers",
+    items: [
+      {
+        question: "How do I find a container?",
+        answer:
+          "On the home page, use the search bar (Type + Size) or open «Offers» in the menu. Filter by buy or rent and size (20ft, 40ft, 45ft).",
+      },
+      {
+        question: "What do Buy and Rent mean?",
+        answer:
+          "Buy = purchase the container. Rent = lease for as long as you need (e.g. per month). Offers show price and unit (/month for rent).",
+      },
+      {
+        question: "How do I see offer details?",
+        answer:
+          "In the carousel, click the center card for a modal, or open the full page (/listings/[slug], e.g. /listings/20ft-dry-peiraias) with photos, price, condition, and description — ideal for sharing or AI agents.",
+      },
+      {
+        question: "How do I contact you?",
+        answer:
+          "Use «Contact» in the menu or in the offer modal. Email or call us — no middlemen.",
+      },
+      {
+        question: "Are the containers yours?",
+        answer:
+          "Yes. We sell and rent our own containers — directly from us. We are not a third-party marketplace. See Offers for what we have available.",
+      },
+      {
+        question: "Can I sell my container to you?",
+        answer:
+          "Yes. Visit the «Sell» page to request a quote — we buy containers from individuals and businesses.",
+      },
+      {
+        question: "Do you rent storage space?",
+        answer:
+          "Yes. See «Space rental» for storage in container yards and warehouses.",
+      },
+      {
+        question: "What does location on an offer mean?",
+        answer:
+          "It shows where the container is or ships from. Search does not filter by city — contact us for availability.",
+      },
+      {
+        question: "Why are there no photos?",
+        answer:
+          "Photos are being updated. Until then a container icon is shown. Ask us for photos of a specific offer.",
+      },
+    ],
+  },
   howItWorks: {
     eyebrow: "Process",
     title: "How it works",
@@ -119,7 +169,7 @@ export const en: Messages = {
       {
         number: "01",
         title: "Search",
-        body: "Filter by type, size, location and condition. Find exactly what you need.",
+        body: "Filter by type and size. Find exactly what you need.",
       },
       {
         number: "02",
@@ -137,8 +187,115 @@ export const en: Messages = {
     eyebrow: "Get started",
     titleLine1: "Find the container",
     titleLine2: "you need.",
-    body: "Dozens of available units. Direct contact. No intermediaries.",
+    body: "Our containers, directly from us. No intermediaries.",
     browse: "Browse containers",
     contact: "Contact",
+  },
+  common: {
+    email: "Email",
+    phone: "Phone",
+    area: "Area",
+    lastUpdated: "Last updated",
+  },
+  siteMeta: {
+    tagline: "Buy & Rent Containers — directly from us",
+    description:
+      "Container Market GR — we sell and rent our own shipping containers across Greece. Direct contact, no middlemen, nationwide delivery.",
+  },
+  pages: {
+    home: {
+      metaTitle: "Container Market GR — Buy & Rent Containers",
+      metaDescription:
+        "Container Market GR — we sell and rent our own shipping containers across Greece. Direct contact, no middlemen.",
+    },
+    agora: {
+      metaTitle: "Buy Containers",
+      metaDescription:
+        "Buy shipping containers in Greece — new and used 20ft, 40ft, High Cube. Container Market, fast delivery.",
+      eyebrow: "Buy",
+      title: "Buy containers",
+      description:
+        "New and used containers for permanent use — storage, logistics, conversions.",
+      body: "We sell our own shipping containers — cargo worthy, at competitive prices. Available 20ft, 40ft, High Cube and special types. Browse Offers or contact us for availability, price, and delivery.",
+      ctaLabel: "Browse available containers →",
+      ctaHref: "/listings",
+    },
+    enoikiasi: {
+      metaTitle: "Rent Containers",
+      metaDescription:
+        "Rent shipping containers in Greece — dry, reefer, open top. Flexible terms from 1 month. Container Market.",
+      eyebrow: "Rent",
+      title: "Rent containers",
+      description: "Flexible storage and logistics solutions — from 1 month, all types.",
+      body: "We rent our own shipping containers — for projects, seasonal needs, or long-term storage. Dry, reefer, open top. Browse Offers or ask us about availability and monthly rates.",
+      ctaLabel: "Browse containers for rent →",
+      ctaHref: "/listings",
+    },
+    enoikiasisXoron: {
+      metaTitle: "Storage Space Rental",
+      metaDescription:
+        "Rent storage space in shipping containers — flexible terms, secure storage. Container Market GR.",
+      eyebrow: "Space rental",
+      title: "Storage space in containers",
+      description:
+        "Rent space inside a container or in organised storage — ideal for goods, equipment, seasonal needs.",
+      body: "We offer flexible storage space rental using shipping containers as storage units. Monthly or long-term terms, access by arrangement, and locations at strategic points across Greece. Contact us for availability, volume, and pricing.",
+      ctaLabel: "Request a quote →",
+      ctaHref: "/epikoinonia",
+    },
+    polisi: {
+      metaTitle: "Sell Your Container",
+      metaDescription:
+        "Sell your shipping container in Greece. Container Market — instant valuation, competitive offer, nationwide coverage.",
+      eyebrow: "Sell",
+      title: "Sell your container",
+      description: "Want to sell a container? Send us the details and we will make an offer.",
+      body: "Container Market buys shipping containers of all types — dry van, reefer, open top, high cube. We assess condition, propose a fair price, and handle the process simply and transparently.",
+      ctaLabel: "Contact us to sell →",
+      ctaHref: "/epikoinonia",
+    },
+    contact: {
+      metaTitle: "Contact",
+      metaDescription:
+        "Contact Container Market for buying, selling, or renting shipping containers in Greece.",
+      eyebrow: "Contact",
+      title: "Get in touch",
+      intro: "For buying, selling, or renting containers — we are here for you.",
+      areaValue: "Greece — nationwide coverage",
+    },
+    listings: {
+      metaTitle: "Container Offers",
+      metaDescription:
+        "Available containers for sale or rent — our own inventory, directly from Container Market GR.",
+      schemaName: "Container offers",
+    },
+    help: {
+      metaTitle: "Help & FAQ",
+      metaDescription:
+        "Container Market GR user guide — search containers, offers, buy, rent, and contact.",
+    },
+    legal: {
+      terms: {
+        metaTitle: "Terms of Use",
+        metaDescription:
+          "Terms of use for Container Market GR — buy, rent containers and storage space from Logiworkpass P.C.",
+        title: "Terms of use",
+        intro:
+          "Terms governing use of the website and our container purchase, rental, and storage space services.",
+      },
+      privacy: {
+        metaTitle: "Privacy Policy",
+        metaDescription:
+          "Privacy policy and personal data protection (GDPR) — Container Market GR / Logiworkpass P.C.",
+        title: "Privacy policy",
+        intro: "How we collect, use, and protect your personal data under the GDPR.",
+      },
+      cookies: {
+        metaTitle: "Cookie Policy",
+        metaDescription: "Cookie and local storage (localStorage) policy — Container Market GR.",
+        title: "Cookie policy",
+        intro: "Information about cookies, localStorage, and sessionStorage used on this website.",
+      },
+    },
   },
 };

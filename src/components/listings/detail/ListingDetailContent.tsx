@@ -91,6 +91,9 @@ export function ListingDetailContent({
           <Button href="/epikoinonia" className="px-4 py-2 text-xs">
             {t.listings.detailContact}
           </Button>
+          <Button href={`/listings/${listing.slug}`} variant="secondary" className="px-4 py-2 text-xs">
+            {t.listings.viewPage}
+          </Button>
           {showViewAll ? (
             <Button variant="secondary" className="px-4 py-2 text-xs" onClick={handleViewAll}>
               {t.listings.viewAll}

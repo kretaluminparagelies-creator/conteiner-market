@@ -10,9 +10,8 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import type { CSSProperties, MouseEvent } from "react";
-import { splineMenuOffersHref } from "@/lib/constants/spline-menu";
 import { getNavLinkTheme } from "@/lib/constants/nav-link-themes";
-import { navigateSplineRoute } from "@/lib/spline/navigate-spline-route";
+import { listingsHref, navigateOffersRoute } from "@/lib/nav/navigate-offers-route";
 
 type NavLinkProps = {
   href: string;
@@ -22,7 +21,7 @@ type NavLinkProps = {
 export function NavLink({ href, label }: NavLinkProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const isOffersLink = href === splineMenuOffersHref;
+  const isOffersLink = href === listingsHref;
   const isActive = pathname === href;
   const theme = getNavLinkTheme(href);
 
@@ -38,7 +37,7 @@ export function NavLink({ href, label }: NavLinkProps) {
     if (!isOffersLink) return;
 
     event.preventDefault();
-    navigateSplineRoute(href, pathname, router.push);
+    navigateOffersRoute(href, pathname, router.push);
   };
 
   return (

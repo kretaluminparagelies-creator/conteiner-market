@@ -14,6 +14,7 @@ import {
   hasActiveFilters,
   parseListingFilters,
 } from "@/lib/utils/listing-filters";
+import { el } from "@/lib/i18n/messages/el";
 import { createPageMetadata } from "@/lib/seo/metadata";
 import { site } from "@/lib/constants/site";
 
@@ -23,9 +24,8 @@ type ListingsSearchParams = {
 };
 
 export const metadata = createPageMetadata({
-  title: "Προσφορές Κοντέινερ",
-  description:
-    "Προσφορές σε μεταχειρισμένα shipping containers — 20ft, 40ft, cargo worthy. Άμεση διαθεσιμότητα, Container Market GR.",
+  title: el.pages.listings.metaTitle,
+  description: el.pages.listings.metaDescription,
   path: "/listings",
   keywords: ["κατάλογος κοντέινερ", "διαθέσιμα containers", "τιμές κοντέινερ"],
 });
@@ -42,7 +42,7 @@ export default async function ListingsPage({
   const itemListSchema = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: "Προσφορές κοντέινερ",
+    name: el.pages.listings.schemaName,
     url: `${site.url}/listings`,
     numberOfItems: listings.length,
     itemListElement: listings.map((listing, index) => ({
@@ -52,11 +52,13 @@ export default async function ListingsPage({
         "@type": "Product",
         name: listing.type,
         description: listing.description,
+        url: `${site.url}/listings/${listing.slug}`,
         offers: {
           "@type": "Offer",
           price: listing.price,
           priceCurrency: "EUR",
           availability: "https://schema.org/InStock",
+          url: `${site.url}/listings/${listing.slug}`,
         },
       },
     })),

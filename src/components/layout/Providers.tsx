@@ -8,6 +8,7 @@
 "use client";
 
 import { LocaleProvider } from "@/lib/i18n/locale-context";
+import { LocaleHead } from "@/components/layout/LocaleHead";
 import type { ReactNode } from "react";
 
 type ProvidersProps = {
@@ -15,5 +16,10 @@ type ProvidersProps = {
 };
 
 export function Providers({ children }: ProvidersProps) {
-  return <LocaleProvider>{children}</LocaleProvider>;
+  return (
+    <LocaleProvider>
+      <LocaleHead />
+      {children}
+    </LocaleProvider>
+  );
 }

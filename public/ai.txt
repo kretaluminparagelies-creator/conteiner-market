@@ -1,0 +1,13 @@
+# Container Market GR — AI site guide
+# Full documentation: /llms.txt
+
+Container Market GR sells and rents its own shipping containers in Greece (Logiworkpass P.C.).
+
+Start here: https://containermarket.gr/llms.txt
+
+Quick links:
+- Catalog: https://containermarket.gr/listings
+- Example offer: https://containermarket.gr/listings/20ft-dry-peiraias
+- FAQ: https://containermarket.gr/help
+- Contact: https://containermarket.gr/epikoinonia
+- Sitemap: https://containermarket.gr/sitemap.xml

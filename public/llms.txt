@@ -1,0 +1,113 @@
+# Container Market GR
+
+> We sell and rent our own shipping containers in Greece — direct from Logiworkpass P.C.
+> Not a third-party marketplace. Bilingual: Greek (default) + English (client toggle, stored in localStorage key `cm-locale`).
+
+## Site
+
+- Production URL: https://containermarket.gr (set via NEXT_PUBLIC_SITE_URL)
+- Stack: Next.js 16, React 19, static listings JSON (Supabase planned)
+- Version: 0.9.0
+- AI guide (this file): /llms.txt
+- Short pointer: /ai.txt
+
+## Main routes
+
+| Path | Description |
+|------|-------------|
+| / | Home — hero search, featured listings carousel, categories, stats |
+| /agora | Buy containers (our inventory, sale) |
+| /polisi | Sell your container to us (buyback) |
+| /enoikiasi | Rent our containers |
+| /enoikiasis-xoron | Storage space rental |
+| /listings | Full catalog — sale & rent, 3D carousel, filterable |
+| /epikoinonia | Contact — email, phone, coverage area |
+| /help | FAQ (JSON-LD FAQPage) — how to search, buy, rent, contact |
+| /oroi | Terms of use (EL + EN) |
+| /aporrito | Privacy policy / GDPR (EL + EN) |
+| /cookies | Cookie policy (EL + EN) |
+
+Redirects:
+- /prosfores → /listings
+
+## Language
+
+- Default UI: Greek (el)
+- English: toggle in nav (ΕΛ / EN) — no separate /en/ URLs
+- Legal, service pages, FAQ, listings descriptions support both locales
+- Server HTML metadata defaults to Greek; title/description update client-side when EN is selected
+
+## Listings search (filters)
+
+Hero search and catalog use query parameters on `/listings`:
+
+- `deal` — `sale` (buy) or `rent` (lease). Omit for all types.
+- `size` — container size prefix from listing type, e.g. `20ft`, `40ft`, `45ft`.
+
+Examples:
+- /listings?deal=sale
+- /listings?deal=rent&size=20ft
+- /listings?size=40ft
+
+Do NOT use `/listings?q=` — there is no free-text search parameter.
+
+Home anchor: `/#prosfores` scrolls to the featured carousel on the home page.
+
+## Listings data
+
+- Source: `src/data/listings.json` — our own inventory (static)
+- Active listings only (`active: true`)
+- Fields: id, slug, type, condition, price, priceFormatted, unit, location, listingType (sale|rent), description
+- Bilingual fields: conditionEn, locationEn, descriptionEn, unitEn
+- Detail view: modal on carousel click OR dedicated page `/listings/{slug}` (recommended for citations)
+- Example: /listings/20ft-dry-peiraias — Product JSON-LD, bilingual EL/EN
+- All slugs listed in /sitemap.xml
+- Images: `/images/containers/` — SVG/icon fallback until real photos are added
+
+## Services (business model)
+
+1. **Buy (Αγορά)** — customer purchases our containers
+2. **Rent (Ενοικίαση)** — customer rents our containers (e.g. per month)
+3. **Sell to us (Πώληση)** — we buy containers from customers (buyback, not in catalog)
+4. **Offers (Προσφορές)** — our available containers for sale or rent at /listings
+
+## Contact
+
+- Email: info@containermarket.gr
+- Phone: see /epikoinonia (placeholder until final number is set)
+- Coverage: Greece nationwide
+- Company: Logiworkpass P.C.
+
+## Crawling & structured data
+
+- robots.txt: /robots.txt — allows /, disallows /admin/
+- sitemap: /sitemap.xml — all public routes
+- JSON-LD:
+  - Home: WebSite + SearchAction + Organization
+  - /listings: ItemList of Products (each with url)
+  - /listings/{slug}: Product + Offer per listing
+  - /help: FAQPage
+
+## Recommended agent workflow
+
+1. Read this file (/llms.txt) for routes and filters
+2. Fetch /sitemap.xml for URL list
+3. For inventory: GET /listings or filter; for one item: GET /listings/{slug}
+4. Example listing URL: /listings/20ft-dry-peiraias
+5. For user questions: /help FAQ first, then /epikoinonia for contact
+6. Respect bilingual UI — prefer Greek for Greek users unless EN is requested
+
+## Not yet implemented
+
+- Admin panel (/admin/ blocked in robots, no route)
+- CRM, auth, contact form, Supabase backend
+- Individual listing pages (/listings/{slug}) — implemented
+- Real listing photos, final phone number, tax ID (ΑΦΜ) on legal pages
+- Public API / MCP server
+
+## For developers
+
+- Conventions: AGENTS.md
+- i18n: `src/lib/i18n/messages/` (el.ts, en.ts)
+- Listings filters: `src/lib/utils/listing-filters.ts`
+- Legal content: `src/lib/content/legal-el.ts`, `legal-en.ts`

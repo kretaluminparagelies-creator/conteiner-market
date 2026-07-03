@@ -32,6 +32,10 @@ function wrapOffset(offset: number, length: number): number {
 }
 
 export function ListingDetailPhotoCarousel({ listing }: ListingDetailPhotoCarouselProps) {
+  return <ListingDetailPhotoCarouselView key={listing.id} listing={listing} />;
+}
+
+function ListingDetailPhotoCarouselView({ listing }: ListingDetailPhotoCarouselProps) {
   const reduceMotion = useReducedMotion();
   const config = listingCarousel.detailPhoto;
   const sourceImages = getListingSourceImages(listing);
@@ -42,11 +46,6 @@ export function ListingDetailPhotoCarousel({ listing }: ListingDetailPhotoCarous
   const [currentIndex, setCurrentIndex] = useState(0);
   const [windowWidth, setWindowWidth] = useState(1024);
   const [failed, setFailed] = useState<Record<number, boolean>>({});
-
-  useEffect(() => {
-    setCurrentIndex(0);
-    setFailed({});
-  }, [listing.id]);
 
   useEffect(() => {
     const update = () => setWindowWidth(window.innerWidth);

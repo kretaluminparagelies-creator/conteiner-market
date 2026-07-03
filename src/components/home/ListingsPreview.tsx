@@ -19,7 +19,7 @@ import { useLocale } from "@/lib/i18n/locale-context";
 import {
   offersCarouselSectionId,
   scrollToOffersCarousel,
-} from "@/lib/spline/navigate-spline-route";
+} from "@/lib/nav/navigate-offers-route";
 
 export function ListingsPreview() {
   const { t } = useLocale();

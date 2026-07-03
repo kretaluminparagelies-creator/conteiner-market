@@ -6,7 +6,7 @@
  */
 
 import type { ReactNode } from "react";
-import { getCategoryIcon } from "@/components/home/categories/CategoryCardIcon";
+import { CalendarClock, ShoppingCart, Tag } from "lucide-react";
 import { ContainerSVG } from "@/components/ui/ContainerSVG";
 import {
   categoryThemes,
@@ -20,6 +20,23 @@ type CategoryCardVisualProps = {
   children: ReactNode;
 };
 
+function CategoryBackgroundIcon({
+  variant,
+  className,
+}: {
+  variant: CategoryVariant;
+  className: string;
+}) {
+  switch (variant) {
+    case "buy":
+      return <ShoppingCart aria-hidden="true" className={className} strokeWidth={1} />;
+    case "sell":
+      return <Tag aria-hidden="true" className={className} strokeWidth={1} />;
+    case "rent":
+      return <CalendarClock aria-hidden="true" className={className} strokeWidth={1} />;
+  }
+}
+
 export function CategoryCardVisual({
   variant,
   index,
@@ -28,7 +45,6 @@ export function CategoryCardVisual({
 }: CategoryCardVisualProps) {
   const theme = categoryThemes[variant];
   const watermark = String(index + 1).padStart(2, "0");
-  const BgIcon = getCategoryIcon(variant);
 
   return (
     <div
@@ -62,14 +78,13 @@ export function CategoryCardVisual({
         ].join(" ")}
       />
 
-      <BgIcon
-        aria-hidden="true"
+      <CategoryBackgroundIcon
+        variant={variant}
         className={[
           "pointer-events-none absolute -right-6 -bottom-10 h-40 w-40 transition-transform duration-500",
           "group-hover/card:scale-110 group-hover/card:-translate-y-1",
           theme.bgIcon,
         ].join(" ")}
-        strokeWidth={1}
       />
 
       <span

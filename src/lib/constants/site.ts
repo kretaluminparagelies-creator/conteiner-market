@@ -8,9 +8,9 @@
 export const site = {
   name: "Container Market",
   nameFull: "Container Market GR",
-  tagline: "Αγορά, Πώληση & Ενοικίαση Κοντέινερ στην Ελλάδα",
+  tagline: "Αγορά & Ενοικίαση Κοντέινερ — απευθείας από εμάς",
   description:
-    "Container Market — η εταιρεία σας για αγορά, πώληση και ενοικίαση shipping containers στην Ελλάδα. Άμεση επαφή, ανταγωνιστικές τιμές, παράδοση σε όλη τη χώρα.",
+    "Container Market GR — πουλάμε και ενοικιάζουμε δικά μας shipping containers στην Ελλάδα. Άμεση επαφή, χωρίς ενδιάμεσους, παράδοση σε όλη τη χώρα.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   author: "Logiworkpass P.C.",
   locale: "el_GR",
