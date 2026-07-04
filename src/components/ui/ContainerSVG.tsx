@@ -10,16 +10,14 @@ type ContainerSVGProps = {
   className?: string;
 };
 
-export function ContainerSVG({ tinted = false, className = "h-16 w-auto opacity-75" }: ContainerSVGProps) {
+export function ContainerSVG({
+  tinted = false,
+  className = "h-16 w-auto opacity-75",
+}: ContainerSVGProps) {
   const stroke = tinted ? "#4ab0e8" : "#e07030";
 
   return (
-    <svg
-      viewBox="0 0 240 130"
-      fill="none"
-      aria-hidden="true"
-      className={className}
-    >
+    <svg viewBox="0 0 240 130" fill="none" aria-hidden="true" className={className}>
       <rect
         x="12"
         y="22"
@@ -55,7 +53,15 @@ export function ContainerSVG({ tinted = false, className = "h-16 w-auto opacity-
         strokeOpacity="0.45"
         strokeWidth="1.2"
       />
-      <line x1="212" y1="24" x2="212" y2="106" stroke={stroke} strokeOpacity="0.3" strokeWidth="1" />
+      <line
+        x1="212"
+        y1="24"
+        x2="212"
+        y2="106"
+        stroke={stroke}
+        strokeOpacity="0.3"
+        strokeWidth="1"
+      />
       {(
         [
           [12, 22],

@@ -18,6 +18,7 @@ import {
   homePhotoOverlayFadeClass,
   homePhotoOverlayPrimaryClass,
 } from "@/lib/constants/home";
+import { useIsClient } from "@/lib/hooks/useIsClient";
 import { useLocale } from "@/lib/i18n/locale-context";
 import { getPeerListings } from "@/lib/utils/listing-detail-peers";
 import type { ListingCarouselTab } from "@/lib/utils/listing-carousel-filters";
@@ -31,27 +32,25 @@ type ListingDetailModalProps = {
   surface?: "dark" | "light";
 };
 
-export function ListingDetailModal({
+type ListingDetailModalContentProps = {
+  listing: Listing;
+  categoryListings: Listing[];
+  categoryTab: ListingCarouselTab;
+  onClose: () => void;
+  surface: "dark" | "light";
+};
+
+function ListingDetailModalContent({
   listing,
-  categoryListings = [],
-  categoryTab = "offers",
+  categoryListings,
+  categoryTab,
   onClose,
-  surface = "dark",
-}: ListingDetailModalProps) {
+  surface,
+}: ListingDetailModalContentProps) {
   const { t } = useLocale();
   const reduceMotion = useReducedMotion();
   const isLight = surface === "light";
-  const open = listing !== null;
-  const [activeListing, setActiveListing] = useState<Listing | null>(listing);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    setActiveListing(listing);
-  }, [listing]);
+  const [activeListing, setActiveListing] = useState(listing);
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
@@ -61,84 +60,103 @@ export function ListingDetailModal({
   );
 
   useEffect(() => {
-    if (!open) return;
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", handleKeyDown);
     return () => {
       document.body.style.overflow = "";
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [open, handleKeyDown]);
+  }, [handleKeyDown]);
 
-  const hasPeers =
-    activeListing !== null && getPeerListings(categoryListings, activeListing.slug).length > 0;
+  const hasPeers = getPeerListings(categoryListings, activeListing.slug).length > 0;
+
+  return (
+    <motion.div
+      className={[
+        "fixed inset-0 z-[500] grid place-items-center overflow-y-auto",
+        hasPeers ? "px-2 py-6 sm:px-3" : "p-4 sm:p-6",
+      ].join(" ")}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: reduceMotion ? 0.01 : 0.2 }}
+    >
+      <button
+        type="button"
+        aria-label={t.listings.detailClose}
+        className="absolute inset-0 overflow-hidden"
+        onClick={onClose}
+      >
+        {isLight ? (
+          <>
+            <Image
+              src={carouselBackgroundImage}
+              alt=""
+              fill
+              sizes="100vw"
+              className={[homePhotoImageClass, "object-[center_40%]"].join(" ")}
+            />
+            <span className={["absolute inset-0", homePhotoOverlayPrimaryClass].join(" ")} />
+            <span className={["absolute inset-0", homePhotoOverlayFadeClass].join(" ")} />
+          </>
+        ) : (
+          <span className="absolute inset-0 bg-cm-bg/95 backdrop-blur-md" aria-hidden="true" />
+        )}
+      </button>
+
+      <motion.div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="listing-detail-title"
+        className={[
+          "relative z-10 my-auto w-full translate-y-4 overflow-visible sm:translate-y-7",
+          hasPeers ? "max-w-none" : "max-w-5xl",
+        ].join(" ")}
+        initial={reduceMotion ? false : { opacity: 0, scale: 0.97 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={reduceMotion ? undefined : { opacity: 0, scale: 0.97 }}
+        transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+        onClick={(event) => event.stopPropagation()}
+      >
+        <div id="listing-detail-title" className="sr-only">
+          {activeListing.type}
+        </div>
+
+        <ListingDetailWithPeers
+          listing={activeListing}
+          categoryListings={categoryListings}
+          categoryTab={categoryTab}
+          onListingSelect={setActiveListing}
+          onClose={onClose}
+          surface={surface}
+        />
+      </motion.div>
+    </motion.div>
+  );
+}
+
+export function ListingDetailModal({
+  listing,
+  categoryListings = [],
+  categoryTab = "offers",
+  onClose,
+  surface = "dark",
+}: ListingDetailModalProps) {
+  const mounted = useIsClient();
 
   if (!mounted) return null;
 
   return createPortal(
     <AnimatePresence>
-      {open && activeListing ? (
-        <motion.div
-          className={[
-            "fixed inset-0 z-[500] grid place-items-center overflow-y-auto",
-            hasPeers ? "px-2 py-6 sm:px-3" : "p-4 sm:p-6",
-          ].join(" ")}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: reduceMotion ? 0.01 : 0.2 }}
-        >
-          <button
-            type="button"
-            aria-label={t.listings.detailClose}
-            className="absolute inset-0 overflow-hidden"
-            onClick={onClose}
-          >
-            {isLight ? (
-              <>
-                <Image
-                  src={carouselBackgroundImage}
-                  alt=""
-                  fill
-                  sizes="100vw"
-                  className={[homePhotoImageClass, "object-[center_40%]"].join(" ")}
-                />
-                <span className={["absolute inset-0", homePhotoOverlayPrimaryClass].join(" ")} />
-                <span className={["absolute inset-0", homePhotoOverlayFadeClass].join(" ")} />
-              </>
-            ) : (
-              <span className="absolute inset-0 bg-cm-bg/95 backdrop-blur-md" aria-hidden="true" />
-            )}
-          </button>
-
-          <motion.div
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="listing-detail-title"
-            className={[
-              "relative z-10 my-auto w-full translate-y-4 overflow-visible sm:translate-y-7",
-              hasPeers ? "max-w-none" : "max-w-5xl",
-            ].join(" ")}
-            initial={reduceMotion ? false : { opacity: 0, scale: 0.97 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={reduceMotion ? undefined : { opacity: 0, scale: 0.97 }}
-            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div id="listing-detail-title" className="sr-only">
-              {activeListing.type}
-            </div>
-
-            <ListingDetailWithPeers
-              listing={activeListing}
-              categoryListings={categoryListings}
-              categoryTab={categoryTab}
-              onListingSelect={setActiveListing}
-              onClose={onClose}
-              surface={surface}
-            />
-          </motion.div>
-        </motion.div>
+      {listing ? (
+        <ListingDetailModalContent
+          key={listing.slug}
+          listing={listing}
+          categoryListings={categoryListings}
+          categoryTab={categoryTab}
+          onClose={onClose}
+          surface={surface}
+        />
       ) : null}
     </AnimatePresence>,
     document.body,

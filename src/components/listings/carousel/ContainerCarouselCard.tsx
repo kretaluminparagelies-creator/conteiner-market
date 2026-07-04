@@ -8,6 +8,7 @@
 "use client";
 
 import { MapPin, Package } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
 import { ContainerSVG } from "@/components/ui/ContainerSVG";
 import { useLocale } from "@/lib/i18n/locale-context";
@@ -77,14 +78,15 @@ export function ContainerCarouselCard({
         />
 
         {showPhoto ? (
-          <img
+          <Image
             src={image}
             alt={title}
-            className={[
-              "absolute inset-0 h-full w-full object-cover",
-              !isCenter ? "brightness-[0.82] saturate-[0.88]" : "",
-            ].join(" ")}
-            loading="lazy"
+            fill
+            unoptimized
+            className={["object-cover", !isCenter ? "brightness-[0.82] saturate-[0.88]" : ""].join(
+              " ",
+            )}
+            sizes="(max-width: 768px) 280px, 320px"
             onError={() => setImageFailed(true)}
           />
         ) : (

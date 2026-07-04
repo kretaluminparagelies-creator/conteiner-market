@@ -6,10 +6,7 @@
  */
 
 import type { Listing, ListingType, StockCondition } from "@/lib/types/listing";
-import {
-  resolveIsOffer,
-  resolveStockCondition,
-} from "@/lib/utils/listing-carousel-filters";
+import { resolveIsOffer, resolveStockCondition } from "@/lib/utils/listing-carousel-filters";
 
 export const containerTypeOptions = [
   "20ft Dry",

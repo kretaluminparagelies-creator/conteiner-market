@@ -27,9 +27,7 @@ export function ListingDetailContent({ listing, surface = "dark" }: ListingDetai
     <div
       className={[
         "overflow-hidden rounded-xl border shadow-cm-light-lg",
-        isLight
-          ? "glass-category border-white/80 bg-white/94"
-          : "border-cm-border bg-cm-card",
+        isLight ? "glass-category border-white/80 bg-white/94" : "border-cm-border bg-cm-card",
       ].join(" ")}
     >
       <div className="p-4 md:p-5">
@@ -43,7 +41,10 @@ export function ListingDetailContent({ listing, surface = "dark" }: ListingDetai
         ].join(" ")}
       >
         {isLight ? (
-          <div aria-hidden="true" className="category-card-read-layer pointer-events-none absolute inset-0" />
+          <div
+            aria-hidden="true"
+            className="category-card-read-layer pointer-events-none absolute inset-0"
+          />
         ) : null}
 
         <div className="relative z-[1] flex flex-wrap items-start justify-between gap-2">
@@ -76,7 +77,12 @@ export function ListingDetailContent({ listing, surface = "dark" }: ListingDetai
             >
               {listing.type}
             </h2>
-            <div className={["mt-1 flex items-center gap-1.5", isLight ? "text-cm-ink-sub" : "text-cm-sub"].join(" ")}>
+            <div
+              className={[
+                "mt-1 flex items-center gap-1.5",
+                isLight ? "text-cm-ink-sub" : "text-cm-sub",
+              ].join(" ")}
+            >
               <MapPin className="h-3.5 w-3.5 shrink-0 text-cm-accent" aria-hidden="true" />
               <span className="text-sm font-medium">{listing.location}</span>
             </div>
@@ -93,7 +99,12 @@ export function ListingDetailContent({ listing, surface = "dark" }: ListingDetai
                 {listing.priceFormatted}
               </span>
               {listing.unit ? (
-                <span className={["text-xs font-medium", isLight ? "text-cm-ink-muted" : "text-cm-muted"].join(" ")}>
+                <span
+                  className={[
+                    "text-xs font-medium",
+                    isLight ? "text-cm-ink-muted" : "text-cm-muted",
+                  ].join(" ")}
+                >
                   {listing.unit}
                 </span>
               ) : null}
@@ -106,10 +117,9 @@ export function ListingDetailContent({ listing, surface = "dark" }: ListingDetai
             {t.listings.detailDescription}
           </p>
           <p
-            className={[
-              "text-sm leading-[1.7]",
-              isLight ? "text-cm-ink-sub" : "text-cm-sub",
-            ].join(" ")}
+            className={["text-sm leading-[1.7]", isLight ? "text-cm-ink-sub" : "text-cm-sub"].join(
+              " ",
+            )}
           >
             {listing.description}
           </p>

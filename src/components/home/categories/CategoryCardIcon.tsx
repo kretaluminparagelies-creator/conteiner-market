@@ -6,10 +6,7 @@
  */
 
 import { CalendarClock, ShoppingCart, Tag, type LucideIcon } from "lucide-react";
-import {
-  categoryThemes,
-  type CategoryVariant,
-} from "@/lib/constants/category-themes";
+import { categoryThemes, type CategoryVariant } from "@/lib/constants/category-themes";
 
 type CategoryCardIconProps = {
   variant: CategoryVariant;
@@ -42,10 +39,7 @@ export function CategoryCardIcon({ variant, size = "sm" }: CategoryCardIconProps
         theme.iconRing,
       ].join(" ")}
     >
-      <Icon
-        className={isLarge ? "h-6 w-6" : "h-5 w-5"}
-        strokeWidth={1.75}
-      />
+      <Icon className={isLarge ? "h-6 w-6" : "h-5 w-5"} strokeWidth={1.75} />
     </div>
   );
 }

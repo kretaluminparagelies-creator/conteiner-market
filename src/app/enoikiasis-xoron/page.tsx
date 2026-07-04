@@ -14,12 +14,7 @@ export const metadata = createPageMetadata({
   title: el.pages.enoikiasisXoron.metaTitle,
   description: el.pages.enoikiasisXoron.metaDescription,
   path: "/enoikiasis-xoron",
-  keywords: [
-    "ενοικίαση χώρου",
-    "αποθήκευση container",
-    "storage χώρος",
-    "αποθήκη κοντέινερ",
-  ],
+  keywords: ["ενοικίαση χώρου", "αποθήκευση container", "storage χώρος", "αποθήκη κοντέινερ"],
 });
 
 export default function EnoikiasisXoronPage() {

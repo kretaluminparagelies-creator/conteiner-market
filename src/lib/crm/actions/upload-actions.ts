@@ -16,7 +16,9 @@ const BUCKET = "listing-images";
 const MAX_INPUT_BYTES = 12 * 1024 * 1024;
 const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
 
-export async function uploadListingImageAction(formData: FormData): Promise<{ url?: string; error?: string }> {
+export async function uploadListingImageAction(
+  formData: FormData,
+): Promise<{ url?: string; error?: string }> {
   await requireCrmSession();
 
   if (!isSupabaseAdminConfigured()) {

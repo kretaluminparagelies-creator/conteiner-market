@@ -14,11 +14,7 @@ type CrmStatCardProps = {
 
 export function CrmStatCard({ label, value, hint, accent = "neutral" }: CrmStatCardProps) {
   const accentClass =
-    accent === "orange"
-      ? "text-cm-accent"
-      : accent === "blue"
-        ? "text-cm-rent"
-        : "text-cm-text";
+    accent === "orange" ? "text-cm-accent" : accent === "blue" ? "text-cm-rent" : "text-cm-text";
 
   return (
     <div className="rounded-xl border border-cm-border bg-cm-card/60 p-5">

@@ -16,10 +16,7 @@ export default async function AdminDashboardPage() {
   const counts = await readAdminDashboardCounts();
 
   return (
-    <CrmShell
-      title="Πίνακας ελέγχου"
-      description="Επισκόπηση καταχωρίσεων και αιτημάτων."
-    >
+    <CrmShell title="Πίνακας ελέγχου" description="Επισκόπηση καταχωρίσεων και αιτημάτων.">
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <CrmStatCard label="Ενεργά στο site" value={counts.activeListings} accent="orange" />
         <CrmStatCard

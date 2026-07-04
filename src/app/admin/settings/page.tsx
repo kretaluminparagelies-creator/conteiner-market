@@ -63,8 +63,7 @@ export default async function AdminSettingsPage() {
           <section className="rounded-xl border border-cm-border bg-cm-card/50 p-6">
             <h2 className="font-display text-base font-semibold">Λογαριασμός</h2>
             <p className="mt-2 text-sm text-cm-sub">
-              Συνδεδεμένος ως{" "}
-              <span className="font-mono text-cm-text">{adminEmail ?? "—"}</span>
+              Συνδεδεμένος ως <span className="font-mono text-cm-text">{adminEmail ?? "—"}</span>
             </p>
             <div className="mt-6">
               <h3 className="font-display text-sm font-semibold">Αλλαγή κωδικού</h3>
@@ -76,31 +75,37 @@ export default async function AdminSettingsPage() {
         ) : null}
 
         {authEnabled ? (
-        <section className="rounded-xl border border-dashed border-cm-border p-6 text-sm text-cm-sub">
-          <h2 className="font-display text-base font-semibold text-cm-text">Νέος διαχειριστής</h2>
-          <ol className="mt-3 list-decimal space-y-2 pl-5 leading-relaxed">
-            <li>Supabase → Authentication → Users → Add user</li>
-            <li>Email + κωδικός (min 8 χαρακτήρες)</li>
-            <li>
-              <strong>Auto Confirm User: ON</strong> (αλλιώς δεν μπαίνεις)
-            </li>
-            <li>
-              Supabase → Authentication → URL Configuration → Site URL:{" "}
-              <code className="text-cm-text">https://conteiner-market.vercel.app</code>
-            </li>
-            <li>Redirect URLs: <code className="text-cm-text">https://conteiner-market.vercel.app/**</code></li>
-            <li>Σύνδεση στο <code className="text-cm-text">/admin/login</code></li>
-          </ol>
-        </section>
+          <section className="rounded-xl border border-dashed border-cm-border p-6 text-sm text-cm-sub">
+            <h2 className="font-display text-base font-semibold text-cm-text">Νέος διαχειριστής</h2>
+            <ol className="mt-3 list-decimal space-y-2 pl-5 leading-relaxed">
+              <li>Supabase → Authentication → Users → Add user</li>
+              <li>Email + κωδικός (min 8 χαρακτήρες)</li>
+              <li>
+                <strong>Auto Confirm User: ON</strong> (αλλιώς δεν μπαίνεις)
+              </li>
+              <li>
+                Supabase → Authentication → URL Configuration → Site URL:{" "}
+                <code className="text-cm-text">https://conteiner-market.vercel.app</code>
+              </li>
+              <li>
+                Redirect URLs:{" "}
+                <code className="text-cm-text">https://conteiner-market.vercel.app/**</code>
+              </li>
+              <li>
+                Σύνδεση στο <code className="text-cm-text">/admin/login</code>
+              </li>
+            </ol>
+          </section>
         ) : null}
 
         <section className="rounded-xl border border-cm-border bg-cm-card/50 p-6">
           <h2 className="font-display text-base font-semibold">Φωτογραφίες listings</h2>
           <p className="mt-3 text-sm leading-relaxed text-cm-sub">
-            Ανέβασμα από τη φόρμα (CRM → Καταχωρίσεις → Νέα/Επεξεργασία). Οι φωτογραφίες συμπιέζονται αυτόματα (WebP, max 1400px) και αποθηκεύονται στο
-            Supabase Storage bucket <code className="text-cm-text">listing-images</code>. Τρέξε
-            migration <code className="text-cm-text">20260704040000_storage_listing_images.sql</code>{" "}
-            αν δεν το έχεις κάνει.
+            Ανέβασμα από τη φόρμα (CRM → Καταχωρίσεις → Νέα/Επεξεργασία). Οι φωτογραφίες
+            συμπιέζονται αυτόματα (WebP, max 1400px) και αποθηκεύονται στο Supabase Storage bucket{" "}
+            <code className="text-cm-text">listing-images</code>. Τρέξε migration{" "}
+            <code className="text-cm-text">20260704040000_storage_listing_images.sql</code> αν δεν
+            το έχεις κάνει.
           </p>
         </section>
       </div>

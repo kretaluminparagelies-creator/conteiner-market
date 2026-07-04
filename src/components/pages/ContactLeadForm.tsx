@@ -22,7 +22,8 @@ type ContactLeadFormProps = {
 const darkInputClass =
   "w-full rounded-lg border border-cm-border bg-cm-bg px-3 py-2.5 text-sm text-cm-text outline-none transition-colors focus:border-cm-accent";
 
-const darkLabelClass = "mb-1.5 block font-mono text-[10px] tracking-[0.14em] text-cm-muted uppercase";
+const darkLabelClass =
+  "mb-1.5 block font-mono text-[10px] tracking-[0.14em] text-cm-muted uppercase";
 
 const lightInputClass = "input-light w-full rounded-lg px-3 py-2.5 text-sm outline-none";
 
@@ -43,12 +44,8 @@ export function ContactLeadForm({
 
   const inputClass = isLight ? lightInputClass : darkInputClass;
   const labelClass = isLight ? lightLabelClass : darkLabelClass;
-  const compactInputClass = compact
-    ? `${inputClass} py-1.5 text-sm`
-    : inputClass;
-  const resolvedLabelClass = compact
-    ? labelClass.replace("mb-1.5", "mb-1")
-    : labelClass;
+  const compactInputClass = compact ? `${inputClass} py-1.5 text-sm` : inputClass;
+  const resolvedLabelClass = compact ? labelClass.replace("mb-1.5", "mb-1") : labelClass;
   const fieldGap = compact ? "space-y-1.5" : "space-y-4";
   const formPadding = compact ? "p-3.5 md:p-4" : "p-5 md:p-6";
 
@@ -114,7 +111,13 @@ export function ContactLeadForm({
             <label className={resolvedLabelClass} htmlFor="contact-interest">
               {page.formInterestLabel}
             </label>
-            <select id="contact-interest" name="interest" required className={compactInputClass} defaultValue="buy">
+            <select
+              id="contact-interest"
+              name="interest"
+              required
+              className={compactInputClass}
+              defaultValue="buy"
+            >
               <option value="buy">{page.formInterestBuy}</option>
               <option value="rent">{page.formInterestRent}</option>
               <option value="both">{page.formInterestBoth}</option>
@@ -133,7 +136,13 @@ export function ContactLeadForm({
             <label className={resolvedLabelClass} htmlFor="contact-email">
               Email
             </label>
-            <input id="contact-email" name="email" type="email" required className={compactInputClass} />
+            <input
+              id="contact-email"
+              name="email"
+              type="email"
+              required
+              className={compactInputClass}
+            />
           </div>
         </div>
 

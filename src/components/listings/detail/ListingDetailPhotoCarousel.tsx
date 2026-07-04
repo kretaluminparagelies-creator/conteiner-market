@@ -8,15 +8,13 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
+import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useCallback, useEffect, useState, type CSSProperties } from "react";
 import { CarouselNavButton } from "@/components/listings/carousel/CarouselNavButton";
 import { ContainerSVG } from "@/components/ui/ContainerSVG";
 import { listingCarousel } from "@/lib/constants/listing-carousel";
-import {
-  getListingDisplayImages,
-  getListingSourceImages,
-} from "@/lib/utils/listing-images";
+import { getListingDisplayImages, getListingSourceImages } from "@/lib/utils/listing-images";
 import { shouldShowListingPhoto } from "@/lib/utils/listing-image";
 import type { Listing } from "@/lib/types/listing";
 
@@ -32,11 +30,17 @@ function wrapOffset(offset: number, length: number): number {
   return next;
 }
 
-export function ListingDetailPhotoCarousel({ listing, surface = "dark" }: ListingDetailPhotoCarouselProps) {
+export function ListingDetailPhotoCarousel({
+  listing,
+  surface = "dark",
+}: ListingDetailPhotoCarouselProps) {
   return <ListingDetailPhotoCarouselView key={listing.id} listing={listing} surface={surface} />;
 }
 
-function ListingDetailPhotoCarouselView({ listing, surface = "dark" }: ListingDetailPhotoCarouselProps) {
+function ListingDetailPhotoCarouselView({
+  listing,
+  surface = "dark",
+}: ListingDetailPhotoCarouselProps) {
   const reduceMotion = useReducedMotion();
   const isLight = surface === "light";
   const config = listingCarousel.detailPhoto;
@@ -118,127 +122,127 @@ function ListingDetailPhotoCarouselView({ listing, surface = "dark" }: ListingDe
         style={{ height: isMobile ? config.stageHeightMobile : config.stageHeightDesktop }}
       >
         {displayImages.map((image, index) => {
-            const offset = wrapOffset(index - currentIndex, displayImages.length);
-            const isCenter = offset === 0;
-            const isVisible = Math.abs(offset) <= config.visibleSideCount;
+          const offset = wrapOffset(index - currentIndex, displayImages.length);
+          const isCenter = offset === 0;
+          const isVisible = Math.abs(offset) <= config.visibleSideCount;
 
-            const sourceIndex = hasMultipleImages ? index % sourceImages.length : 0;
-            const showPhoto = shouldShowListingPhoto(image, failed[sourceIndex]);
+          const sourceIndex = hasMultipleImages ? index % sourceImages.length : 0;
+          const showPhoto = shouldShowListingPhoto(image, failed[sourceIndex]);
 
-            return (
-              <motion.div
-                key={`${listing.id}-photo-${index}`}
-                layout={false}
-                initial={false}
-                animate={{
-                  opacity: isVisible ? (isCenter ? 1 : 0.55 - Math.abs(offset) * 0.12) : 0,
-                  scale: isVisible ? (isCenter ? 1 : 0.82 - Math.abs(offset) * 0.04) : 0.78,
-                  x: offset * xStep,
-                  z: isCenter ? 0 : -280 - Math.abs(offset) * 70,
-                  rotateY: reduceMotion ? 0 : offset * 42,
-                  zIndex: isVisible ? 40 - Math.abs(offset) : 0,
-                }}
-                transition={
-                  reduceMotion
-                    ? { duration: 0.01 }
-                    : { type: "spring", ...listingCarousel.spring }
+          return (
+            <motion.div
+              key={`${listing.id}-photo-${index}`}
+              layout={false}
+              initial={false}
+              animate={{
+                opacity: isVisible ? (isCenter ? 1 : 0.55 - Math.abs(offset) * 0.12) : 0,
+                scale: isVisible ? (isCenter ? 1 : 0.82 - Math.abs(offset) * 0.04) : 0.78,
+                x: offset * xStep,
+                z: isCenter ? 0 : -280 - Math.abs(offset) * 70,
+                rotateY: reduceMotion ? 0 : offset * 42,
+                zIndex: isVisible ? 40 - Math.abs(offset) : 0,
+              }}
+              transition={
+                reduceMotion ? { duration: 0.01 } : { type: "spring", ...listingCarousel.spring }
+              }
+              drag={reduceMotion ? false : "x"}
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.16}
+              onDragEnd={(_, info) => {
+                if (info.offset.x > listingCarousel.dragThreshold) prev();
+                else if (info.offset.x < -listingCarousel.dragThreshold) next();
+              }}
+              onClick={() => {
+                if (!isCenter) setCurrentIndex(index);
+              }}
+              className="carousel-perspective-item absolute cursor-grab active:cursor-grabbing"
+              style={{
+                width: cardWidth,
+                transformStyle: "preserve-3d",
+                pointerEvents: isVisible ? "auto" : "none",
+              }}
+            >
+              <div
+                className={
+                  isCenter
+                    ? isLight
+                      ? "drop-shadow-[0_20px_40px_rgba(14,24,40,0.18)]"
+                      : "drop-shadow-[0_20px_40px_rgba(0,0,0,0.35)]"
+                    : isLight
+                      ? "drop-shadow-[0_12px_24px_rgba(14,24,40,0.12)]"
+                      : "drop-shadow-[0_12px_24px_rgba(0,0,0,0.22)]"
                 }
-                drag={reduceMotion ? false : "x"}
-                dragConstraints={{ left: 0, right: 0 }}
-                dragElastic={0.16}
-                onDragEnd={(_, info) => {
-                  if (info.offset.x > listingCarousel.dragThreshold) prev();
-                  else if (info.offset.x < -listingCarousel.dragThreshold) next();
-                }}
-                onClick={() => {
-                  if (!isCenter) setCurrentIndex(index);
-                }}
-                className="carousel-perspective-item absolute cursor-grab active:cursor-grabbing"
-                style={{
-                  width: cardWidth,
-                  transformStyle: "preserve-3d",
-                  pointerEvents: isVisible ? "auto" : "none",
-                }}
               >
                 <div
-                  className={
-                    isCenter
-                      ? isLight
-                        ? "drop-shadow-[0_20px_40px_rgba(14,24,40,0.18)]"
-                        : "drop-shadow-[0_20px_40px_rgba(0,0,0,0.35)]"
-                      : isLight
-                        ? "drop-shadow-[0_12px_24px_rgba(14,24,40,0.12)]"
-                        : "drop-shadow-[0_12px_24px_rgba(0,0,0,0.22)]"
-                  }
+                  className={[
+                    "overflow-hidden rounded-xl border shadow-xl",
+                    isLight
+                      ? "border-cm-light-border-strong bg-white"
+                      : "border-cm-border/70 bg-cm-card",
+                  ].join(" ")}
                 >
                   <div
                     className={[
-                      "overflow-hidden rounded-xl border shadow-xl",
-                      isLight
-                        ? "border-cm-light-border-strong bg-white"
-                        : "border-cm-border/70 bg-cm-card",
+                      "relative overflow-hidden",
+                      isLight ? "bg-cm-light-elevated" : "bg-cm-carousel-photo",
                     ].join(" ")}
+                    style={{ height: photoHeight }}
                   >
-                    <div
-                      className={[
-                        "relative overflow-hidden",
-                        isLight ? "bg-cm-light-elevated" : "bg-cm-carousel-photo",
-                      ].join(" ")}
-                      style={{ height: photoHeight }}
-                    >
-                      {!isLight ? (
-                        <div
-                          aria-hidden="true"
-                          className="absolute inset-0 bg-linear-to-br from-cm-carousel-photo via-cm-carousel-visual to-[#587898]"
-                        />
-                      ) : (
-                        <div
-                          aria-hidden="true"
-                          className="absolute inset-0 bg-linear-to-br from-[#dce8f4] via-[#c5d8ea] to-[#a8c4dc]"
-                        />
-                      )}
-
-                      {showPhoto ? (
-                        <img
-                          src={image}
-                          alt={`${listing.type} — ${sourceIndex + 1}`}
-                          className="absolute inset-0 h-full w-full object-cover"
-                          loading="lazy"
-                          onError={() =>
-                            setFailed((current) => ({ ...current, [sourceIndex]: true }))
-                          }
-                        />
-                      ) : (
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <ContainerSVG tinted={isRent} className="h-20 w-auto md:h-24" />
-                        </div>
-                      )}
-
+                    {!isLight ? (
                       <div
                         aria-hidden="true"
-                        className={
-                          isLight
-                            ? "pointer-events-none absolute inset-0 bg-linear-to-t from-[#0e1828]/70 via-transparent to-transparent"
-                            : "pointer-events-none absolute inset-0 bg-linear-to-t from-cm-bg/75 via-transparent to-transparent"
+                        className="absolute inset-0 bg-linear-to-br from-cm-carousel-photo via-cm-carousel-visual to-[#587898]"
+                      />
+                    ) : (
+                      <div
+                        aria-hidden="true"
+                        className="absolute inset-0 bg-linear-to-br from-[#dce8f4] via-[#c5d8ea] to-[#a8c4dc]"
+                      />
+                    )}
+
+                    {showPhoto ? (
+                      <Image
+                        src={image}
+                        alt={`${listing.type} — ${sourceIndex + 1}`}
+                        fill
+                        unoptimized
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, 640px"
+                        onError={() =>
+                          setFailed((current) => ({ ...current, [sourceIndex]: true }))
                         }
                       />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <ContainerSVG tinted={isRent} className="h-20 w-auto md:h-24" />
+                      </div>
+                    )}
 
-                      {isCenter && hasMultipleImages ? (
-                        <div
-                          className={[
-                            "absolute bottom-3 left-1/2 z-10 -translate-x-1/2 rounded-full px-3 py-1 font-mono text-[11px] tracking-wide backdrop-blur-sm",
-                            isLight ? "bg-white/85 text-cm-ink" : "bg-cm-bg/70 text-white",
-                          ].join(" ")}
-                        >
-                          {activePhotoIndex + 1} / {sourceImages.length}
-                        </div>
-                      ) : null}
-                    </div>
+                    <div
+                      aria-hidden="true"
+                      className={
+                        isLight
+                          ? "pointer-events-none absolute inset-0 bg-linear-to-t from-[#0e1828]/70 via-transparent to-transparent"
+                          : "pointer-events-none absolute inset-0 bg-linear-to-t from-cm-bg/75 via-transparent to-transparent"
+                      }
+                    />
+
+                    {isCenter && hasMultipleImages ? (
+                      <div
+                        className={[
+                          "absolute bottom-3 left-1/2 z-10 -translate-x-1/2 rounded-full px-3 py-1 font-mono text-[11px] tracking-wide backdrop-blur-sm",
+                          isLight ? "bg-white/85 text-cm-ink" : "bg-cm-bg/70 text-white",
+                        ].join(" ")}
+                      >
+                        {activePhotoIndex + 1} / {sourceImages.length}
+                      </div>
+                    ) : null}
                   </div>
                 </div>
-              </motion.div>
-            );
-          })}
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
 
       {hasMultipleImages ? (

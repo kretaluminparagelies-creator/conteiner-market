@@ -5,10 +5,7 @@
  * @copyright 2026 Katsoulakis. All rights reserved.
  */
 
-import {
-  listingCarouselTabs,
-  type ListingCarouselTab,
-} from "@/lib/utils/listing-carousel-filters";
+import { listingCarouselTabs, type ListingCarouselTab } from "@/lib/utils/listing-carousel-filters";
 
 export const homeListingTabEvent = "cm-home-listing-tab-change";
 

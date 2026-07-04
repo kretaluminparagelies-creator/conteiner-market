@@ -12,24 +12,22 @@ export const contentType = "image/png";
 
 export default function Icon() {
   return new ImageResponse(
-    (
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "#0f1419",
-          color: "#f97316",
-          fontSize: 18,
-          fontWeight: 800,
-          fontFamily: "system-ui, sans-serif",
-        }}
-      >
-        CM
-      </div>
-    ),
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "#0f1419",
+        color: "#f97316",
+        fontSize: 18,
+        fontWeight: 800,
+        fontFamily: "system-ui, sans-serif",
+      }}
+    >
+      CM
+    </div>,
     { ...size },
   );
 }

@@ -13,21 +13,15 @@ import path from "node:path";
 import type { ListingFormInput } from "@/lib/crm/listing-form";
 import { resolveListingImages } from "@/lib/crm/listing-images";
 import { site } from "@/lib/constants/site";
-import {
-  formatPriceEur,
-  placeholderImageForType,
-  slugifyListing,
-  uniqueSlug,
-} from "@/lib/repositories/listing-format";
+import { formatPriceEur, slugifyListing, uniqueSlug } from "@/lib/repositories/listing-format";
 import {
   createListingInSupabase,
   deleteListingInSupabase,
   fetchAdminListingSummariesFromSupabase,
   fetchListingBySlugFromSupabase,
-  fetchListingsFromSupabase,
   updateListingInSupabase,
 } from "@/lib/repositories/supabase-listings";
-import { isSupabaseAdminConfigured, isSupabaseReadConfigured } from "@/lib/supabase/env";
+import { isSupabaseAdminConfigured } from "@/lib/supabase/env";
 import type { Listing } from "@/lib/types/listing";
 
 export {
@@ -173,9 +167,4 @@ export async function deleteListing(slug: string): Promise<void> {
   }
 
   await writeListingsToDisk(next);
-}
-
-/** Whether public reads should come from Supabase */
-export function useSupabaseForPublicReads(): boolean {
-  return isSupabaseReadConfigured();
 }

@@ -17,10 +17,7 @@ import {
   categoryThemes,
   getCategoryVariant,
 } from "@/lib/constants/category-themes";
-import {
-  buildHomeCarouselUrl,
-  navigateToCategoryCarousel,
-} from "@/lib/nav/navigate-offers-route";
+import { buildHomeCarouselUrl, navigateToCategoryCarousel } from "@/lib/nav/navigate-offers-route";
 
 type CategoryItem = {
   tag: string;
@@ -35,10 +32,7 @@ type CategoryCardProps = {
   index: number;
 };
 
-function CategoryCardContent({
-  category,
-  index,
-}: CategoryCardProps) {
+function CategoryCardContent({ category, index }: CategoryCardProps) {
   const variant = getCategoryVariant(category.href);
   const theme = categoryThemes[variant];
   const pinFooter = Boolean(category.title);
@@ -50,12 +44,7 @@ function CategoryCardContent({
       icon={<CategoryCardIcon variant={variant} />}
     >
       <div className="space-y-3">
-        <p
-          className={[
-            "font-mono text-[10px] tracking-[0.22em] uppercase",
-            theme.tag,
-          ].join(" ")}
-        >
+        <p className={["font-mono text-[10px] tracking-[0.22em] uppercase", theme.tag].join(" ")}>
           {category.tag}
         </p>
         {category.title ? (

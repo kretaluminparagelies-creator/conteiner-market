@@ -45,7 +45,9 @@ export function LanguageToggle() {
       ].join(" ")}
     >
       <GlobeIcon />
-      <span className={isLightNav ? "text-cm-ink-muted" : "text-cm-muted"}>{t.meta.localeLabel}</span>
+      <span className={isLightNav ? "text-cm-ink-muted" : "text-cm-muted"}>
+        {t.meta.localeLabel}
+      </span>
       <span aria-hidden="true" className={isLightNav ? "text-cm-ink-muted/50" : "text-cm-muted/60"}>
         /
       </span>

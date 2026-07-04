@@ -60,12 +60,12 @@ export const categoryThemes: Record<CategoryVariant, CategoryTheme> = {
     topBar: "from-cm-accent via-[#e07030bb] to-transparent",
     cardGradient: "glass-category",
     glow: "bg-[radial-gradient(circle_at_85%_0%,#e0703012_0%,transparent_55%)]",
-    iconWrap:
-      "border-white/70 bg-white/85 text-cm-accent shadow-cm-light-xs",
+    iconWrap: "border-white/70 bg-white/85 text-cm-accent shadow-cm-light-xs",
     iconRing: "ring-cm-accent/15",
     arrow: "text-cm-accent",
     tag: "font-semibold text-cm-accent",
-    title: "text-cm-ink drop-shadow-[0_1px_0_rgba(255,255,255,0.95)] group-hover/card:text-cm-accent",
+    title:
+      "text-cm-ink drop-shadow-[0_1px_0_rgba(255,255,255,0.95)] group-hover/card:text-cm-accent",
     watermark: "text-cm-accent/6",
     bgIcon: "text-cm-accent/7",
     shadow: "hover:shadow-cm-light-lg",
@@ -80,12 +80,12 @@ export const categoryThemes: Record<CategoryVariant, CategoryTheme> = {
     topBar: "from-cm-ink-muted via-[#6b829988] to-transparent",
     cardGradient: "glass-category",
     glow: "bg-[radial-gradient(circle_at_85%_0%,#6b829910_0%,transparent_55%)]",
-    iconWrap:
-      "border-white/70 bg-white/85 text-cm-ink-sub shadow-cm-light-xs",
+    iconWrap: "border-white/70 bg-white/85 text-cm-ink-sub shadow-cm-light-xs",
     iconRing: "ring-cm-ink-muted/12",
     arrow: "text-cm-ink-sub",
     tag: "font-semibold text-cm-ink-sub",
-    title: "text-cm-ink drop-shadow-[0_1px_0_rgba(255,255,255,0.95)] group-hover/card:text-cm-ink-sub",
+    title:
+      "text-cm-ink drop-shadow-[0_1px_0_rgba(255,255,255,0.95)] group-hover/card:text-cm-ink-sub",
     watermark: "text-cm-ink-muted/8",
     bgIcon: "text-cm-ink-muted/7",
     shadow: "hover:shadow-cm-light-lg",
@@ -100,8 +100,7 @@ export const categoryThemes: Record<CategoryVariant, CategoryTheme> = {
     topBar: "from-cm-rent via-[#4ab0e8bb] to-transparent",
     cardGradient: "glass-category",
     glow: "bg-[radial-gradient(circle_at_85%_0%,#4ab0e812_0%,transparent_55%)]",
-    iconWrap:
-      "border-white/70 bg-white/85 text-cm-rent shadow-cm-light-xs",
+    iconWrap: "border-white/70 bg-white/85 text-cm-rent shadow-cm-light-xs",
     iconRing: "ring-cm-rent/15",
     arrow: "text-cm-rent",
     tag: "font-semibold text-cm-rent",

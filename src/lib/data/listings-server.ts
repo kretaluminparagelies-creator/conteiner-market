@@ -9,14 +9,14 @@ import "server-only";
 
 import { unstable_cache } from "next/cache";
 import { jsonListingRepository } from "@/lib/repositories/json-listing-repository";
+import { shouldReadListingsFromSupabase } from "@/lib/repositories/public-reads";
 import { fetchListingsFromSupabase } from "@/lib/repositories/supabase-listings";
-import { useSupabaseForPublicReads } from "@/lib/repositories/listing-store";
 import type { Listing, ListingType } from "@/lib/types/listing";
 
 const LISTINGS_CACHE_TAG = "listings";
 
 async function loadPublicListingsUncached(): Promise<Listing[]> {
-  if (useSupabaseForPublicReads()) {
+  if (shouldReadListingsFromSupabase()) {
     try {
       return await fetchListingsFromSupabase({ includeInactive: false });
     } catch (error) {
@@ -27,11 +27,10 @@ async function loadPublicListingsUncached(): Promise<Listing[]> {
   return jsonListingRepository.getAll();
 }
 
-export const fetchPublicListings = unstable_cache(
-  loadPublicListingsUncached,
-  ["public-listings"],
-  { revalidate: 60, tags: [LISTINGS_CACHE_TAG] },
-);
+export const fetchPublicListings = unstable_cache(loadPublicListingsUncached, ["public-listings"], {
+  revalidate: 60,
+  tags: [LISTINGS_CACHE_TAG],
+});
 
 export async function fetchPublicListingBySlug(slug: string): Promise<Listing | undefined> {
   const listings = await fetchPublicListings();

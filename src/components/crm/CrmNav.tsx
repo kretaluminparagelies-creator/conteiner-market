@@ -9,13 +9,7 @@
 
 import { CrmLogoutButton } from "@/components/crm/CrmLogoutButton";
 import { useCrmSession } from "@/components/crm/CrmSessionProvider";
-import {
-  ExternalLink,
-  LayoutDashboard,
-  MessageSquare,
-  Package,
-  Settings,
-} from "lucide-react";
+import { ExternalLink, LayoutDashboard, MessageSquare, Package, Settings } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { crmNavItems, crmSiteLink } from "@/lib/crm/navigation";

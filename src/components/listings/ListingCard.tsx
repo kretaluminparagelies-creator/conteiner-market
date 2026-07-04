@@ -49,9 +49,7 @@ export function ListingCard({ listing }: ListingCardProps) {
             >
               {item.priceFormatted}
             </span>
-            {item.unit ? (
-              <span className="ml-1 text-[11px] text-cm-muted">{item.unit}</span>
-            ) : null}
+            {item.unit ? <span className="ml-1 text-[11px] text-cm-muted">{item.unit}</span> : null}
           </div>
           <span className="font-mono text-[11px] text-cm-muted">📍 {item.location}</span>
         </div>

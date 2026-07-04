@@ -52,8 +52,7 @@ export const en: Messages = {
       {
         tag: "BUY",
         title: "",
-        description:
-          "Buy our containers — new and used. Direct pricing, no middlemen.",
+        description: "Buy our containers — new and used. Direct pricing, no middlemen.",
         note: "320+ available",
         href: "/agora",
       },
@@ -132,8 +131,7 @@ export const en: Messages = {
   help: {
     eyebrow: "Help",
     title: "Frequently asked questions",
-    intro:
-      "How to find our containers for sale or rent and contact us directly.",
+    intro: "How to find our containers for sale or rent and contact us directly.",
     contactCta: "Contact",
     listingsCta: "Browse offers",
     items: [
@@ -154,8 +152,7 @@ export const en: Messages = {
       },
       {
         question: "How do I contact you?",
-        answer:
-          "Use «Contact» in the menu or in the offer modal. Email or call us — no middlemen.",
+        answer: "Use «Contact» in the menu or in the offer modal. Email or call us — no middlemen.",
       },
       {
         question: "Are the containers yours?",
@@ -169,8 +166,7 @@ export const en: Messages = {
       },
       {
         question: "Do you rent storage space?",
-        answer:
-          "Yes. See «Space rental» for storage in container yards and warehouses.",
+        answer: "Yes. See «Space rental» for storage in container yards and warehouses.",
       },
       {
         question: "What does location on an offer mean?",
@@ -237,8 +233,7 @@ export const en: Messages = {
         "Buy shipping containers in Greece — new and used 20ft, 40ft, High Cube. Container Market, fast delivery.",
       eyebrow: "Buy",
       title: "Buy containers",
-      description:
-        "New and used containers for permanent use — storage, logistics, conversions.",
+      description: "New and used containers for permanent use — storage, logistics, conversions.",
       body: "We sell our own shipping containers — cargo worthy, at competitive prices. Available 20ft, 40ft, High Cube and special types. Browse Offers or contact us for availability, price, and delivery.",
       ctaLabel: "Browse available containers →",
       ctaHref: "/listings",

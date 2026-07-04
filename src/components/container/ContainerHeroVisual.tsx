@@ -8,8 +8,9 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Component, useEffect, useRef, useState, type ReactNode } from "react";
+import { Component, useRef, useState, type ReactNode } from "react";
 import { ContainerVisual2D } from "@/components/container/ContainerVisual2D";
+import { useIsClient } from "@/lib/hooks/useIsClient";
 import { useIsDesktop } from "@/lib/hooks/useIsDesktop";
 import { usePrefersReducedMotion } from "@/lib/hooks/usePrefersReducedMotion";
 import { canUseWebGL, isWebGLRelatedError, markWebGLBlocked } from "@/lib/webgl/detect-webgl";
@@ -23,8 +24,7 @@ const ContainerScene = dynamic(
 );
 
 const ContainerSceneGLB = dynamic(
-  () =>
-    import("@/components/container/ContainerSceneGLB").then((mod) => mod.ContainerSceneGLB),
+  () => import("@/components/container/ContainerSceneGLB").then((mod) => mod.ContainerSceneGLB),
   { ssr: false, loading: () => <ContainerVisual2DFallback /> },
 );
 
@@ -81,13 +81,9 @@ export function ContainerHeroVisual({ className, plan }: ContainerHeroVisualProp
   const reducedMotion = usePrefersReducedMotion();
   const usePlanA = plan === "2d" ? false : USE_PLAN_A_3D && isDesktop && !reducedMotion;
   const [doorsOpen, setDoorsOpen] = useState(false);
-  const [clientReady, setClientReady] = useState(false);
+  const clientReady = useIsClient();
   const [webglFailed, setWebglFailed] = useState(false);
   const closeTimerRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    setClientReady(true);
-  }, []);
 
   const handleWebGLFailure = () => {
     setWebglFailed(true);

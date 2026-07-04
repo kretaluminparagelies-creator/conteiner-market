@@ -13,6 +13,9 @@ export function getHeadquartersLabel(locale: Locale): string {
 }
 
 /** Stored listing location is ignored in UI — always our HQ */
-export function resolveListingLocation(_storedLocation: string | undefined, locale: Locale): string {
+export function resolveListingLocation(
+  _storedLocation: string | undefined,
+  locale: Locale,
+): string {
   return getHeadquartersLabel(locale);
 }

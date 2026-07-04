@@ -25,8 +25,7 @@ export const sketchfabCredit = {
   title: "Shipping containers",
   author: "Mateusz Woliński",
   authorUrl: "https://sketchfab.com/jeandiz",
-  modelUrl:
-    "https://sketchfab.com/3d-models/shipping-containers-cc3f7136710f4905905eae1d10ac50b7",
+  modelUrl: "https://sketchfab.com/3d-models/shipping-containers-cc3f7136710f4905905eae1d10ac50b7",
   license: "CC-BY-4.0",
   licenseUrl: "http://creativecommons.org/licenses/by/4.0/",
 } as const;

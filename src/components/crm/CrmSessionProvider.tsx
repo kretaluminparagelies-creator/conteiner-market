@@ -22,9 +22,7 @@ export function CrmSessionProvider({
   adminEmail: string | null;
   children: ReactNode;
 }) {
-  return (
-    <CrmSessionContext.Provider value={{ adminEmail }}>{children}</CrmSessionContext.Provider>
-  );
+  return <CrmSessionContext.Provider value={{ adminEmail }}>{children}</CrmSessionContext.Provider>;
 }
 
 export function useCrmSession() {

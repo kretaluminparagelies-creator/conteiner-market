@@ -23,10 +23,7 @@ type ListingsProviderProps = {
 };
 
 export function ListingsProvider({ listings, children }: ListingsProviderProps) {
-  const value = useMemo(
-    () => ({ listings: listings ?? getAllListings() }),
-    [listings],
-  );
+  const value = useMemo(() => ({ listings: listings ?? getAllListings() }), [listings]);
 
   return <ListingsContext.Provider value={value}>{children}</ListingsContext.Provider>;
 }

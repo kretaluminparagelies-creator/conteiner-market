@@ -63,8 +63,22 @@ export function CrmLoginForm({ nextPath }: CrmLoginFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-5" autoComplete="off">
       <input type="hidden" name="next" value={nextPath} />
-      <input type="text" name="prevent_autofill" className="hidden" tabIndex={-1} autoComplete="off" aria-hidden />
-      <input type="password" name="prevent_autofill_pw" className="hidden" tabIndex={-1} autoComplete="off" aria-hidden />
+      <input
+        type="text"
+        name="prevent_autofill"
+        className="hidden"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden
+      />
+      <input
+        type="password"
+        name="prevent_autofill_pw"
+        className="hidden"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden
+      />
 
       {error ? (
         <div className="rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">

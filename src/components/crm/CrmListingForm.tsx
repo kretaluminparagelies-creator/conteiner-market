@@ -57,9 +57,7 @@ export function CrmListingForm({ mode, initial, slug }: CrmListingFormProps) {
       ...current,
       stockCondition,
       condition:
-        stockCondition === "new" && !current.condition.trim()
-          ? "Καινούριο"
-          : current.condition,
+        stockCondition === "new" && !current.condition.trim() ? "Καινούριο" : current.condition,
       conditionEn:
         stockCondition === "new" && !current.conditionEn.trim() ? "New" : current.conditionEn,
     }));
@@ -295,7 +293,11 @@ export function CrmListingForm({ mode, initial, slug }: CrmListingFormProps) {
           disabled={pending}
           className="rounded-lg bg-cm-accent px-5 py-2.5 font-display text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
         >
-          {pending ? "Αποθήκευση…" : mode === "create" ? "Δημιουργία καταχώρισης" : "Αποθήκευση αλλαγών"}
+          {pending
+            ? "Αποθήκευση…"
+            : mode === "create"
+              ? "Δημιουργία καταχώρισης"
+              : "Αποθήκευση αλλαγών"}
         </button>
         <button
           type="button"

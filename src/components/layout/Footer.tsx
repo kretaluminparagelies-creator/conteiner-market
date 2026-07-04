@@ -80,7 +80,12 @@ export function Footer({ compact = false }: FooterProps) {
           ))}
         </div>
 
-        <div className={["font-mono text-[11px]", isLightFooter ? "text-cm-ink-muted" : "text-cm-muted"].join(" ")}>
+        <div
+          className={[
+            "font-mono text-[11px]",
+            isLightFooter ? "text-cm-ink-muted" : "text-cm-muted",
+          ].join(" ")}
+        >
           © {site.copyrightYear} {site.author} · {t.footer.country}
         </div>
       </div>

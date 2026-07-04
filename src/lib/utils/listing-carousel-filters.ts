@@ -20,11 +20,7 @@ export function resolveStockCondition(listing: Listing): StockCondition {
   if (label.includes("καινούρι") || label.includes("καινουρι") || label.includes("new")) {
     return "new";
   }
-  if (
-    label.includes("μεταχειρισμέ") ||
-    label.includes("μεταχειρισμ") ||
-    label.includes("used")
-  ) {
+  if (label.includes("μεταχειρισμέ") || label.includes("μεταχειρισμ") || label.includes("used")) {
     return "used";
   }
 

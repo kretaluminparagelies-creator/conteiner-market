@@ -7,6 +7,7 @@
 
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { ContainerSVG } from "@/components/ui/ContainerSVG";
 import { useLocale } from "@/lib/i18n/locale-context";
@@ -20,7 +21,11 @@ type ListingDetailPeerCardProps = {
   surface?: "dark" | "light";
 };
 
-export function ListingDetailPeerCard({ listing, onSelect, surface = "dark" }: ListingDetailPeerCardProps) {
+export function ListingDetailPeerCard({
+  listing,
+  onSelect,
+  surface = "dark",
+}: ListingDetailPeerCardProps) {
   const { t } = useLocale();
   const [imageFailed, setImageFailed] = useState(false);
   const isRent = listing.listingType === "rent";
@@ -77,16 +82,18 @@ export function ListingDetailPeerCard({ listing, onSelect, surface = "dark" }: L
 
         {showPhoto ? (
           <>
-            <img
+            <Image
               src={listing.image}
               alt=""
+              fill
+              unoptimized
               className={[
-                "absolute inset-0 h-full w-full object-cover transition-all duration-300",
+                "object-cover transition-all duration-300",
                 isLight
                   ? "opacity-90 saturate-[1.05] group-hover:opacity-100"
                   : "opacity-75 saturate-[0.85] contrast-[1.05] group-hover:opacity-95 group-hover:saturate-100",
               ].join(" ")}
-              loading="lazy"
+              sizes="160px"
               onError={() => setImageFailed(true)}
             />
             <div
@@ -108,7 +115,11 @@ export function ListingDetailPeerCard({ listing, onSelect, surface = "dark" }: L
               isLight
                 ? "drop-shadow-[0_4px_12px_rgba(14,24,40,0.15)] opacity-90"
                 : "drop-shadow-[0_4px_12px_rgba(0,0,0,0.35)]",
-              showPhoto ? (isLight ? "opacity-35 mix-blend-multiply" : "opacity-45 mix-blend-soft-light") : "opacity-90",
+              showPhoto
+                ? isLight
+                  ? "opacity-35 mix-blend-multiply"
+                  : "opacity-45 mix-blend-soft-light"
+                : "opacity-90",
             ].join(" ")}
           />
         </div>
@@ -135,7 +146,9 @@ export function ListingDetailPeerCard({ listing, onSelect, surface = "dark" }: L
       <div
         className={[
           "space-y-1 border-t px-2.5 py-2.5",
-          isLight ? "border-cm-light-border bg-white" : "border-cm-border/50 bg-cm-carousel-panel/40",
+          isLight
+            ? "border-cm-light-border bg-white"
+            : "border-cm-border/50 bg-cm-carousel-panel/40",
         ].join(" ")}
       >
         <p

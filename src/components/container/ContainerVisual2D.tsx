@@ -79,7 +79,15 @@ export function ContainerVisual2D() {
         strokeOpacity="0.5"
         strokeWidth="1.2"
       />
-      <line x1="268" y1="44" x2="268" y2="146" stroke={accent} strokeOpacity="0.35" strokeWidth="1" />
+      <line
+        x1="268"
+        y1="44"
+        x2="268"
+        y2="146"
+        stroke={accent}
+        strokeOpacity="0.35"
+        strokeWidth="1"
+      />
 
       {/* Door handles */}
       <rect x="278" y="82" width="6" height="14" rx="1" fill={accent} fillOpacity="0.85" />

@@ -58,7 +58,9 @@ export function ListingDetailPageContent({ listing }: ListingDetailPageContentPr
                       {item.condition}
                     </span>
                   </div>
-                  <h1 className="font-display text-2xl font-bold leading-tight md:text-3xl">{item.type}</h1>
+                  <h1 className="font-display text-2xl font-bold leading-tight md:text-3xl">
+                    {item.type}
+                  </h1>
                   <div className="mt-2 flex items-center gap-1.5 text-cm-sub">
                     <MapPin className="h-3.5 w-3.5 shrink-0 text-cm-accent" aria-hidden="true" />
                     <span className="text-sm">{item.location}</span>
@@ -75,9 +77,7 @@ export function ListingDetailPageContent({ listing }: ListingDetailPageContentPr
                     >
                       {item.priceFormatted}
                     </span>
-                    {item.unit ? (
-                      <span className="text-sm text-cm-muted">{item.unit}</span>
-                    ) : null}
+                    {item.unit ? <span className="text-sm text-cm-muted">{item.unit}</span> : null}
                   </div>
                 </div>
               </div>
@@ -90,7 +90,9 @@ export function ListingDetailPageContent({ listing }: ListingDetailPageContentPr
               </div>
 
               <div className="flex flex-wrap gap-3 pt-2">
-                <SiteButton href="/epikoinonia?intent=inquiry">{t.listings.detailContact}</SiteButton>
+                <SiteButton href="/epikoinonia?intent=inquiry">
+                  {t.listings.detailContact}
+                </SiteButton>
                 <SiteButton href="/listings" variant="secondary">
                   {t.listings.viewAll}
                 </SiteButton>

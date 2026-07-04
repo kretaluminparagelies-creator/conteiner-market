@@ -5,10 +5,7 @@
  * @copyright 2026 Katsoulakis. All rights reserved.
  */
 
-import {
-  emitHomeListingTabChange,
-  isListingCarouselTab,
-} from "@/lib/nav/home-listing-tab-sync";
+import { emitHomeListingTabChange, isListingCarouselTab } from "@/lib/nav/home-listing-tab-sync";
 import { isKnownContainerTypeId } from "@/lib/constants/container-types";
 import type { ListingCarouselTab } from "@/lib/utils/listing-carousel-filters";
 
@@ -49,7 +46,9 @@ export function emitHomeCarouselFilterChange(
   );
 }
 
-export function buildHomeCarouselUrl(params?: ListingCarouselTab | HomeCarouselSearchParams): string {
+export function buildHomeCarouselUrl(
+  params?: ListingCarouselTab | HomeCarouselSearchParams,
+): string {
   const options: HomeCarouselSearchParams =
     typeof params === "string" ? { tab: params } : (params ?? {});
 
@@ -91,8 +90,7 @@ export function scrollToOffersCarousel(
   const options: HomeCarouselSearchParams =
     typeof params === "string" ? { tab: params } : (params ?? {});
 
-  const top =
-    section.getBoundingClientRect().top + window.scrollY - navHeightPx - sectionGapPx;
+  const top = section.getBoundingClientRect().top + window.scrollY - navHeightPx - sectionGapPx;
 
   window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
   window.history.replaceState(null, "", buildHomeCarouselUrl(options));

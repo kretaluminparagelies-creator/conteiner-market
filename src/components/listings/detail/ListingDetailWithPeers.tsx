@@ -54,7 +54,9 @@ function CategoryContext({
       <span
         className={[
           "inline-flex max-w-full items-center gap-2 rounded-full border-2 px-3 py-1.5 font-mono text-[10px] font-bold tracking-[0.08em] uppercase backdrop-blur-sm",
-          isLight ? "bg-white shadow-cm-light-md" : "bg-cm-card/95 shadow-[0_8px_24px_rgba(0,0,0,0.28)]",
+          isLight
+            ? "bg-white shadow-cm-light-md"
+            : "bg-cm-card/95 shadow-[0_8px_24px_rgba(0,0,0,0.28)]",
         ].join(" ")}
         style={{
           borderColor: theme.accent,
@@ -120,7 +122,12 @@ function PeerScrollColumn({
         ].join(" ")}
       >
         {peers.map((peer) => (
-          <ListingDetailPeerCard key={peer.id} listing={peer} onSelect={onSelect} surface={surface} />
+          <ListingDetailPeerCard
+            key={peer.id}
+            listing={peer}
+            onSelect={onSelect}
+            surface={surface}
+          />
         ))}
       </div>
     </div>
@@ -163,7 +170,12 @@ export function ListingDetailWithPeers({
               categoryTab={categoryTab}
               surface={surface}
             />
-            <PeerScrollColumn peers={left} onSelect={onListingSelect} align="outer-left" surface={surface} />
+            <PeerScrollColumn
+              peers={left}
+              onSelect={onListingSelect}
+              align="outer-left"
+              surface={surface}
+            />
           </div>
         </div>
       ) : null}
@@ -207,7 +219,12 @@ export function ListingDetailWithPeers({
             />
             <div className="mt-3 flex gap-3 overflow-x-auto pb-1 pt-1 [scrollbar-width:thin]">
               {peers.map((peer) => (
-                <ListingDetailPeerCard key={peer.id} listing={peer} onSelect={onListingSelect} surface={surface} />
+                <ListingDetailPeerCard
+                  key={peer.id}
+                  listing={peer}
+                  onSelect={onListingSelect}
+                  surface={surface}
+                />
               ))}
             </div>
           </div>
@@ -220,7 +237,12 @@ export function ListingDetailWithPeers({
         <div className="relative hidden min-w-0 md:block">
           <div className="absolute inset-0 flex flex-col">
             <SideHeaderSpacer />
-            <PeerScrollColumn peers={right} onSelect={onListingSelect} align="outer-right" surface={surface} />
+            <PeerScrollColumn
+              peers={right}
+              onSelect={onListingSelect}
+              align="outer-right"
+              surface={surface}
+            />
           </div>
         </div>
       ) : null}

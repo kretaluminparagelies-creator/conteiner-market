@@ -88,7 +88,9 @@ export default async function AdminLeadDetailPage({ params }: LeadDetailPageProp
 
         <section className="rounded-xl border border-cm-border bg-cm-card/50 p-6">
           <h2 className="font-display text-base font-semibold">Μήνυμα</h2>
-          <p className="mt-4 whitespace-pre-wrap text-sm leading-relaxed text-cm-sub">{lead.message}</p>
+          <p className="mt-4 whitespace-pre-wrap text-sm leading-relaxed text-cm-sub">
+            {lead.message}
+          </p>
         </section>
       </div>
     </CrmShell>

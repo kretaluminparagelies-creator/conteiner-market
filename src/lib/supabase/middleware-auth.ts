@@ -58,8 +58,7 @@ export async function updateSupabaseSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const { pathname } = request.nextUrl;
-  const isPublicAdmin =
-    pathname === "/admin/login" || pathname === "/admin/reset-password";
+  const isPublicAdmin = pathname === "/admin/login" || pathname === "/admin/reset-password";
   const isAdmin = pathname.startsWith("/admin");
 
   if (isAdmin && !isPublicAdmin && !user) {

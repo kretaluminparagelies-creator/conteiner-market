@@ -177,9 +177,7 @@
     "locationEn": "Our headquarters — Greece",
     "listingType": "rent",
     "image": "/images/containers/20ft-flat-rack.jpg",
-    "images": [
-      "/images/containers/20ft-flat-rack.jpg"
-    ],
+    "images": ["/images/containers/20ft-flat-rack.jpg"],
     "description": "20ft flat rack — χωρίς τοίχους/οροφή, ιδανικό για μηχανήματα, σωλήνες, ξυλοδέματα και out-of-gauge φορτία. Collapsible end walls. Ενοικίαση για projects και βιομηχανικές εφαρμογές.",
     "descriptionEn": "20ft flat rack — no side walls/roof, ideal for machinery, pipes, timber, and out-of-gauge cargo. Collapsible end walls. Rental for projects and industrial use.",
     "active": true,

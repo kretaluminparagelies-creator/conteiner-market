@@ -9,11 +9,7 @@ import "server-only";
 
 import type { ListingFormInput } from "@/lib/crm/listing-form";
 import { resolveListingImages } from "@/lib/crm/listing-images";
-import {
-  formatPriceEur,
-  slugifyListing,
-  uniqueSlug,
-} from "@/lib/repositories/listing-format";
+import { formatPriceEur, slugifyListing, uniqueSlug } from "@/lib/repositories/listing-format";
 import { site } from "@/lib/constants/site";
 import {
   listingAdminRowToListing,
@@ -21,7 +17,11 @@ import {
   listingRowToListing,
   type ListingAdminRow,
 } from "@/lib/supabase/listing-mapper";
-import { getSupabaseAdminClient, getSupabaseAnonServerClient, type ListingRow } from "@/lib/supabase/server";
+import {
+  getSupabaseAdminClient,
+  getSupabaseAnonServerClient,
+  type ListingRow,
+} from "@/lib/supabase/server";
 import type { Listing, ListingType } from "@/lib/types/listing";
 
 const listingColumns =
@@ -62,7 +62,10 @@ export async function fetchListingsFromSupabase(options?: {
 
   const client = useAdmin ? getSupabaseAdminClient() : getSupabaseAnonServerClient();
 
-  let query = client.from("listings").select(listingColumns).order("created_at", { ascending: true });
+  let query = client
+    .from("listings")
+    .select(listingColumns)
+    .order("created_at", { ascending: true });
 
   if (!includeInactive) {
     query = query.eq("active", true);
@@ -96,7 +99,9 @@ export async function fetchListingBySlugFromSupabase(
   return data ? listingRowToListing(data as ListingRow) : undefined;
 }
 
-export async function fetchListingsByTypeFromSupabase(listingType: ListingType): Promise<Listing[]> {
+export async function fetchListingsByTypeFromSupabase(
+  listingType: ListingType,
+): Promise<Listing[]> {
   const listings = await fetchListingsFromSupabase();
   return listings.filter((listing) => listing.listingType === listingType);
 }
@@ -114,7 +119,11 @@ export async function createListingInSupabase(input: ListingFormInput): Promise<
   const slug = uniqueSlug(baseSlug, slugs);
   const insert = listingFormToInsert(input, slug);
 
-  const { data, error } = await client.from("listings").insert(insert).select(listingColumns).single();
+  const { data, error } = await client
+    .from("listings")
+    .insert(insert)
+    .select(listingColumns)
+    .single();
 
   if (error) {
     throw new Error(`Supabase listing create failed: ${error.message}`);

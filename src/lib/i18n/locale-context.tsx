@@ -17,11 +17,7 @@ import {
   type ReactNode,
 } from "react";
 import { messages, type Messages } from "@/lib/i18n/messages";
-import {
-  defaultLocale,
-  LOCALE_STORAGE_KEY,
-  type Locale,
-} from "@/lib/i18n/types";
+import { defaultLocale, LOCALE_STORAGE_KEY, type Locale } from "@/lib/i18n/types";
 
 type LocaleContextValue = {
   locale: Locale;

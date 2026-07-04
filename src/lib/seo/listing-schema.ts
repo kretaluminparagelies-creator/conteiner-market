@@ -31,7 +31,9 @@ export function createListingProductSchema(listing: Listing, siteUrl: string) {
       availability: "https://schema.org/InStock",
       url,
       itemCondition: listing.condition,
-      ...(isRent ? { priceSpecification: { "@type": "UnitPriceSpecification", unitText: "MONTH" } } : {}),
+      ...(isRent
+        ? { priceSpecification: { "@type": "UnitPriceSpecification", unitText: "MONTH" } }
+        : {}),
     },
   };
 }

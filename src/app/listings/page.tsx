@@ -9,11 +9,7 @@ import { PageShell } from "@/components/layout/PageShell";
 import { ListingsCatalogPage } from "@/components/listings/ListingsCatalogPage";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { fetchPublicListings } from "@/lib/data/listings-server";
-import {
-  filterListings,
-  hasActiveFilters,
-  parseListingFilters,
-} from "@/lib/utils/listing-filters";
+import { filterListings, hasActiveFilters, parseListingFilters } from "@/lib/utils/listing-filters";
 import { resolveInitialCarouselTab } from "@/lib/utils/listing-carousel-filters";
 import { el } from "@/lib/i18n/messages/el";
 import { createPageMetadata } from "@/lib/seo/metadata";

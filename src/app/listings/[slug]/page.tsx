@@ -11,10 +11,7 @@ import { ListingDetailPageContent } from "@/components/listings/detail/ListingDe
 import { JsonLd } from "@/components/seo/JsonLd";
 import { fetchPublicListingBySlug, fetchPublicListings } from "@/lib/data/listings-server";
 import { createPageMetadata } from "@/lib/seo/metadata";
-import {
-  createListingPageMetadata,
-  createListingProductSchema,
-} from "@/lib/seo/listing-schema";
+import { createListingPageMetadata, createListingProductSchema } from "@/lib/seo/listing-schema";
 import { site } from "@/lib/constants/site";
 
 type ListingPageProps = {

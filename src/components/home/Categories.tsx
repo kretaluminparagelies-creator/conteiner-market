@@ -9,7 +9,12 @@
 
 import Image from "next/image";
 import { CategoryCards } from "@/components/home/CategoryCards";
-import { categoriesBackgroundImage, homePhotoImageClass, homePhotoOverlayFadeClass, homePhotoOverlayPrimaryClass } from "@/lib/constants/home";
+import {
+  categoriesBackgroundImage,
+  homePhotoImageClass,
+  homePhotoOverlayFadeClass,
+  homePhotoOverlayPrimaryClass,
+} from "@/lib/constants/home";
 import { useLocale } from "@/lib/i18n/locale-context";
 import { useInView } from "@/lib/hooks/useInView";
 import { fadeUpStyle } from "@/lib/utils/motion";
@@ -19,10 +24,7 @@ export function Categories() {
   const { ref, visible } = useInView<HTMLElement>();
 
   return (
-    <section
-      ref={ref}
-      className="relative isolate overflow-hidden px-[6%] py-24"
-    >
+    <section ref={ref} className="relative isolate overflow-hidden px-[6%] py-24">
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0">
         <Image
           src={categoriesBackgroundImage}
@@ -35,11 +37,16 @@ export function Categories() {
 
       <div
         aria-hidden="true"
-        className={["pointer-events-none absolute inset-0 z-[1]", homePhotoOverlayPrimaryClass].join(" ")}
+        className={[
+          "pointer-events-none absolute inset-0 z-[1]",
+          homePhotoOverlayPrimaryClass,
+        ].join(" ")}
       />
       <div
         aria-hidden="true"
-        className={["pointer-events-none absolute inset-0 z-[1]", homePhotoOverlayFadeClass].join(" ")}
+        className={["pointer-events-none absolute inset-0 z-[1]", homePhotoOverlayFadeClass].join(
+          " ",
+        )}
       />
 
       <div className="relative z-10 mx-auto max-w-6xl">

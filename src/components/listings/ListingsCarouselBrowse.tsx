@@ -113,18 +113,6 @@ export function ListingsCarouselBrowse({
   };
 
   useEffect(() => {
-    setActiveTab(initialTab);
-  }, [initialTab]);
-
-  useEffect(() => {
-    setContainerTypeFilter(initialContainerType);
-  }, [initialContainerType]);
-
-  useEffect(() => {
-    setDealFilter(initialDeal);
-  }, [initialDeal]);
-
-  useEffect(() => {
     if (!showSectionHeader) return;
 
     const handleExternalTabChange = (event: Event) => {
@@ -135,9 +123,8 @@ export function ListingsCarouselBrowse({
     };
 
     const handleFilterChange = (event: Event) => {
-      const { containerType, deal, source } = (
-        event as CustomEvent<HomeCarouselFilterEventDetail>
-      ).detail;
+      const { containerType, deal, source } = (event as CustomEvent<HomeCarouselFilterEventDetail>)
+        .detail;
       if (source === "section") return;
       setContainerTypeFilter(containerType ?? undefined);
       setDealFilter(deal ?? undefined);
@@ -229,10 +216,7 @@ export function ListingsCarouselBrowse({
           </button>
         </div>
       ) : (
-        <div
-          data-offers-carousel
-          className={showSectionHeader ? "-mt-1.5 md:-mt-2" : undefined}
-        >
+        <div data-offers-carousel className={showSectionHeader ? "-mt-1.5 md:-mt-2" : undefined}>
           <ContainerCarousel3D
             key={activeTab}
             listings={carouselItems}

@@ -25,7 +25,8 @@ export default async function AdminListingsPage({ searchParams }: AdminListingsP
     >
       {saved ? (
         <div className="mb-4 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200">
-          Αποθηκεύτηκε η καταχώριση «{saved}». Εμφανίζεται στο site μετά το cache refresh (~1 λεπτό).
+          Αποθηκεύτηκε η καταχώριση «{saved}». Εμφανίζεται στο site μετά το cache refresh (~1
+          λεπτό).
         </div>
       ) : null}
 

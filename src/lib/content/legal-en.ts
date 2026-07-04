@@ -162,9 +162,7 @@ export const cookiesSections: LegalSection[] = [
     id: "we-use",
     title: "2. What we use now",
     paragraphs: ["Currently the Website uses only essential/functional stored items:"],
-    bullets: [
-      "cm-locale (localStorage) — EL/EN language preference",
-    ],
+    bullets: ["cm-locale (localStorage) — EL/EN language preference"],
   },
   {
     id: "no-tracking",

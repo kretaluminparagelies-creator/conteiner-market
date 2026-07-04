@@ -8,15 +8,7 @@
 "use client";
 
 import Link from "next/link";
-import {
-  ChevronRight,
-  KeyRound,
-  LayoutGrid,
-  Mail,
-  Menu,
-  ShoppingBag,
-  Tag,
-} from "lucide-react";
+import { ChevronRight, KeyRound, LayoutGrid, Mail, Menu, ShoppingBag, Tag } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useState, type ComponentType, type CSSProperties } from "react";
 import { LanguageToggle } from "@/components/layout/LanguageToggle";
@@ -132,7 +124,9 @@ export function NavMobileMenu({ isHome }: NavMobileMenuProps) {
                 >
                   <Icon className="size-4" aria-hidden="true" />
                 </span>
-                <span className="flex-1 font-display text-[15px] tracking-[0.02em]">{item.label}</span>
+                <span className="flex-1 font-display text-[15px] tracking-[0.02em]">
+                  {item.label}
+                </span>
                 <ChevronRight
                   className={cn(
                     "size-4 shrink-0 transition-transform duration-200",

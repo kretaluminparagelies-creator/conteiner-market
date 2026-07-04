@@ -30,7 +30,13 @@ export function PageShell({ children, homeListings, tone, hideFooter }: PageShel
   return (
     <Providers>
       <ListingsProvider listings={homeListings}>
-        <div className={isLight ? "flex min-h-screen flex-col text-cm-ink" : "min-h-screen bg-cm-bg text-cm-text"}>
+        <div
+          className={
+            isLight
+              ? "flex min-h-screen flex-col text-cm-ink"
+              : "min-h-screen bg-cm-bg text-cm-text"
+          }
+        >
           <Suspense fallback={null}>
             <Nav />
           </Suspense>

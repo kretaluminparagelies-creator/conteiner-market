@@ -66,9 +66,7 @@ export async function sendLeadNotification(input: LeadNotificationInput): Promis
   }
 
   if (input.interest && interestLabels[input.interest]) {
-    lines.push(
-      `<p><strong>Ενδιαφέρον:</strong> ${escapeHtml(interestLabels[input.interest])}</p>`,
-    );
+    lines.push(`<p><strong>Ενδιαφέρον:</strong> ${escapeHtml(interestLabels[input.interest])}</p>`);
   }
 
   lines.push(

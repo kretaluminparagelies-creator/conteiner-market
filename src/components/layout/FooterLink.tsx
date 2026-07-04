@@ -23,9 +23,7 @@ export function FooterLink({ href, label }: FooterLinkProps) {
       href={href}
       className={[
         "text-[13px] transition-colors",
-        isLightFooter
-          ? "text-cm-ink-muted hover:text-cm-ink"
-          : "text-cm-muted hover:text-cm-sub",
+        isLightFooter ? "text-cm-ink-muted hover:text-cm-ink" : "text-cm-muted hover:text-cm-sub",
       ].join(" ")}
     >
       {label}

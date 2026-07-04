@@ -157,9 +157,7 @@ export function ListingCarouselTabBar({
                       : isLight
                         ? "text-cm-ink-sub group-hover:text-[var(--tab-accent)]"
                         : "text-cm-sub group-hover:text-[var(--tab-accent)]",
-                    isCompact
-                      ? "h-3 w-3 sm:h-3.5 sm:w-3.5"
-                      : "h-3.5 w-3.5 sm:h-4 sm:w-4",
+                    isCompact ? "h-3 w-3 sm:h-3.5 sm:w-3.5" : "h-3.5 w-3.5 sm:h-4 sm:w-4",
                   ].join(" ")}
                   style={{ color: isActive ? theme.accent : undefined }}
                   aria-hidden="true"
@@ -187,7 +185,11 @@ export function ListingCarouselTabBar({
                     isCompact
                       ? "hidden h-4 min-w-4 px-1 text-[8px] sm:inline-flex sm:h-4 sm:min-w-4 sm:text-[9px]"
                       : "h-5 min-w-5 px-1.5 text-[9px] sm:text-[10px]",
-                    isActive ? "text-white" : isLight ? "bg-cm-light-elevated text-cm-ink-muted" : "bg-cm-steel/60 text-cm-sub",
+                    isActive
+                      ? "text-white"
+                      : isLight
+                        ? "bg-cm-light-elevated text-cm-ink-muted"
+                        : "bg-cm-steel/60 text-cm-sub",
                   ].join(" ")}
                   style={isActive ? { backgroundColor: theme.accent } : undefined}
                 >

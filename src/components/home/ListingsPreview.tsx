@@ -38,7 +38,9 @@ export function ListingsPreview() {
   useEffect(() => {
     const carouselSearch = parseHomeCarouselSearch(window.location.search);
     const hashMatches = window.location.hash === `#${offersCarouselSectionId}`;
-    const hasFilters = Boolean(carouselSearch.tab || carouselSearch.containerType || carouselSearch.deal);
+    const hasFilters = Boolean(
+      carouselSearch.tab || carouselSearch.containerType || carouselSearch.deal,
+    );
 
     if (carouselSearch.tab) emitHomeListingTabChange(carouselSearch.tab, "category");
     if (carouselSearch.containerType || carouselSearch.deal) {
@@ -78,6 +80,7 @@ export function ListingsPreview() {
 
       <div className="relative z-[1] mx-auto max-w-6xl overflow-visible">
         <ListingsCarouselBrowse
+          key={[initialTab, parsed.containerType ?? "", parsed.deal ?? "", search].join("|")}
           listings={listings}
           initialTab={initialTab}
           initialContainerType={parsed.containerType}

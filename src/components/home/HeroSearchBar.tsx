@@ -20,10 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  containerTypeGroups,
-  getContainerTypeById,
-} from "@/lib/constants/container-types";
+import { containerTypeGroups, getContainerTypeById } from "@/lib/constants/container-types";
 import { useLocale } from "@/lib/i18n/locale-context";
 import { navigateHomeCarouselSearch } from "@/lib/nav/navigate-offers-route";
 import { cn } from "@/lib/utils";
@@ -54,7 +51,8 @@ const itemClass = cn(
   "[&_[data-slot=select-item-indicator]_svg]:text-cm-accent",
 );
 
-const groupLabelClass = "px-2.5 py-1.5 font-mono text-[9px] tracking-[0.16em] text-cm-ink-muted uppercase";
+const groupLabelClass =
+  "px-2.5 py-1.5 font-mono text-[9px] tracking-[0.16em] text-cm-ink-muted uppercase";
 
 export function HeroSearchBar({ className }: { className?: string }) {
   const { t, locale } = useLocale();
@@ -94,7 +92,10 @@ export function HeroSearchBar({ className }: { className?: string }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className={["glass-light flex h-full flex-col justify-center gap-4 rounded-2xl p-5 md:p-6", className]
+      className={[
+        "glass-light flex h-full flex-col justify-center gap-4 rounded-2xl p-5 md:p-6",
+        className,
+      ]
         .filter(Boolean)
         .join(" ")}
     >
@@ -138,7 +139,9 @@ export function HeroSearchBar({ className }: { className?: string }) {
           <SelectTrigger id="hero-container-type" className={triggerClass}>
             <span className="flex min-w-0 items-center gap-2">
               <Package className="size-4 shrink-0 text-cm-rent" aria-hidden="true" />
-              <SelectValue placeholder={t.heroSearch.containerTypeAll}>{containerTypeLabel}</SelectValue>
+              <SelectValue placeholder={t.heroSearch.containerTypeAll}>
+                {containerTypeLabel}
+              </SelectValue>
             </span>
           </SelectTrigger>
           <SelectContent className={contentClass}>

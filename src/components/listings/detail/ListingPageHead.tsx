@@ -9,10 +9,7 @@
 
 import { useEffect } from "react";
 import { useLocale } from "@/lib/i18n/locale-context";
-import {
-  createListingPageMetadata,
-  createListingPageMetadataEn,
-} from "@/lib/seo/listing-schema";
+import { createListingPageMetadata, createListingPageMetadataEn } from "@/lib/seo/listing-schema";
 import { site } from "@/lib/constants/site";
 import type { Listing } from "@/lib/types/listing";
 
@@ -25,9 +22,7 @@ export function ListingPageHead({ listing }: ListingPageHeadProps) {
 
   useEffect(() => {
     const meta =
-      locale === "en"
-        ? createListingPageMetadataEn(listing)
-        : createListingPageMetadata(listing);
+      locale === "en" ? createListingPageMetadataEn(listing) : createListingPageMetadata(listing);
 
     document.title = `${meta.title} | ${site.name}`;
 

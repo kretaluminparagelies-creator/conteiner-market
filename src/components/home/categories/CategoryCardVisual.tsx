@@ -39,12 +39,7 @@ function CategoryBackgroundIcon({
   }
 }
 
-export function CategoryCardVisual({
-  variant,
-  index,
-  icon,
-  children,
-}: CategoryCardVisualProps) {
+export function CategoryCardVisual({ variant, index, icon, children }: CategoryCardVisualProps) {
   const theme = categoryThemes[variant];
   const cardImage = categoryCardImages[variant];
   const watermark = String(index + 1).padStart(2, "0");
@@ -62,10 +57,9 @@ export function CategoryCardVisual({
     >
       <div
         aria-hidden="true"
-        className={[
-          "absolute inset-x-0 top-0 h-1 bg-linear-to-r opacity-90",
-          theme.topBar,
-        ].join(" ")}
+        className={["absolute inset-x-0 top-0 h-1 bg-linear-to-r opacity-90", theme.topBar].join(
+          " ",
+        )}
       />
 
       <div
