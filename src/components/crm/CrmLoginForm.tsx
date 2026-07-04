@@ -1,14 +1,15 @@
 /**
  * @file CrmLoginForm.tsx
- * @description Admin login form
+ * @description Admin login form (browser session — reliable cookie handling)
  * @author Katsoulakis
  * @copyright 2026 Katsoulakis. All rights reserved.
  */
 
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { loginAction } from "@/lib/crm/actions/auth-actions";
+import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 const inputClass =
   "w-full rounded-lg border border-cm-border bg-cm-bg px-3 py-2.5 text-sm text-cm-text outline-none transition-colors focus:border-cm-accent";
@@ -19,18 +20,54 @@ type CrmLoginFormProps = {
   nextPath: string;
 };
 
+function mapLoginError(message: string): string {
+  const lower = message.toLowerCase();
+  if (lower.includes("invalid login") || lower.includes("invalid credentials")) {
+    return "Λάθος email ή κωδικός.";
+  }
+  if (lower.includes("email not confirmed")) {
+    return "Το email δεν έχει επιβεβαιωθεί. Στο Supabase → Users → Confirm user.";
+  }
+  if (lower.includes("too many requests")) {
+    return "Πολλές προσπάθειες. Περίμενε 1–2 λεπτά.";
+  }
+  return message;
+}
+
 export function CrmLoginForm({ nextPath }: CrmLoginFormProps) {
+  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
+
     const formData = new FormData(event.currentTarget);
+    const email = String(formData.get("email") ?? "").trim();
+    const password = String(formData.get("password") ?? "");
+    const next = String(formData.get("next") ?? "/admin").trim() || "/admin";
+
+    if (!email || !password) {
+      setError("Συμπλήρωσε email και κωδικό.");
+      return;
+    }
 
     startTransition(async () => {
-      const result = await loginAction(formData);
-      if (result?.error) setError(result.error);
+      try {
+        const supabase = createSupabaseBrowserClient();
+        const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+
+        if (signInError) {
+          setError(mapLoginError(signInError.message));
+          return;
+        }
+
+        router.refresh();
+        router.push(next.startsWith("/admin") ? next : "/admin");
+      } catch {
+        setError("Αποτυχία σύνδεσης. Έλεγξε Supabase URL settings.");
+      }
     });
   };
 
@@ -55,6 +92,7 @@ export function CrmLoginForm({ nextPath }: CrmLoginFormProps) {
           autoComplete="email"
           required
           className={inputClass}
+          placeholder="kretalumin.paragelies@gmail.com"
         />
       </div>
 
@@ -79,6 +117,10 @@ export function CrmLoginForm({ nextPath }: CrmLoginFormProps) {
       >
         {pending ? "Σύνδεση…" : "Σύνδεση"}
       </button>
+
+      <p className="text-center text-xs leading-relaxed text-cm-muted">
+        Ο λογαριασμός δημιουργείται στο Supabase → Authentication → Users (Add user).
+      </p>
     </form>
   );
 }

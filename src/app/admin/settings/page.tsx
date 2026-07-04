@@ -76,15 +76,22 @@ export default async function AdminSettingsPage() {
         ) : null}
 
         {authEnabled ? (
-          <section className="rounded-xl border border-dashed border-cm-border p-6 text-sm text-cm-sub">
-            <h2 className="font-display text-base font-semibold text-cm-text">Νέος διαχειριστής</h2>
-            <ol className="mt-3 list-decimal space-y-2 pl-5 leading-relaxed">
-              <li>Supabase → Authentication → Users → Add user</li>
-              <li>Email + προσωρινός κωδικός (min 8 χαρακτήρες)</li>
-              <li>Σύνδεση στο <code className="text-cm-text">/admin/login</code></li>
-              <li>Αλλαγή κωδικού από αυτή τη σελίδα</li>
-            </ol>
-          </section>
+        <section className="rounded-xl border border-dashed border-cm-border p-6 text-sm text-cm-sub">
+          <h2 className="font-display text-base font-semibold text-cm-text">Νέος διαχειριστής</h2>
+          <ol className="mt-3 list-decimal space-y-2 pl-5 leading-relaxed">
+            <li>Supabase → Authentication → Users → Add user</li>
+            <li>Email + κωδικός (min 8 χαρακτήρες)</li>
+            <li>
+              <strong>Auto Confirm User: ON</strong> (αλλιώς δεν μπαίνεις)
+            </li>
+            <li>
+              Supabase → Authentication → URL Configuration → Site URL:{" "}
+              <code className="text-cm-text">https://conteiner-market.vercel.app</code>
+            </li>
+            <li>Redirect URLs: <code className="text-cm-text">https://conteiner-market.vercel.app/**</code></li>
+            <li>Σύνδεση στο <code className="text-cm-text">/admin/login</code></li>
+          </ol>
+        </section>
         ) : null}
 
         <section className="rounded-xl border border-cm-border bg-cm-card/50 p-6">
