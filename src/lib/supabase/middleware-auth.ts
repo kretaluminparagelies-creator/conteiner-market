@@ -38,17 +38,18 @@ export async function updateSupabaseSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const { pathname } = request.nextUrl;
-  const isLogin = pathname === "/admin/login";
+  const isPublicAdmin =
+    pathname === "/admin/login" || pathname === "/admin/reset-password";
   const isAdmin = pathname.startsWith("/admin");
 
-  if (isAdmin && !isLogin && !user) {
+  if (isAdmin && !isPublicAdmin && !user) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = "/admin/login";
     loginUrl.searchParams.set("next", pathname);
     return NextResponse.redirect(loginUrl);
   }
 
-  if (isLogin && user) {
+  if (isPublicAdmin && pathname === "/admin/login" && user) {
     const adminUrl = request.nextUrl.clone();
     adminUrl.pathname = "/admin";
     adminUrl.search = "";

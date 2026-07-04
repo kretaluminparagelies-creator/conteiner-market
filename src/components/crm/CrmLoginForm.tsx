@@ -37,6 +37,7 @@ function mapLoginError(message: string): string {
 export function CrmLoginForm({ nextPath }: CrmLoginFormProps) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const [info, setInfo] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -71,6 +72,31 @@ export function CrmLoginForm({ nextPath }: CrmLoginFormProps) {
     });
   };
 
+  const handleForgotPassword = () => {
+    setError(null);
+    setInfo(null);
+    const emailInput = document.getElementById("email") as HTMLInputElement | null;
+    const email = emailInput?.value.trim();
+
+    if (!email) {
+      setError("Βάλε πρώτα το email σου στο πεδίο πάνω.");
+      return;
+    }
+
+    startTransition(async () => {
+      const supabase = createSupabaseBrowserClient();
+      const redirectTo = `${window.location.origin}/admin/reset-password`;
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
+
+      if (resetError) {
+        setError(resetError.message);
+        return;
+      }
+
+      setInfo("Στάλθηκε email reset. Άνοιξε τον σύνδεσμο και όρισε νέο κωδικό.");
+    });
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       <input type="hidden" name="next" value={nextPath} />
@@ -78,6 +104,12 @@ export function CrmLoginForm({ nextPath }: CrmLoginFormProps) {
       {error ? (
         <div className="rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">
           {error}
+        </div>
+      ) : null}
+
+      {info ? (
+        <div className="rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200">
+          {info}
         </div>
       ) : null}
 
@@ -116,6 +148,15 @@ export function CrmLoginForm({ nextPath }: CrmLoginFormProps) {
         className="w-full rounded-lg bg-cm-accent py-2.5 font-display text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
       >
         {pending ? "Σύνδεση…" : "Σύνδεση"}
+      </button>
+
+      <button
+        type="button"
+        disabled={pending}
+        onClick={handleForgotPassword}
+        className="w-full text-center font-mono text-[11px] text-cm-muted transition-colors hover:text-cm-accent disabled:opacity-50"
+      >
+        Ξέχασα τον κωδικό → email reset
       </button>
 
       <p className="text-center text-xs leading-relaxed text-cm-muted">
