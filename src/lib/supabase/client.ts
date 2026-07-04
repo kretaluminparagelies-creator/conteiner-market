@@ -6,10 +6,14 @@
  */
 
 import { createBrowserClient } from "@supabase/ssr";
+import { getSupabaseAnonKey, getSupabaseUrl, isSupabaseReadConfigured } from "@/lib/supabase/env";
 
 export function createSupabaseBrowserClient() {
-  return createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  );
+  if (!isSupabaseReadConfigured()) {
+    throw new Error(
+      "Supabase env λείπουν στο site. Έλεγξε NEXT_PUBLIC_SUPABASE_URL και NEXT_PUBLIC_SUPABASE_ANON_KEY στο Vercel.",
+    );
+  }
+
+  return createBrowserClient(getSupabaseUrl()!, getSupabaseAnonKey()!);
 }

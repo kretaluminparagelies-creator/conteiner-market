@@ -22,6 +22,12 @@ type CrmLoginFormProps = {
 
 function mapLoginError(message: string): string {
   const lower = message.toLowerCase();
+  if (lower.includes("invalid supabaseurl") || lower.includes("invalid url")) {
+    return "Λάθος Supabase URL στο Vercel. Πρέπει: https://sltptoydeqwcspyuedsr.supabase.co";
+  }
+  if (lower.includes("supabase env")) {
+    return message;
+  }
   if (lower.includes("invalid login") || lower.includes("invalid credentials")) {
     return "Λάθος email ή κωδικός.";
   }
@@ -66,8 +72,9 @@ export function CrmLoginForm({ nextPath }: CrmLoginFormProps) {
 
         router.refresh();
         router.push(next.startsWith("/admin") ? next : "/admin");
-      } catch {
-        setError("Αποτυχία σύνδεσης. Έλεγξε Supabase URL settings.");
+      } catch (err) {
+        const message = err instanceof Error ? err.message : "Άγνωστο σφάλμα";
+        setError(mapLoginError(message));
       }
     });
   };
@@ -84,16 +91,21 @@ export function CrmLoginForm({ nextPath }: CrmLoginFormProps) {
     }
 
     startTransition(async () => {
-      const supabase = createSupabaseBrowserClient();
-      const redirectTo = `${window.location.origin}/admin/reset-password`;
-      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
+      try {
+        const supabase = createSupabaseBrowserClient();
+        const redirectTo = `${window.location.origin}/admin/reset-password`;
+        const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
 
-      if (resetError) {
-        setError(resetError.message);
-        return;
+        if (resetError) {
+          setError(mapLoginError(resetError.message));
+          return;
+        }
+
+        setInfo("Στάλθηκε email reset. Άνοιξε τον σύνδεσμο και όρισε νέο κωδικό.");
+      } catch (err) {
+        const message = err instanceof Error ? err.message : "Άγνωστο σφάλμα";
+        setError(mapLoginError(message));
       }
-
-      setInfo("Στάλθηκε email reset. Άνοιξε τον σύνδεσμο και όρισε νέο κωδικό.");
     });
   };
 
