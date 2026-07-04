@@ -35,7 +35,7 @@ export function ListingCarouselTabs({
         <div className="mb-1.5 text-center md:mb-2">
           <h2
             className={[
-              "font-display text-[clamp(1.25rem,2.2vw,1.625rem)] font-bold tracking-tight",
+              "font-display text-[clamp(1.25rem,2.2vw,1.625rem)] font-bold tracking-tight drop-shadow-[0_1px_8px_rgba(255,255,255,0.95)]",
               isLight ? "text-cm-ink" : "text-cm-text",
             ].join(" ")}
           >

@@ -1,15 +1,16 @@
 /**
  * @file Hero.tsx
- * @description Home page hero — title on top, search + GLB container below
+ * @description Home page hero — photo background, title + search
  * @author Katsoulakis
  * @copyright 2025 Katsoulakis. All rights reserved.
  */
 
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { HeroVisualRow } from "@/components/home/HeroVisualRow";
-import { heroTickerDurationSec } from "@/lib/constants/home";
+import { heroBackgroundImage, heroTickerDurationSec } from "@/lib/constants/home";
 import { useLocale } from "@/lib/i18n/locale-context";
 import { heroEnterStyle } from "@/lib/utils/motion";
 
@@ -23,29 +24,29 @@ export function Hero() {
   }, []);
 
   return (
-    <section className="relative flex min-h-[calc(100vh-60px)] flex-col justify-center overflow-hidden px-[7%] pb-8">
+    <section className="relative isolate flex min-h-[calc(100vh-60px)] flex-col justify-center overflow-hidden px-[7%] pb-8">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0">
+        <Image
+          src={heroBackgroundImage}
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-[58%_center] lg:object-[65%_center]"
+        />
+      </div>
+
+      {/* Scrim μόνο αριστερά — δεξιά η φωτό καθαρή */}
       <div
         aria-hidden="true"
-        className={[
-          "pointer-events-none absolute inset-0 bg-[linear-gradient(#1a30501e_1px,transparent_1px),linear-gradient(90deg,#1a30501e_1px,transparent_1px)] bg-size-[64px_64px]",
-          "transition-opacity duration-[1200ms]",
-          ready ? "opacity-100" : "opacity-0",
-        ].join(" ")}
+        className="pointer-events-none absolute inset-y-0 left-0 z-[1] w-full max-w-[min(100%,720px)] bg-linear-to-r from-white/58 via-white/26 to-transparent"
       />
       <div
         aria-hidden="true"
-        className="animate-glow-pulse pointer-events-none absolute top-[20%] left-[10%] h-[700px] w-[700px] bg-[radial-gradient(circle,#e0703018_0%,transparent_65%)]"
-      />
-      <div
-        aria-hidden="true"
-        className="animate-glow-pulse-slow pointer-events-none absolute top-[50%] right-[5%] h-[400px] w-[400px] bg-[radial-gradient(circle,#4080c815_0%,transparent_65%)]"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-40 bg-linear-to-b from-transparent via-cm-bg/40 to-cm-light-bg"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-20 bg-linear-to-t from-cm-light-bg/65 via-cm-light-bg/12 to-transparent md:h-24"
       />
 
-      <div className="absolute inset-x-0 top-0 z-10 overflow-hidden border-y border-cm-border bg-cm-bg/80 py-1.5">
+      <div className="absolute inset-x-0 top-0 z-20 overflow-hidden border-b border-cm-light-border-strong bg-white/96 py-2 shadow-cm-light-sm backdrop-blur-lg">
         <div
           className="animate-ticker flex whitespace-nowrap"
           style={{ animationDuration: `${heroTickerDurationSec}s` }}
@@ -53,7 +54,7 @@ export function Hero() {
           {[t.hero.ticker, t.hero.ticker].map((text, index) => (
             <span
               key={index}
-              className="font-mono text-[10px] tracking-[0.25em] text-cm-muted"
+              className="font-mono text-[11px] font-semibold tracking-[0.22em] text-cm-ink"
             >
               {text}
             </span>
@@ -61,10 +62,10 @@ export function Hero() {
         </div>
       </div>
 
-      <div className="relative z-20 mt-10 flex flex-col gap-8 lg:gap-10">
+      <div className="relative z-10 mt-10 flex flex-col gap-8 lg:gap-10">
         <div className="max-w-4xl">
           <p
-            className="mb-5 font-mono text-[10px] tracking-[0.25em] text-cm-accent uppercase"
+            className="mb-5 inline-flex w-fit items-center rounded-full border border-cm-accent/40 bg-white/92 px-3.5 py-1.5 font-mono text-[11px] font-bold tracking-[0.18em] text-cm-accent uppercase shadow-cm-light-sm"
             style={{
               opacity: ready ? 1 : 0,
               transition: "opacity 0.5s 0.1s",
@@ -73,18 +74,18 @@ export function Hero() {
             {t.hero.eyebrow}
           </p>
 
-          <h1 className="font-display text-[clamp(1.625rem,3.2vw,2.5rem)] leading-none font-bold">
+          <h1 className="font-display text-[clamp(1.625rem,3.2vw,2.5rem)] leading-none font-extrabold [text-shadow:0_1px_0_#fff,0_2px_14px_rgba(255,255,255,0.98),0_0_1px_rgba(23,37,56,0.2)]">
             <span className="inline-flex flex-nowrap items-baseline gap-x-[0.35em]">
               {t.hero.words.map((word, index) => (
                 <span key={word} className="inline-flex shrink-0 items-baseline gap-x-[0.35em]">
                   <span
-                    className={index === 2 ? "text-cm-accent" : "text-cm-text"}
+                    className={index === 2 ? "text-cm-accent" : "text-cm-ink"}
                     style={heroEnterStyle(ready, index * 0.15 + 0.2)}
                   >
                     {word}
                   </span>
                   {index < t.hero.words.length - 1 ? (
-                    <span aria-hidden="true" className="font-light text-cm-muted">
+                    <span aria-hidden="true" className="font-light text-cm-ink/45">
                       ·
                     </span>
                   ) : null}
@@ -94,7 +95,7 @@ export function Hero() {
           </h1>
 
           <p
-            className="mt-4 max-w-2xl text-[clamp(0.9375rem,1.75vw,1.25rem)] font-light text-cm-sub"
+            className="mt-4 max-w-2xl text-[clamp(1rem,1.9vw,1.3125rem)] font-semibold leading-snug text-cm-ink [text-shadow:0_1px_0_#fff,0_2px_14px_rgba(255,255,255,0.98)]"
             style={{
               opacity: ready ? 1 : 0,
               transform: ready ? "none" : "translateY(20px)",
@@ -103,7 +104,7 @@ export function Hero() {
           >
             {t.hero.subtitleLine1}
             <br />
-            {t.hero.subtitleLine2}
+            <span className="font-bold text-cm-ink">{t.hero.subtitleLine2}</span>
           </p>
         </div>
 
@@ -120,14 +121,16 @@ export function Hero() {
       </div>
 
       <div
-        className="absolute bottom-7 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-1.5"
+        className="absolute bottom-7 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-1.5"
         style={{
           opacity: ready ? 0.55 : 0,
           transition: "opacity 1s 1.5s",
         }}
       >
-        <span className="font-mono text-[9px] tracking-[0.3em] text-cm-muted">{t.hero.scroll}</span>
-        <div className="scroll-line h-9 w-px bg-linear-to-b from-cm-muted to-transparent" />
+        <span className="font-mono text-[9px] tracking-[0.3em] text-cm-ink-muted drop-shadow-[0_1px_6px_rgba(255,255,255,0.9)]">
+          {t.hero.scroll}
+        </span>
+        <div className="scroll-line h-9 w-px bg-linear-to-b from-cm-ink-muted/50 to-transparent" />
       </div>
     </section>
   );

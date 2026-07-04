@@ -51,7 +51,7 @@ export const en: Messages = {
     items: [
       {
         tag: "BUY",
-        title: "Buy",
+        title: "",
         description:
           "Buy our containers — new and used. Direct pricing, no middlemen.",
         note: "320+ available",
@@ -59,16 +59,17 @@ export const en: Messages = {
       },
       {
         tag: "SELL",
-        title: "Sell",
-        description: "Sell your container — instant valuation and competitive offer.",
+        title: "",
+        description:
+          "Have a container you no longer use? Send us the details and photos, our team evaluates it immediately and gives you a competitive offer within 24 hours. We handle pickup — you simply close the deal.",
         note: "Instant quote",
         href: "/polisi",
       },
       {
         tag: "RENT",
-        title: "Rent",
+        title: "",
         description:
-          "Rent our containers — flexible terms from 1 month. Dry, reefer, open top.",
+          "Need storage space or a special container without committing to a purchase? We offer rental with flexible terms from 1 month and up, in dry, reefer and open top types, depending on your intended use. An ideal solution for seasonal needs, projects or temporary storage.",
         note: "180+ for rent",
         href: "/enoikiasi",
       },
@@ -116,13 +117,17 @@ export const en: Messages = {
   },
   heroSearch: {
     title: "Find a container",
-    dealLabel: "Type",
-    dealAll: "Buy & Rent",
+    dealLabel: "Deal",
+    dealAll: "All",
     sale: "Buy",
     rent: "Rent",
+    containerTypeLabel: "Container type",
+    containerTypeAll: "All types",
     sizeLabel: "Size",
     sizeAll: "All sizes",
     submit: "Search",
+    activeFilters: "Filters",
+    clearFilters: "Clear",
   },
   help: {
     eyebrow: "Help",
@@ -265,12 +270,15 @@ export const en: Messages = {
       metaTitle: "Sell Your Container",
       metaDescription:
         "Sell your shipping container in Greece. Container Market — instant valuation, competitive offer, nationwide coverage.",
-      eyebrow: "Sell",
-      title: "Sell your container",
-      description: "Want to sell a container? Send us the details and we will make an offer.",
-      body: "Container Market buys shipping containers of all types — dry van, reefer, open top, high cube. We assess condition, propose a fair price, and handle the process simply and transparently.",
+      eyebrow: "SELL",
+      title: "",
+      description:
+        "Have a container you no longer use? Send us the details and photos, our team evaluates it immediately and gives you a competitive offer within 24 hours. We handle pickup — you simply close the deal.",
+      body: "",
+      note: "Instant quote",
+      backLink: "Back to home",
       ctaLabel: "Contact us to sell →",
-      ctaHref: "/epikoinonia",
+      ctaHref: "/epikoinonia?intent=sell",
     },
     contact: {
       metaTitle: "Contact",
@@ -279,6 +287,20 @@ export const en: Messages = {
       eyebrow: "Contact",
       title: "Get in touch",
       intro: "For buying, selling, or renting containers — we are here for you.",
+      sellEyebrow: "SELL",
+      sellTitle: "Sell your container",
+      sellIntro:
+        "Send us your container details and photos — our team will get back to you with an offer within 24 hours.",
+      backToPolisi: "Back to sell",
+      backToHome: "Back to home",
+      inquiryEyebrow: "CONTACT",
+      inquiryTitle: "Interested in a container?",
+      inquiryIntro:
+        "For buying or renting — tell us what you need and we will get back to you soon with availability and pricing.",
+      formInterestLabel: "I am interested in",
+      formInterestBuy: "Purchase",
+      formInterestRent: "Rental",
+      formInterestBoth: "Purchase & rental",
       areaValue: "Greece — nationwide coverage",
       formTitle: "Contact form",
       formMessage: "Message",

@@ -8,9 +8,16 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { ListingDetailWithPeers } from "@/components/listings/detail/ListingDetailWithPeers";
+import {
+  carouselBackgroundImage,
+  homePhotoImageClass,
+  homePhotoOverlayFadeClass,
+  homePhotoOverlayPrimaryClass,
+} from "@/lib/constants/home";
 import { useLocale } from "@/lib/i18n/locale-context";
 import { getPeerListings } from "@/lib/utils/listing-detail-peers";
 import type { ListingCarouselTab } from "@/lib/utils/listing-carousel-filters";
@@ -21,6 +28,7 @@ type ListingDetailModalProps = {
   categoryListings?: Listing[];
   categoryTab?: ListingCarouselTab;
   onClose: () => void;
+  surface?: "dark" | "light";
 };
 
 export function ListingDetailModal({
@@ -28,9 +36,11 @@ export function ListingDetailModal({
   categoryListings = [],
   categoryTab = "offers",
   onClose,
+  surface = "dark",
 }: ListingDetailModalProps) {
   const { t } = useLocale();
   const reduceMotion = useReducedMotion();
+  const isLight = surface === "light";
   const open = listing !== null;
   const [activeListing, setActiveListing] = useState<Listing | null>(listing);
   const [mounted, setMounted] = useState(false);
@@ -81,9 +91,25 @@ export function ListingDetailModal({
           <button
             type="button"
             aria-label={t.listings.detailClose}
-            className="absolute inset-0 bg-cm-bg backdrop-blur-md"
+            className="absolute inset-0 overflow-hidden"
             onClick={onClose}
-          />
+          >
+            {isLight ? (
+              <>
+                <Image
+                  src={carouselBackgroundImage}
+                  alt=""
+                  fill
+                  sizes="100vw"
+                  className={[homePhotoImageClass, "object-[center_40%]"].join(" ")}
+                />
+                <span className={["absolute inset-0", homePhotoOverlayPrimaryClass].join(" ")} />
+                <span className={["absolute inset-0", homePhotoOverlayFadeClass].join(" ")} />
+              </>
+            ) : (
+              <span className="absolute inset-0 bg-cm-bg/95 backdrop-blur-md" aria-hidden="true" />
+            )}
+          </button>
 
           <motion.div
             role="dialog"
@@ -109,6 +135,7 @@ export function ListingDetailModal({
               categoryTab={categoryTab}
               onListingSelect={setActiveListing}
               onClose={onClose}
+              surface={surface}
             />
           </motion.div>
         </motion.div>

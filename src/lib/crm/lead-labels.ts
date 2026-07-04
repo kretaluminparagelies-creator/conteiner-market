@@ -17,7 +17,7 @@ export const leadStatusLabels: Record<LeadStatus, string> = {
 
 export const leadSourceLabels: Record<LeadSource, string> = {
   contact: "Επικοινωνία",
-  buyback: "Πώληση σε εμάς",
+  buyback: "Πώληση κοντέινερ σε εμάς",
   rent: "Ενοικίαση",
   space: "Ενοικίαση χώρου",
   listing: "Προσφορά",

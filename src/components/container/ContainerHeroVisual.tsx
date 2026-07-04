@@ -120,9 +120,7 @@ export function ContainerHeroVisual({ className, plan }: ContainerHeroVisualProp
   return (
     <div
       className={[
-        "hero-visual-3d relative overflow-hidden rounded-xl border border-cm-accent/25",
-        "bg-linear-to-br from-[#1a3050] via-[#152438] to-[#0e1828]",
-        "shadow-[0_8px_32px_rgba(0,0,0,0.35)] ring-1 ring-white/5",
+        "hero-visual-3d glass-light relative overflow-hidden rounded-2xl",
         "h-[220px] w-full cursor-pointer lg:h-[420px]",
         className,
       ]
@@ -138,7 +136,7 @@ export function ContainerHeroVisual({ className, plan }: ContainerHeroVisualProp
     >
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_50%_45%,#e0703040_0%,transparent_58%)]"
+        className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_50%_45%,rgba(224,112,48,0.12)_0%,transparent_58%)]"
       />
       <div className="relative z-10 h-full w-full">{useGlb ? GlbScene : CodeScene}</div>
     </div>

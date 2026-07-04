@@ -6,9 +6,11 @@
  */
 
 import type { ReactNode } from "react";
+import Image from "next/image";
 import { CalendarClock, ShoppingCart, Tag } from "lucide-react";
 import { ContainerSVG } from "@/components/ui/ContainerSVG";
 import {
+  categoryCardImages,
   categoryThemes,
   type CategoryVariant,
 } from "@/lib/constants/category-themes";
@@ -44,12 +46,13 @@ export function CategoryCardVisual({
   children,
 }: CategoryCardVisualProps) {
   const theme = categoryThemes[variant];
+  const cardImage = categoryCardImages[variant];
   const watermark = String(index + 1).padStart(2, "0");
 
   return (
     <div
       className={[
-        "group/card category-card-shine relative h-full min-h-[340px] overflow-hidden border",
+        "group/card category-card-shine relative flex h-[465px] flex-col overflow-hidden rounded-2xl md:h-[480px]",
         "p-8 transition-[border-color,box-shadow,transform] duration-350 md:p-10",
         theme.border,
         theme.hoverBorder,
@@ -78,6 +81,11 @@ export function CategoryCardVisual({
         ].join(" ")}
       />
 
+      <div
+        aria-hidden="true"
+        className="category-card-read-layer pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-[72%] rounded-b-2xl"
+      />
+
       <CategoryBackgroundIcon
         variant={variant}
         className={[
@@ -97,17 +105,29 @@ export function CategoryCardVisual({
         {watermark}
       </span>
 
-      <div className="relative z-10 mb-8 flex items-start justify-between gap-4 pt-2">
-        <div className="transition-transform duration-300 group-hover/card:scale-105 group-hover/card:-translate-y-0.5">
-          <ContainerSVG
-            tinted={theme.containerTinted}
-            className="h-[4.5rem] w-auto opacity-90 sm:h-20"
-          />
+      <div className="relative z-10 mb-5 flex shrink-0 items-start justify-between gap-4 pt-1">
+        <div className="rounded-xl bg-white/80 p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] backdrop-blur-sm transition-transform duration-300 group-hover/card:scale-105 group-hover/card:-translate-y-0.5">
+          {cardImage ? (
+            <div className="relative h-[4.5rem] w-[9rem] sm:h-20 sm:w-[10rem]">
+              <Image
+                src={cardImage}
+                alt=""
+                fill
+                sizes="160px"
+                className="object-contain object-left"
+              />
+            </div>
+          ) : (
+            <ContainerSVG
+              tinted={theme.containerTinted}
+              className="h-[4.5rem] w-auto opacity-95 sm:h-20"
+            />
+          )}
         </div>
         {icon}
       </div>
 
-      <div className="relative z-10 flex min-h-[340px] flex-col">{children}</div>
+      <div className="relative z-10 flex min-h-0 flex-1 flex-col">{children}</div>
     </div>
   );
 }

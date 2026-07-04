@@ -8,6 +8,7 @@
 "use client";
 
 import { useLocale } from "@/lib/i18n/locale-context";
+import { useLightNavSurface } from "@/lib/nav/use-light-nav-surface";
 
 function GlobeIcon() {
   return (
@@ -27,6 +28,7 @@ function GlobeIcon() {
 
 export function LanguageToggle() {
   const { locale, toggleLocale, t } = useLocale();
+  const isLightNav = useLightNavSurface();
   const nextLabel = locale === "el" ? "EN" : "ΕΛ";
 
   return (
@@ -36,14 +38,15 @@ export function LanguageToggle() {
       title={`${t.language.help} → ${t.language.switchTo}`}
       aria-label={`${t.language.ariaLabel}: ${t.language.switchTo}`}
       className={[
-        "flex h-9 items-center gap-1.5 rounded-full border border-cm-border bg-cm-card/60",
-        "px-2.5 font-mono text-[10px] tracking-[0.12em] text-cm-sub",
-        "transition-colors hover:border-cm-accent hover:text-cm-text",
+        "flex h-9 items-center gap-1.5 rounded-full border px-2.5 font-mono text-[10px] tracking-[0.12em] transition-colors",
+        isLightNav
+          ? "border-cm-light-border-strong bg-white text-cm-ink-sub shadow-cm-light-xs hover:border-cm-accent/40 hover:text-cm-ink"
+          : "border-cm-border bg-cm-card/60 text-cm-sub hover:border-cm-accent hover:text-cm-text",
       ].join(" ")}
     >
       <GlobeIcon />
-      <span className="text-cm-muted">{t.meta.localeLabel}</span>
-      <span aria-hidden="true" className="text-cm-muted/60">
+      <span className={isLightNav ? "text-cm-ink-muted" : "text-cm-muted"}>{t.meta.localeLabel}</span>
+      <span aria-hidden="true" className={isLightNav ? "text-cm-ink-muted/50" : "text-cm-muted/60"}>
         /
       </span>
       <span className="text-cm-accent">{nextLabel}</span>

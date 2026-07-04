@@ -10,7 +10,8 @@
 import { revalidatePath } from "next/cache";
 import { requireCrmSession } from "@/lib/crm/auth";
 import { createLead, updateLeadStatus } from "@/lib/crm/lead-store";
-import type { LeadSource, LeadStatus } from "@/lib/crm/types";
+import { resolveLeadSourceFromForm } from "@/lib/crm/resolve-lead-source";
+import type { LeadStatus } from "@/lib/crm/types";
 import { sendLeadNotification } from "@/lib/email/send-lead-notification";
 
 export async function updateLeadStatusAction(leadId: string, status: LeadStatus) {
@@ -26,7 +27,8 @@ export async function submitContactLeadAction(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim();
   const phone = String(formData.get("phone") ?? "").trim();
   const message = String(formData.get("message") ?? "").trim();
-  const source = (String(formData.get("source") ?? "contact").trim() || "contact") as LeadSource;
+  const source = resolveLeadSourceFromForm(formData);
+  const interest = String(formData.get("interest") ?? "").trim() || undefined;
   const listingSlug = String(formData.get("listingSlug") ?? "").trim() || undefined;
 
   if (!name || !email || !message) {
@@ -49,7 +51,7 @@ export async function submitContactLeadAction(formData: FormData) {
     await createLead(leadInput);
 
     try {
-      await sendLeadNotification(leadInput);
+      await sendLeadNotification({ ...leadInput, interest });
     } catch (notifyError) {
       console.error("[submitContactLeadAction] email notify failed:", notifyError);
     }

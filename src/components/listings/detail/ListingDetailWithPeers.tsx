@@ -10,6 +10,7 @@
 import { X } from "lucide-react";
 import { ListingDetailContent } from "@/components/listings/detail/ListingDetailContent";
 import { ListingDetailPeerCard } from "@/components/listings/detail/ListingDetailPeerCard";
+import { listingCarouselTabThemes } from "@/lib/constants/listing-carousel-tab-themes";
 import { useLocale } from "@/lib/i18n/locale-context";
 import type { ListingCarouselTab } from "@/lib/utils/listing-carousel-filters";
 import { getPeerListings, splitPeersForSides } from "@/lib/utils/listing-detail-peers";
@@ -27,25 +28,57 @@ type ListingDetailWithPeersProps = {
   categoryTab: ListingCarouselTab;
   onListingSelect: (listing: Listing) => void;
   onClose: () => void;
+  surface?: "dark" | "light";
 };
 
 function CategoryContext({
   categoryLabel,
   categoryCount,
   listingType,
+  categoryTab,
+  surface = "dark",
 }: {
   categoryLabel: string;
   categoryCount: number;
   listingType: string;
+  categoryTab: ListingCarouselTab;
+  surface?: "dark" | "light";
 }) {
   const { t } = useLocale();
+  const isLight = surface === "light";
+  const theme = listingCarouselTabThemes[categoryTab];
+  const Icon = theme.icon;
 
   return (
-    <div className={`${SIDE_HEADER_CLASS} space-y-1.5 text-left`}>
-      <span className="inline-block rounded-full border border-cm-accent/40 bg-cm-accent/10 px-2.5 py-1 font-mono text-[9px] tracking-[0.12em] text-cm-accent uppercase">
-        {categoryLabel} ({categoryCount})
+    <div className={`${SIDE_HEADER_CLASS} space-y-2 text-left`}>
+      <span
+        className={[
+          "inline-flex max-w-full items-center gap-2 rounded-full border-2 px-3 py-1.5 font-mono text-[10px] font-bold tracking-[0.08em] uppercase backdrop-blur-sm",
+          isLight ? "bg-white shadow-cm-light-md" : "bg-cm-card/95 shadow-[0_8px_24px_rgba(0,0,0,0.28)]",
+        ].join(" ")}
+        style={{
+          borderColor: theme.accent,
+          color: theme.accent,
+          boxShadow: isLight ? `0 4px 18px -2px ${theme.glow}` : `0 8px 24px -4px ${theme.glow}`,
+        }}
+      >
+        <Icon className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+        <span className="truncate">{categoryLabel}</span>
+        <span
+          className="inline-flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full px-1.5 text-[9px] font-bold text-white"
+          style={{ backgroundColor: theme.accent }}
+        >
+          {categoryCount}
+        </span>
       </span>
-      <p className="font-display text-xs leading-snug font-semibold text-cm-text">
+      <p
+        className={[
+          "font-display text-xs leading-snug font-semibold",
+          isLight
+            ? "rounded-lg border border-white/80 bg-white/95 px-2.5 py-1.5 text-cm-ink shadow-cm-light-xs backdrop-blur-sm"
+            : "text-cm-text",
+        ].join(" ")}
+      >
         {t.listings.detailActiveIn
           .replace("{type}", listingType)
           .replace("{category}", categoryLabel)}
@@ -62,10 +95,12 @@ function PeerScrollColumn({
   peers,
   onSelect,
   align,
+  surface = "dark",
 }: {
   peers: Listing[];
   onSelect: (listing: Listing) => void;
   align: "outer-left" | "outer-right";
+  surface?: "dark" | "light";
 }) {
   if (peers.length === 0) return null;
 
@@ -85,7 +120,7 @@ function PeerScrollColumn({
         ].join(" ")}
       >
         {peers.map((peer) => (
-          <ListingDetailPeerCard key={peer.id} listing={peer} onSelect={onSelect} />
+          <ListingDetailPeerCard key={peer.id} listing={peer} onSelect={onSelect} surface={surface} />
         ))}
       </div>
     </div>
@@ -98,8 +133,10 @@ export function ListingDetailWithPeers({
   categoryTab,
   onListingSelect,
   onClose,
+  surface = "dark",
 }: ListingDetailWithPeersProps) {
   const { t } = useLocale();
+  const isLight = surface === "light";
   const peers = getPeerListings(categoryListings, listing.slug);
   const { left, right } = splitPeersForSides(peers);
   const hasPeers = peers.length > 0;
@@ -123,8 +160,10 @@ export function ListingDetailWithPeers({
               categoryLabel={categoryLabel}
               categoryCount={categoryCount}
               listingType={listing.type}
+              categoryTab={categoryTab}
+              surface={surface}
             />
-            <PeerScrollColumn peers={left} onSelect={onListingSelect} align="outer-left" />
+            <PeerScrollColumn peers={left} onSelect={onListingSelect} align="outer-left" surface={surface} />
           </div>
         </div>
       ) : null}
@@ -136,12 +175,26 @@ export function ListingDetailWithPeers({
           aria-label={t.listings.detailClose}
           className={[
             "absolute top-3 right-3 z-30 flex h-10 w-10 items-center justify-center rounded-full",
-            "border border-cm-border bg-cm-card/95 text-cm-sub backdrop-blur-sm",
-            "transition-colors hover:border-cm-accent hover:text-cm-text",
+            "transition-colors",
+            isLight
+              ? "border border-cm-light-border-strong bg-white/95 text-cm-ink-sub shadow-cm-light-sm hover:border-cm-accent hover:text-cm-accent"
+              : "border border-cm-border bg-cm-card/95 text-cm-sub backdrop-blur-sm hover:border-cm-accent hover:text-cm-text",
           ].join(" ")}
         >
           <X className="h-5 w-5" />
         </button>
+
+        {!hasPeers ? (
+          <div className="mb-3">
+            <CategoryContext
+              categoryLabel={categoryLabel}
+              categoryCount={categoryCount}
+              listingType={listing.type}
+              categoryTab={categoryTab}
+              surface={surface}
+            />
+          </div>
+        ) : null}
 
         {hasPeers ? (
           <div className="mb-3 md:hidden">
@@ -149,23 +202,25 @@ export function ListingDetailWithPeers({
               categoryLabel={categoryLabel}
               categoryCount={categoryCount}
               listingType={listing.type}
+              categoryTab={categoryTab}
+              surface={surface}
             />
             <div className="mt-3 flex gap-3 overflow-x-auto pb-1 pt-1 [scrollbar-width:thin]">
               {peers.map((peer) => (
-                <ListingDetailPeerCard key={peer.id} listing={peer} onSelect={onListingSelect} />
+                <ListingDetailPeerCard key={peer.id} listing={peer} onSelect={onListingSelect} surface={surface} />
               ))}
             </div>
           </div>
         ) : null}
 
-        <ListingDetailContent key={listing.slug} listing={listing} />
+        <ListingDetailContent key={listing.slug} listing={listing} surface={surface} />
       </div>
 
       {hasPeers ? (
         <div className="relative hidden min-w-0 md:block">
           <div className="absolute inset-0 flex flex-col">
             <SideHeaderSpacer />
-            <PeerScrollColumn peers={right} onSelect={onListingSelect} align="outer-right" />
+            <PeerScrollColumn peers={right} onSelect={onListingSelect} align="outer-right" surface={surface} />
           </div>
         </div>
       ) : null}

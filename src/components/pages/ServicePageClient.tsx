@@ -20,6 +20,7 @@ type ServicePageClientProps = {
 export function ServicePageClient({ page }: ServicePageClientProps) {
   const { t } = useLocale();
   const content: Messages["pages"][ServicePageKey] = t.pages[page];
+  const isSellPhoto = page === "polisi";
 
   return (
     <ServicePageContent
@@ -27,8 +28,11 @@ export function ServicePageClient({ page }: ServicePageClientProps) {
       title={content.title}
       description={content.description}
       body={content.body}
+      note={page === "polisi" ? t.pages.polisi.note : undefined}
+      backLink={page === "polisi" ? t.pages.polisi.backLink : undefined}
       ctaLabel={content.ctaLabel}
       ctaHref={content.ctaHref}
+      variant={isSellPhoto ? "sell-photo" : "default"}
     />
   );
 }

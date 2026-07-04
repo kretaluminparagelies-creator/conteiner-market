@@ -8,27 +8,45 @@
 "use client";
 
 import { MapPin } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { SiteButton } from "@/components/ui/site-button";
 import { ListingDetailPhotoCarousel } from "@/components/listings/detail/ListingDetailPhotoCarousel";
 import { useLocale } from "@/lib/i18n/locale-context";
 import type { Listing } from "@/lib/types/listing";
 
 type ListingDetailContentProps = {
   listing: Listing;
+  surface?: "dark" | "light";
 };
 
-export function ListingDetailContent({ listing }: ListingDetailContentProps) {
+export function ListingDetailContent({ listing, surface = "dark" }: ListingDetailContentProps) {
   const { t } = useLocale();
   const isRent = listing.listingType === "rent";
+  const isLight = surface === "light";
 
   return (
-    <div className="overflow-hidden rounded-xl border border-cm-border bg-cm-card">
+    <div
+      className={[
+        "overflow-hidden rounded-xl border shadow-cm-light-lg",
+        isLight
+          ? "glass-category border-white/80 bg-white/94"
+          : "border-cm-border bg-cm-card",
+      ].join(" ")}
+    >
       <div className="p-4 md:p-5">
-        <ListingDetailPhotoCarousel listing={listing} />
+        <ListingDetailPhotoCarousel listing={listing} surface={surface} />
       </div>
 
-      <div className="space-y-3 border-t border-cm-border/50 p-4 md:p-5">
-        <div className="flex flex-wrap items-start justify-between gap-2">
+      <div
+        className={[
+          "relative space-y-3 border-t p-4 md:p-5",
+          isLight ? "border-cm-light-border-strong/70" : "border-cm-border/50",
+        ].join(" ")}
+      >
+        {isLight ? (
+          <div aria-hidden="true" className="category-card-read-layer pointer-events-none absolute inset-0" />
+        ) : null}
+
+        <div className="relative z-[1] flex flex-wrap items-start justify-between gap-2">
           <div className="min-w-0">
             <div className="mb-1.5 flex flex-wrap gap-1.5">
               <span
@@ -39,14 +57,28 @@ export function ListingDetailContent({ listing }: ListingDetailContentProps) {
               >
                 {isRent ? t.listings.rent : t.listings.sale}
               </span>
-              <span className="rounded-full border border-cm-border bg-cm-surf px-2 py-0.5 font-mono text-[7px] tracking-[0.1em] text-cm-sub uppercase">
+              <span
+                className={[
+                  "rounded-full border px-2 py-0.5 font-mono text-[7px] tracking-[0.1em] uppercase",
+                  isLight
+                    ? "border-cm-light-border-strong bg-white text-cm-ink-muted"
+                    : "border-cm-border bg-cm-surf text-cm-sub",
+                ].join(" ")}
+              >
                 {listing.condition}
               </span>
             </div>
-            <h2 className="font-display text-lg font-bold leading-tight md:text-xl">{listing.type}</h2>
-            <div className="mt-1 flex items-center gap-1 text-cm-sub">
-              <MapPin className="h-3 w-3 shrink-0 text-cm-accent" aria-hidden="true" />
-              <span className="text-xs">{listing.location}</span>
+            <h2
+              className={[
+                "font-display text-lg font-bold leading-tight md:text-xl",
+                isLight ? "text-cm-ink" : "text-cm-text",
+              ].join(" ")}
+            >
+              {listing.type}
+            </h2>
+            <div className={["mt-1 flex items-center gap-1.5", isLight ? "text-cm-ink-sub" : "text-cm-sub"].join(" ")}>
+              <MapPin className="h-3.5 w-3.5 shrink-0 text-cm-accent" aria-hidden="true" />
+              <span className="text-sm font-medium">{listing.location}</span>
             </div>
           </div>
 
@@ -61,23 +93,32 @@ export function ListingDetailContent({ listing }: ListingDetailContentProps) {
                 {listing.priceFormatted}
               </span>
               {listing.unit ? (
-                <span className="text-[11px] text-cm-muted">{listing.unit}</span>
+                <span className={["text-xs font-medium", isLight ? "text-cm-ink-muted" : "text-cm-muted"].join(" ")}>
+                  {listing.unit}
+                </span>
               ) : null}
             </div>
           </div>
         </div>
 
-        <div>
-          <p className="mb-1 font-mono text-[8px] tracking-[0.18em] text-cm-accent uppercase">
+        <div className="relative z-[1]">
+          <p className="mb-1.5 font-mono text-[9px] font-semibold tracking-[0.18em] text-cm-accent uppercase">
             {t.listings.detailDescription}
           </p>
-          <p className="line-clamp-2 text-xs leading-5 text-cm-sub">{listing.description}</p>
+          <p
+            className={[
+              "text-sm leading-[1.7]",
+              isLight ? "text-cm-ink-sub" : "text-cm-sub",
+            ].join(" ")}
+          >
+            {listing.description}
+          </p>
         </div>
 
-        <div className="flex flex-wrap gap-2 pt-0.5">
-          <Button href="/epikoinonia" className="px-4 py-2 text-xs">
+        <div className="relative z-[1] flex flex-wrap gap-2 pt-0.5">
+          <SiteButton href="/epikoinonia?intent=inquiry" className="px-4 py-2 text-xs">
             {t.listings.detailContact}
-          </Button>
+          </SiteButton>
         </div>
       </div>
     </div>

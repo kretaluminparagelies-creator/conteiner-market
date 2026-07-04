@@ -5,8 +5,10 @@
  * @copyright 2026 Katsoulakis. All rights reserved.
  */
 
+import { Suspense } from "react";
 import { PageShell } from "@/components/layout/PageShell";
 import { ContactPageContent } from "@/components/pages/ContactPageContent";
+import { fetchPublicListings } from "@/lib/data/listings-server";
 import { el } from "@/lib/i18n/messages/el";
 import { createPageMetadata } from "@/lib/seo/metadata";
 
@@ -17,10 +19,14 @@ export const metadata = createPageMetadata({
   keywords: ["επικοινωνία container market", "τηλέφωνο κοντέινερ"],
 });
 
-export default function EpikoinoniaPage() {
+export default async function EpikoinoniaPage() {
+  const homeListings = await fetchPublicListings();
+
   return (
-    <PageShell>
-      <ContactPageContent />
+    <PageShell tone="light" homeListings={homeListings} hideFooter>
+      <Suspense fallback={null}>
+        <ContactPageContent />
+      </Suspense>
     </PageShell>
   );
 }

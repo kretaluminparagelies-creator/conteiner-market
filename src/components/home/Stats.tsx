@@ -18,27 +18,21 @@ export function Stats() {
   const { ref, visible } = useInView<HTMLDivElement>({ threshold: 0.2 });
 
   return (
-    <div
-      ref={ref}
-      className="grid grid-cols-2 border-y border-cm-light-border bg-cm-light-surf md:grid-cols-4"
-    >
-      {statDefinitions.map((stat, index) => (
-        <div
-          key={stat.key}
-          className={[
-            "px-5 py-11 text-center",
-            index < statDefinitions.length - 1 ? "border-cm-light-border md:border-r" : "",
-            index % 2 === 0 ? "border-r border-cm-light-border md:border-r" : "",
-            index < 2 ? "border-b md:border-b-0" : "",
-          ].join(" ")}
-          style={fadeUpStyle(visible, index * 0.1)}
-        >
-          <div className="font-display text-[46px] leading-none font-bold text-cm-accent">
-            <CountUp end={stat.end} suffix={stat.suffix} run={visible} />
+    <div ref={ref} className="home-mesh-alt px-[6%] py-12 md:py-14">
+      <div className="mx-auto grid max-w-6xl grid-cols-2 gap-4 md:grid-cols-4 md:gap-5">
+        {statDefinitions.map((stat, index) => (
+          <div
+            key={stat.key}
+            className="glass-light rounded-2xl px-5 py-9 text-center"
+            style={fadeUpStyle(visible, index * 0.1)}
+          >
+            <div className="font-display text-[42px] leading-none font-bold text-cm-accent md:text-[46px]">
+              <CountUp end={stat.end} suffix={stat.suffix} run={visible} />
+            </div>
+            <div className="mt-2 text-[13px] text-cm-ink-sub">{t.stats[stat.key]}</div>
           </div>
-          <div className="mt-1.5 text-[13px] text-cm-ink-sub">{t.stats[stat.key]}</div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }

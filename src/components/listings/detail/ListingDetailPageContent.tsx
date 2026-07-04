@@ -10,7 +10,7 @@
 import Link from "next/link";
 import { MapPin } from "lucide-react";
 import { ListingDetailPhotoCarousel } from "@/components/listings/detail/ListingDetailPhotoCarousel";
-import { Button } from "@/components/ui/Button";
+import { SiteButton } from "@/components/ui/site-button";
 import { ListingPageHead } from "@/components/listings/detail/ListingPageHead";
 import { localizeListing } from "@/lib/data/listings";
 import { useLocale } from "@/lib/i18n/locale-context";
@@ -90,10 +90,10 @@ export function ListingDetailPageContent({ listing }: ListingDetailPageContentPr
               </div>
 
               <div className="flex flex-wrap gap-3 pt-2">
-                <Button href="/epikoinonia">{t.listings.detailContact}</Button>
-                <Button href="/listings" variant="secondary">
+                <SiteButton href="/epikoinonia?intent=inquiry">{t.listings.detailContact}</SiteButton>
+                <SiteButton href="/listings" variant="secondary">
                   {t.listings.viewAll}
-                </Button>
+                </SiteButton>
               </div>
             </div>
           </div>

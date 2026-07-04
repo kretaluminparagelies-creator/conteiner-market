@@ -44,7 +44,7 @@ export default function RootLayout({
     <html
       lang="el"
       suppressHydrationWarning
-      className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      className={`h-full antialiased ${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}
     >
       <head>
         <link rel="alternate" type="text/plain" href="/llms.txt" title="AI site documentation" />

@@ -16,6 +16,7 @@ import type { CarouselListingItem } from "@/lib/types/listing-carousel";
 
 type ContainerCarouselCardProps = CarouselListingItem & {
   isCenter?: boolean;
+  surface?: "dark" | "light";
 };
 
 export function ContainerCarouselCard({
@@ -28,35 +29,61 @@ export function ContainerCarouselCard({
   isOffer = false,
   image,
   isCenter = false,
+  surface = "dark",
 }: ContainerCarouselCardProps) {
   const { t } = useLocale();
   const isRent = listingType === "rent";
+  const isLight = surface === "light";
   const [imageFailed, setImageFailed] = useState(false);
   const showPhoto = shouldShowListingPhoto(image, imageFailed);
 
   return (
     <div
       className={[
-        "relative overflow-hidden rounded-xl border bg-cm-carousel-card",
-        "shadow-[0_16px_40px_rgba(0,0,0,0.22)] transition-[border-color,box-shadow] duration-300",
+        "relative overflow-hidden rounded-xl border transition-[border-color,box-shadow,filter] duration-300",
+        isLight
+          ? isCenter
+            ? "bg-white shadow-cm-light-lg"
+            : "bg-white shadow-cm-light-lg"
+          : isCenter
+            ? "bg-cm-carousel-card shadow-[0_16px_40px_rgba(0,0,0,0.22)]"
+            : "bg-cm-carousel-card shadow-[0_16px_40px_rgba(0,0,0,0.28)]",
         isCenter
           ? isRent
-            ? "border-cm-rent/60 shadow-[0_24px_56px_rgba(74,176,232,0.28)] ring-1 ring-cm-rent/35"
-            : "border-cm-accent/60 shadow-[0_24px_56px_rgba(224,112,48,0.28)] ring-1 ring-cm-accent/35"
-          : "border-cm-border/60",
+            ? isLight
+              ? "border-cm-rent/55 shadow-cm-carousel-rent ring-2 ring-cm-rent/25"
+              : "border-cm-rent/60 shadow-[0_24px_56px_rgba(74,176,232,0.28)] ring-1 ring-cm-rent/35"
+            : isLight
+              ? "border-cm-accent/50 shadow-cm-carousel-accent ring-2 ring-cm-accent/22"
+              : "border-cm-accent/60 shadow-[0_24px_56px_rgba(224,112,48,0.28)] ring-1 ring-cm-accent/35"
+          : isLight
+            ? "border-cm-light-border-strong shadow-cm-light-md"
+            : "border-cm-border/70",
       ].join(" ")}
     >
-      <div className="relative h-[340px] overflow-hidden bg-cm-carousel-photo md:h-[420px]">
+      <div
+        className={[
+          "relative h-[340px] overflow-hidden md:h-[420px]",
+          isLight ? "bg-cm-light-elevated" : "bg-cm-carousel-photo",
+        ].join(" ")}
+      >
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-linear-to-br from-cm-carousel-photo via-cm-carousel-visual to-[#587898]"
+          className={
+            isLight
+              ? "absolute inset-0 bg-linear-to-br from-[#dce8f4] via-[#c5d8ea] to-[#a8c4dc]"
+              : "absolute inset-0 bg-linear-to-br from-cm-carousel-photo via-cm-carousel-visual to-[#587898]"
+          }
         />
 
         {showPhoto ? (
           <img
             src={image}
             alt={title}
-            className="absolute inset-0 h-full w-full object-cover"
+            className={[
+              "absolute inset-0 h-full w-full object-cover",
+              !isCenter ? "brightness-[0.82] saturate-[0.88]" : "",
+            ].join(" ")}
             loading="lazy"
             onError={() => setImageFailed(true)}
           />
@@ -79,7 +106,15 @@ export function ContainerCarouselCard({
 
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-linear-to-t from-[#1a3050]/88 via-[#1a3050]/35 to-transparent"
+          className={
+            isLight
+              ? isCenter
+                ? "pointer-events-none absolute inset-0 bg-linear-to-t from-[#0e1828]/75 via-[#0e1828]/25 to-transparent"
+                : "pointer-events-none absolute inset-0 bg-linear-to-t from-[#0e1828]/88 via-[#0e1828]/45 to-[#0e1828]/15"
+              : isCenter
+                ? "pointer-events-none absolute inset-0 bg-linear-to-t from-[#1a3050]/88 via-[#1a3050]/35 to-transparent"
+                : "pointer-events-none absolute inset-0 bg-linear-to-t from-[#0a1420]/92 via-[#0a1420]/55 to-[#0a1420]/20"
+          }
         />
 
         <div className="absolute top-3 left-3 z-10 flex flex-wrap gap-2">
@@ -112,7 +147,18 @@ export function ContainerCarouselCard({
         </div>
       </div>
 
-      <div className="border-t border-cm-border/50 bg-cm-carousel-panel p-5">
+      <div
+        className={[
+          "border-t p-5",
+          isLight
+            ? isCenter
+              ? "border-cm-light-border-strong bg-cm-light-surf"
+              : "border-cm-light-border-strong bg-white"
+            : isCenter
+              ? "border-cm-border/50 bg-cm-carousel-panel"
+              : "border-cm-border/60 bg-[#1a2838]",
+        ].join(" ")}
+      >
         <div className="flex items-baseline justify-between gap-3">
           <div className="flex items-baseline gap-1">
             <span
@@ -123,9 +169,18 @@ export function ContainerCarouselCard({
             >
               {price}
             </span>
-            {unit ? <span className="text-sm text-cm-sub">{unit}</span> : null}
+            {unit ? (
+              <span className={isLight ? "text-sm text-cm-ink-muted" : "text-sm text-cm-sub"}>
+                {unit}
+              </span>
+            ) : null}
           </div>
-          <div className="flex items-center gap-1.5 font-mono text-[10px] tracking-wide text-cm-sub uppercase">
+          <div
+            className={[
+              "flex items-center gap-1.5 font-mono text-[10px] tracking-wide uppercase",
+              isLight ? "text-cm-ink-muted" : "text-cm-sub",
+            ].join(" ")}
+          >
             <Package className="h-3.5 w-3.5" aria-hidden="true" />
             <span>{title.split(" ")[0]}</span>
           </div>

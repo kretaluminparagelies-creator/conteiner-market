@@ -8,6 +8,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { ListingCarouselTabBar } from "@/components/listings/ListingCarouselTabBar";
 import { useListings } from "@/lib/context/listings-context";
 import {
@@ -16,6 +17,7 @@ import {
   type HomeListingTabEventDetail,
 } from "@/lib/nav/home-listing-tab-sync";
 import {
+  buildHomeCarouselUrl,
   offersCarouselSectionId,
   scrollToOffersCarousel,
 } from "@/lib/nav/navigate-offers-route";
@@ -26,6 +28,8 @@ import {
 
 export function NavListingTabs() {
   const listings = useListings();
+  const pathname = usePathname();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<ListingCarouselTab>(defaultListingCarouselTab);
 
   useEffect(() => {
@@ -44,8 +48,15 @@ export function NavListingTabs() {
     setActiveTab(tab);
     emitHomeListingTabChange(tab, "nav");
 
-    const section = document.getElementById(offersCarouselSectionId);
-    if (section) scrollToOffersCarousel(section);
+    if (pathname === "/") {
+      const section = document.getElementById(offersCarouselSectionId);
+      if (section) {
+        scrollToOffersCarousel(section, tab);
+        return;
+      }
+    }
+
+    router.push(buildHomeCarouselUrl(tab));
   };
 
   return (

@@ -18,7 +18,7 @@ export const sketchfabModel = {
   faceCameraLerp: 0.55,
   rotationSpeed: 0.15,
   maxFrameDelta: 1 / 30,
-  canvasBackground: "#1a3050",
+  canvasBackground: "#e8f2f9",
 } as const;
 
 export const sketchfabCredit = {

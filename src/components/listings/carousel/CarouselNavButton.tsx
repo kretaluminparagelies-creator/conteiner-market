@@ -14,6 +14,7 @@ type CarouselNavButtonProps = {
   ariaLabel: string;
   children: ReactNode;
   className?: string;
+  surface?: "dark" | "light";
 };
 
 export function CarouselNavButton({
@@ -21,17 +22,20 @@ export function CarouselNavButton({
   ariaLabel,
   children,
   className,
+  surface = "dark",
 }: CarouselNavButtonProps) {
+  const isLight = surface === "light";
+
   return (
     <button
       type="button"
       onClick={onClick}
       aria-label={ariaLabel}
       className={[
-        "flex h-11 w-11 items-center justify-center rounded-full",
-        "border border-cm-border/60 bg-cm-carousel-visual/95 text-cm-accent backdrop-blur-sm",
-        "shadow-[0_8px_20px_rgba(0,0,0,0.18)] transition-colors",
-        "hover:border-cm-accent/55 hover:bg-cm-carousel-photo hover:text-cm-text",
+        "flex h-11 w-11 items-center justify-center rounded-full border backdrop-blur-sm transition-colors",
+        isLight
+          ? "border-cm-light-border-strong bg-white text-cm-accent shadow-cm-light-md hover:border-cm-accent/50 hover:bg-white hover:shadow-cm-light-lg"
+          : "border-cm-border/60 bg-cm-carousel-visual/95 text-cm-accent shadow-[0_8px_20px_rgba(0,0,0,0.18)] hover:border-cm-accent/55 hover:bg-cm-carousel-photo hover:text-cm-text",
         className,
       ]
         .filter(Boolean)

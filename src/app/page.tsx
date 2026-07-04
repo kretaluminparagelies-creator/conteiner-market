@@ -5,6 +5,7 @@
  * @copyright 2025 Katsoulakis. All rights reserved.
  */
 
+import { Suspense } from "react";
 import { Categories } from "@/components/home/Categories";
 import { Hero } from "@/components/home/Hero";
 import { HomeCTA } from "@/components/home/HomeCTA";
@@ -94,7 +95,9 @@ export default async function HomePage() {
       <JsonLd data={localBusinessSchema} />
       <JsonLd data={websiteSchema} />
       <Hero />
-      <ListingsPreview />
+      <Suspense fallback={null}>
+        <ListingsPreview />
+      </Suspense>
       <Categories />
       <Stats />
       <HowItWorks />

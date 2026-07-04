@@ -14,7 +14,7 @@ export const homeListingTabEvent = "cm-home-listing-tab-change";
 
 export type HomeListingTabEventDetail = {
   tab: ListingCarouselTab;
-  source: "nav" | "section";
+  source: "nav" | "section" | "category" | "hero";
 };
 
 export function emitHomeListingTabChange(

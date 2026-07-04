@@ -8,6 +8,7 @@
 import "server-only";
 
 import { site } from "@/lib/constants/site";
+import { leadSourceLabels } from "@/lib/crm/lead-labels";
 import type { LeadSource } from "@/lib/crm/types";
 import {
   getEmailFrom,
@@ -23,6 +24,13 @@ export type LeadNotificationInput = {
   message: string;
   source: LeadSource;
   listingSlug?: string;
+  interest?: string;
+};
+
+const interestLabels: Record<string, string> = {
+  buy: "Αγορά",
+  rent: "Ενοικίαση",
+  both: "Αγορά & ενοικίαση",
 };
 
 function escapeHtml(value: string): string {
@@ -33,6 +41,11 @@ function escapeHtml(value: string): string {
     .replace(/"/g, "&quot;");
 }
 
+function getEmailSubject(source: LeadSource, name: string): string {
+  const prefix = leadSourceLabels[source];
+  return `[Container Market] ${prefix} — ${name}`;
+}
+
 export async function sendLeadNotification(input: LeadNotificationInput): Promise<void> {
   if (!isLeadEmailNotifyConfigured()) return;
 
@@ -40,8 +53,10 @@ export async function sendLeadNotification(input: LeadNotificationInput): Promis
   const to = getLeadNotifyEmail();
   const from = getEmailFrom();
   const adminUrl = `${site.url.replace(/\/$/, "")}/admin/leads`;
+  const sourceLabel = leadSourceLabels[input.source];
 
   const lines = [
+    `<p><strong>Τύπος αιτήματος:</strong> ${escapeHtml(sourceLabel)}</p>`,
     `<p><strong>Όνομα:</strong> ${escapeHtml(input.name)}</p>`,
     `<p><strong>Email:</strong> <a href="mailto:${escapeHtml(input.email)}">${escapeHtml(input.email)}</a></p>`,
   ];
@@ -50,8 +65,13 @@ export async function sendLeadNotification(input: LeadNotificationInput): Promis
     lines.push(`<p><strong>Τηλέφωνο:</strong> ${escapeHtml(input.phone)}</p>`);
   }
 
+  if (input.interest && interestLabels[input.interest]) {
+    lines.push(
+      `<p><strong>Ενδιαφέρον:</strong> ${escapeHtml(interestLabels[input.interest])}</p>`,
+    );
+  }
+
   lines.push(
-    `<p><strong>Πηγή:</strong> ${escapeHtml(input.source)}</p>`,
     input.listingSlug
       ? `<p><strong>Καταχώριση:</strong> <a href="${escapeHtml(`${site.url}/listings/${input.listingSlug}`)}">${escapeHtml(input.listingSlug)}</a></p>`
       : "",
@@ -69,7 +89,7 @@ export async function sendLeadNotification(input: LeadNotificationInput): Promis
       from,
       to: [to],
       reply_to: input.email,
-      subject: `[Container Market] Νέο αίτημα — ${input.name}`,
+      subject: getEmailSubject(input.source, input.name),
       html: lines.filter(Boolean).join("\n"),
     }),
   });

@@ -52,12 +52,12 @@ export function ListingCarouselTabBar({
     <div
       className={[
         isNav
-          ? "mx-auto w-max max-w-[calc(100vw-10.5rem)] rounded-lg border border-cm-border/80 bg-cm-card/40 p-1 sm:max-w-[calc(100vw-12rem)]"
+          ? "mx-auto w-max max-w-[calc(100vw-10.5rem)] rounded-lg border border-cm-light-border-strong bg-white/90 p-1 shadow-cm-light-xs backdrop-blur-md sm:max-w-[calc(100vw-12rem)]"
           : "",
         isCompact && !isNav ? "mx-auto w-full max-w-3xl" : !isNav ? "mx-auto max-w-3xl" : "",
         !isNav
           ? isLight
-            ? "rounded-xl border border-cm-light-border bg-cm-light-surf p-0.5 shadow-[0_4px_24px_rgba(14,24,40,0.06)] sm:p-1"
+            ? "rounded-2xl border border-cm-light-border-strong bg-white/96 p-0.5 shadow-cm-light-lg backdrop-blur-md sm:p-1"
             : "rounded-xl border border-cm-border bg-cm-card/55 p-0.5 backdrop-blur-sm sm:p-1"
           : "",
         className,
@@ -96,14 +96,14 @@ export function ListingCarouselTabBar({
                 "group relative z-10 flex shrink-0 items-center justify-center text-center",
                 isNav
                   ? "px-2 py-1.5 whitespace-nowrap sm:px-2.5 lg:px-3"
-                  : "min-w-0 flex-1 snap-center justify-center overflow-hidden whitespace-nowrap",
+                  : "min-w-max flex-none snap-center justify-center whitespace-nowrap sm:min-w-0 sm:flex-1",
                 !isNav && isCompact
                   ? "gap-1 px-1.5 py-1.5 sm:gap-1.5 sm:px-2 sm:py-2"
                   : !isNav
                     ? "gap-1.5 px-2 py-2 sm:gap-2 sm:px-3 sm:py-2.5"
                     : "",
                 isNav
-                  ? "font-display text-[10px] leading-snug font-semibold sm:text-[11px] lg:text-[12px]"
+                  ? "font-display text-[10px] leading-snug font-semibold text-cm-ink-sub sm:text-[11px] lg:text-[12px]"
                   : isCompact
                     ? "font-display text-[10px] font-semibold sm:text-[11px]"
                     : "font-display text-[11px] font-semibold sm:text-[13px]",
@@ -119,9 +119,14 @@ export function ListingCarouselTabBar({
                     isNav ? "rounded-[6px]" : "rounded-[6px] sm:rounded-[8px]",
                   ].join(" ")}
                   style={{
-                    backgroundColor: `${theme.accent}18`,
-                    borderColor: `${theme.accent}55`,
-                    boxShadow: isCompact && !isNav ? undefined : `0 0 20px -4px ${theme.glow}`,
+                    backgroundColor: isLight ? `${theme.accent}28` : `${theme.accent}18`,
+                    borderColor: isLight ? `${theme.accent}88` : `${theme.accent}55`,
+                    boxShadow:
+                      isCompact && !isNav
+                        ? undefined
+                        : isLight
+                          ? `0 4px 18px -2px ${theme.glow}`
+                          : `0 0 20px -4px ${theme.glow}`,
                   }}
                   transition={
                     reduceMotion
@@ -150,7 +155,7 @@ export function ListingCarouselTabBar({
                     isActive
                       ? ""
                       : isLight
-                        ? "text-cm-ink-muted group-hover:text-[var(--tab-accent)]"
+                        ? "text-cm-ink-sub group-hover:text-[var(--tab-accent)]"
                         : "text-cm-sub group-hover:text-[var(--tab-accent)]",
                     isCompact
                       ? "h-3 w-3 sm:h-3.5 sm:w-3.5"
@@ -164,12 +169,12 @@ export function ListingCarouselTabBar({
               <span
                 className={[
                   "relative transition-colors duration-200",
-                  isNav ? "whitespace-nowrap" : "block w-full",
-                    isActive
-                      ? "text-[var(--tab-accent)]"
-                      : isLight
-                        ? "text-cm-ink-muted group-hover:text-[var(--tab-accent)]"
-                        : "text-cm-sub group-hover:text-[var(--tab-accent)]",
+                  isNav ? "whitespace-nowrap" : "whitespace-nowrap",
+                  isActive
+                    ? "font-bold text-[var(--tab-accent)]"
+                    : isLight
+                      ? "font-semibold text-cm-ink-sub group-hover:text-[var(--tab-accent)]"
+                      : "text-cm-sub group-hover:text-[var(--tab-accent)]",
                 ].join(" ")}
               >
                 {labels[tab]}

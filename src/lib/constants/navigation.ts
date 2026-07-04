@@ -34,7 +34,7 @@ export const mainNav: NavItem[] = [
   },
   {
     label: "Επικοινωνία",
-    href: "/epikoinonia",
+    href: "/epikoinonia?intent=inquiry",
     description: "Επικοινωνήστε μαζί μας",
   },
 ];

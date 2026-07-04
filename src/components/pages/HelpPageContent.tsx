@@ -30,7 +30,7 @@ export function HelpPageContent() {
             {t.help.listingsCta}
           </Link>
           <Link
-            href="/epikoinonia"
+            href="/epikoinonia?intent=inquiry"
             className="inline-flex items-center rounded-[6px] border border-cm-border px-5 py-2.5 font-display text-sm font-semibold text-cm-text transition-colors hover:border-cm-accent hover:text-cm-accent"
           >
             {t.help.contactCta}

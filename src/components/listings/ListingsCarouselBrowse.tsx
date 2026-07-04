@@ -8,7 +8,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { motion, useReducedMotion } from "motion/react";
 import { ContainerCarousel3D } from "@/components/listings/carousel/ContainerCarousel3D";
 import { ListingDetailModal } from "@/components/listings/detail/ListingDetailModal";
 import { ListingCarouselTabs } from "@/components/listings/ListingCarouselTabs";
@@ -26,6 +25,14 @@ import {
   listingCarouselTabs,
   type ListingCarouselTab,
 } from "@/lib/utils/listing-carousel-filters";
+import { getContainerTypeById } from "@/lib/constants/container-types";
+import { filterListingsByContainerType } from "@/lib/utils/container-type-match";
+import {
+  buildHomeCarouselUrl,
+  homeCarouselFilterEvent,
+  type HomeCarouselFilterEventDetail,
+} from "@/lib/nav/navigate-offers-route";
+import type { ListingType } from "@/lib/types/listing";
 import type { CarouselListingItem } from "@/lib/types/listing-carousel";
 import type { Listing } from "@/lib/types/listing";
 
@@ -33,6 +40,10 @@ type ListingsCarouselBrowseProps = {
   listings: Listing[];
   /** Initial tab — home defaults to offers */
   initialTab?: ListingCarouselTab;
+  /** Hero / URL container type filter */
+  initialContainerType?: string;
+  /** Hero / URL deal filter */
+  initialDeal?: ListingType;
   /** Called after tab change — e.g. sync URL on /listings */
   onTabChange?: (tab: ListingCarouselTab) => void;
   /** Show section title above tabs (home page) */
@@ -41,31 +52,49 @@ type ListingsCarouselBrowseProps = {
   tone?: "dark" | "light";
 };
 
+function filterListingsByDeal(listings: Listing[], deal?: ListingType): Listing[] {
+  if (!deal) return listings;
+  return listings.filter((listing) => listing.listingType === deal);
+}
+
 export function ListingsCarouselBrowse({
   listings,
   initialTab = defaultListingCarouselTab,
+  initialContainerType,
+  initialDeal,
   onTabChange,
   showSectionHeader = false,
   tone = "dark",
 }: ListingsCarouselBrowseProps) {
   const { locale, t } = useLocale();
-  const reduceMotion = useReducedMotion();
   const isLight = tone === "light";
   const [activeTab, setActiveTab] = useState<ListingCarouselTab>(initialTab);
+  const [containerTypeFilter, setContainerTypeFilter] = useState<string | undefined>(
+    initialContainerType,
+  );
+  const [dealFilter, setDealFilter] = useState<ListingType | undefined>(initialDeal);
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
+
+  const hasHeroFilters = Boolean(containerTypeFilter || dealFilter);
 
   const tabCounts = useMemo(
     () =>
       Object.fromEntries(
-        listingCarouselTabs.map((tab) => [tab, filterListingsByCarouselTab(listings, tab).length]),
+        listingCarouselTabs.map((tab) => {
+          const byTab = filterListingsByCarouselTab(listings, tab);
+          const byDeal = filterListingsByDeal(byTab, dealFilter);
+          const byType = filterListingsByContainerType(byDeal, containerTypeFilter);
+          return [tab, byType.length];
+        }),
       ) as Record<ListingCarouselTab, number>,
-    [listings],
+    [listings, containerTypeFilter, dealFilter],
   );
 
-  const filteredListings = useMemo(
-    () => filterListingsByCarouselTab(listings, activeTab),
-    [listings, activeTab],
-  );
+  const filteredListings = useMemo(() => {
+    const byTab = filterListingsByCarouselTab(listings, activeTab);
+    const byDeal = filterListingsByDeal(byTab, dealFilter);
+    return filterListingsByContainerType(byDeal, containerTypeFilter);
+  }, [listings, activeTab, dealFilter, containerTypeFilter]);
 
   const localizedListings = filteredListings.map((listing) => localizeListing(listing, locale));
   const carouselItems = mapListingsToCarousel(localizedListings);
@@ -77,6 +106,24 @@ export function ListingsCarouselBrowse({
     if (showSectionHeader) emitHomeListingTabChange(tab, "section");
   };
 
+  const clearHeroFilters = () => {
+    setContainerTypeFilter(undefined);
+    setDealFilter(undefined);
+    window.history.replaceState(null, "", buildHomeCarouselUrl({ tab: activeTab }));
+  };
+
+  useEffect(() => {
+    setActiveTab(initialTab);
+  }, [initialTab]);
+
+  useEffect(() => {
+    setContainerTypeFilter(initialContainerType);
+  }, [initialContainerType]);
+
+  useEffect(() => {
+    setDealFilter(initialDeal);
+  }, [initialDeal]);
+
   useEffect(() => {
     if (!showSectionHeader) return;
 
@@ -87,8 +134,22 @@ export function ListingsCarouselBrowse({
       setSelectedListing(null);
     };
 
+    const handleFilterChange = (event: Event) => {
+      const { containerType, deal, source } = (
+        event as CustomEvent<HomeCarouselFilterEventDetail>
+      ).detail;
+      if (source === "section") return;
+      setContainerTypeFilter(containerType ?? undefined);
+      setDealFilter(deal ?? undefined);
+      setSelectedListing(null);
+    };
+
     window.addEventListener(homeListingTabEvent, handleExternalTabChange);
-    return () => window.removeEventListener(homeListingTabEvent, handleExternalTabChange);
+    window.addEventListener(homeCarouselFilterEvent, handleFilterChange);
+    return () => {
+      window.removeEventListener(homeListingTabEvent, handleExternalTabChange);
+      window.removeEventListener(homeCarouselFilterEvent, handleFilterChange);
+    };
   }, [showSectionHeader]);
 
   const handleListingClick = (item: CarouselListingItem) => {
@@ -97,6 +158,15 @@ export function ListingsCarouselBrowse({
   };
 
   if (listings.length === 0) return null;
+
+  const activeTypeSpec = containerTypeFilter
+    ? getContainerTypeById(containerTypeFilter)
+    : undefined;
+  const activeTypeName = activeTypeSpec
+    ? locale === "en"
+      ? activeTypeSpec.name.en
+      : activeTypeSpec.name.el
+    : null;
 
   return (
     <>
@@ -108,12 +178,44 @@ export function ListingsCarouselBrowse({
         tone={tone}
       />
 
+      {hasHeroFilters && showSectionHeader ? (
+        <div
+          className={[
+            "mb-3 flex flex-wrap items-center gap-2 rounded-xl border px-3 py-2.5",
+            isLight
+              ? "border-cm-light-border-strong bg-white/92 shadow-cm-light-xs"
+              : "border-cm-border bg-cm-card/60",
+          ].join(" ")}
+        >
+          <span className="font-mono text-[10px] tracking-[0.14em] text-cm-ink-muted uppercase">
+            {t.heroSearch.activeFilters}
+          </span>
+          {dealFilter ? (
+            <span className="rounded-full bg-cm-accent/12 px-2.5 py-1 font-display text-xs font-semibold text-cm-accent">
+              {dealFilter === "rent" ? t.heroSearch.rent : t.heroSearch.sale}
+            </span>
+          ) : null}
+          {activeTypeName ? (
+            <span className="rounded-full bg-cm-rent/12 px-2.5 py-1 font-display text-xs font-semibold text-cm-rent">
+              {activeTypeName}
+            </span>
+          ) : null}
+          <button
+            type="button"
+            onClick={clearHeroFilters}
+            className="ml-auto font-display text-xs font-semibold text-cm-ink-sub underline-offset-2 hover:underline"
+          >
+            {t.heroSearch.clearFilters}
+          </button>
+        </div>
+      ) : null}
+
       {carouselItems.length === 0 ? (
         <div
           className={[
             "flex flex-col items-start gap-3 rounded-xl border p-8",
             isLight
-              ? "border-cm-light-border bg-cm-light-surf shadow-sm"
+              ? "border-cm-light-border-strong bg-cm-light-surf shadow-cm-light-xs"
               : "border-cm-border bg-cm-card/50",
           ].join(" ")}
         >
@@ -127,16 +229,17 @@ export function ListingsCarouselBrowse({
           </button>
         </div>
       ) : (
-        <motion.div
-          key={activeTab}
+        <div
           data-offers-carousel
           className={showSectionHeader ? "-mt-1.5 md:-mt-2" : undefined}
-          initial={reduceMotion ? false : { opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
         >
-          <ContainerCarousel3D listings={carouselItems} onListingClick={handleListingClick} />
-        </motion.div>
+          <ContainerCarousel3D
+            key={activeTab}
+            listings={carouselItems}
+            onListingClick={handleListingClick}
+            surface={tone}
+          />
+        </div>
       )}
 
       <ListingDetailModal
@@ -144,6 +247,7 @@ export function ListingsCarouselBrowse({
         categoryListings={localizedListings}
         categoryTab={activeTab}
         onClose={() => setSelectedListing(null)}
+        surface={tone}
       />
     </>
   );

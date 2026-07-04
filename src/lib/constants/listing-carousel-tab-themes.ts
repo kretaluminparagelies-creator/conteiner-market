@@ -27,8 +27,8 @@ export const listingCarouselTabThemes: Record<ListingCarouselTab, ListingCarouse
     icon: Sparkles,
   },
   used: {
-    accent: "#b8956a",
-    glow: "rgba(184, 149, 106, 0.42)",
+    accent: "#a8581e",
+    glow: "rgba(168, 88, 30, 0.52)",
     icon: Recycle,
   },
   rent: {
