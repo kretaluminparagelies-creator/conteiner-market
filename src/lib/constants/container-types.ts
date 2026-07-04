@@ -47,10 +47,10 @@ export const containerTypes: ContainerTypeSpec[] = [
     isoCode: "22G1",
     lengthFt: 20,
     category: "standard",
-    name: { el: "20' Dry Standard (20DC)", en: "20' Dry Standard (20DC)" },
+    name: { el: "20DC — Dry Standard", en: "20DC — Dry Standard" },
     shortDescription: {
-      el: "Κλειστό γενικής χρήσης · 8'6\" · 33.2 m³",
-      en: "General purpose dry · 8'6\" · 33.2 m³",
+      el: "Κλειστό γενικής χρήσης · 33,2 m³",
+      en: "General purpose dry · 33.2 m³",
     },
     dimensions: {
       external: { length: "20' (6.06m)", width: "8' (2.44m)", height: "8'6\" (2.59m)" },
@@ -65,10 +65,10 @@ export const containerTypes: ContainerTypeSpec[] = [
     isoCode: "25G1",
     lengthFt: 20,
     category: "standard",
-    name: { el: "20' High Cube (20HC)", en: "20' High Cube (20HC)" },
+    name: { el: "20HC — High Cube", en: "20HC — High Cube" },
     shortDescription: {
-      el: "Επιπλέον ύψος 9'6\" · ~37.4 m³",
-      en: "Extra height 9'6\" · ~37.4 m³",
+      el: "Επιπλέον ύψος · ~37,4 m³",
+      en: "Extra height · ~37.4 m³",
     },
     dimensions: {
       external: { length: "20' (6.06m)", width: "8' (2.44m)", height: "9'6\" (2.90m)" },
@@ -83,10 +83,10 @@ export const containerTypes: ContainerTypeSpec[] = [
     isoCode: "42G1",
     lengthFt: 40,
     category: "standard",
-    name: { el: "40' Dry Standard (40DC)", en: "40' Dry Standard (40DC)" },
+    name: { el: "40DC — Dry Standard", en: "40DC — Dry Standard" },
     shortDescription: {
-      el: "Κλειστό γενικής χρήσης · 8'6\" · 67.7 m³",
-      en: "General purpose dry · 8'6\" · 67.7 m³",
+      el: "Κλειστό γενικής χρήσης · 67,7 m³",
+      en: "General purpose dry · 67.7 m³",
     },
     dimensions: {
       external: { length: "40' (12.19m)", width: "8' (2.44m)", height: "8'6\" (2.59m)" },
@@ -101,10 +101,10 @@ export const containerTypes: ContainerTypeSpec[] = [
     isoCode: "45G1",
     lengthFt: 40,
     category: "standard",
-    name: { el: "40' High Cube (40HC)", en: "40' High Cube (40HC)" },
+    name: { el: "40HC — High Cube", en: "40HC — High Cube" },
     shortDescription: {
-      el: "Επιπλέον ύψος 9'6\" · 76.4 m³",
-      en: "Extra height 9'6\" · 76.4 m³",
+      el: "Επιπλέον ύψος · 76,4 m³",
+      en: "Extra height · 76.4 m³",
     },
     dimensions: {
       external: { length: "40' (12.19m)", width: "8' (2.44m)", height: "9'6\" (2.90m)" },
@@ -119,19 +119,18 @@ export const containerTypes: ContainerTypeSpec[] = [
     isoCode: "L5G1",
     lengthFt: 45,
     category: "standard",
-    name: { el: "45' High Cube (45HC)", en: "45' High Cube (45HC)" },
+    name: { el: "45HC — High Cube", en: "45HC — High Cube" },
     shortDescription: {
-      el: "Μέγιστο μήκος & ύψος · 9'6\"",
-      en: "Maximum length & height · 9'6\"",
+      el: "Μέγιστο μήκος & ύψος",
+      en: "Maximum length & height",
     },
     dimensions: {
-      external: { length: "45' (13.72m)", width: "8' (2.44m)", height: "9'6\" (2.90m)" },
-      internal: {
-        length: "44'5\" (~13.55m)",
-        width: "7'8\" (2.35m)",
-        height: "8'10\" (2.70m)",
-      },
+      external: { length: "13,6 m", width: "2,44 m", height: "2,90 m" },
+      internal: { length: "13,55 m", width: "2,35 m", height: "2,70 m" },
     },
+    volume: { cuFt: "2,900", m3: "82" },
+    tareWeight: { kg: "4,800" },
+    payload: { kg: "27,700" },
     specialtyNotes: {
       el: "Επιπλέον μήκος και ύψος για μέγιστη χωρητικότητα.",
       en: "Extra length and height for maximum capacity.",
@@ -142,7 +141,7 @@ export const containerTypes: ContainerTypeSpec[] = [
     isoCode: "L5G1",
     lengthFt: 45,
     category: "specialty",
-    name: { el: "45' Pallet Wide", en: "45' Pallet Wide" },
+    name: { el: "45HC Pallet Wide", en: "45HC Pallet Wide" },
     shortDescription: {
       el: "Ευρύτερο εσωτερικό για euro pallets",
       en: "Wider interior for euro pallets",
@@ -157,10 +156,10 @@ export const containerTypes: ContainerTypeSpec[] = [
     isoCode: "22R1",
     lengthFt: 20,
     category: "specialty",
-    name: { el: "20' Reefer (Ψυγείο)", en: "20' Reefer" },
+    name: { el: "20 Reefer", en: "20 Reefer" },
     shortDescription: {
-      el: "Θερμοκρασία -65°F έως 104°F",
-      en: "Temperature -65°F to 104°F",
+      el: "Ψυχόμενο · -54°C έως +40°C",
+      en: "Refrigerated · -54°C to +40°C",
     },
     specialtyNotes: {
       el: "ISO R1 — ψυχόμενο για τρόφιμα, φάρμακα, cold chain.",
@@ -172,7 +171,7 @@ export const containerTypes: ContainerTypeSpec[] = [
     isoCode: "45R1",
     lengthFt: 40,
     category: "specialty",
-    name: { el: "40' Reefer (Ψυγείο)", en: "40' Reefer" },
+    name: { el: "40 Reefer", en: "40 Reefer" },
     shortDescription: {
       el: "Ψυχόμενο μεγάλου όγκου",
       en: "Large-volume refrigerated",
@@ -291,15 +290,15 @@ export function decodeIsoContainerCode(code: string): {
 
 export const containerTypeGroups: { label: { el: string; en: string }; ids: string[] }[] = [
   {
-    label: { el: "20 πόδια", en: "20-foot" },
+    label: { el: "6 m", en: "6 m" },
     ids: ["20dc", "20hc", "20-reefer", "open-top", "flat-rack", "double-door", "side-door"],
   },
   {
-    label: { el: "40 πόδια", en: "40-foot" },
+    label: { el: "12 m", en: "12 m" },
     ids: ["40dc", "40hc", "40-reefer"],
   },
   {
-    label: { el: "45 πόδια", en: "45-foot" },
+    label: { el: "13,6 m", en: "13.6 m" },
     ids: ["45hc", "45-pallet-wide"],
   },
 ];

@@ -8,19 +8,17 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useMemo, useState, type FormEvent } from "react";
-import { Package, Search, Tags } from "lucide-react";
+import { useRef, useState, type FormEvent } from "react";
+import { Search, Tags } from "lucide-react";
+import { HeroContainerTypeMultiSelect } from "@/components/home/HeroContainerTypeMultiSelect";
 import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { containerTypeGroups, getContainerTypeById } from "@/lib/constants/container-types";
 import { useLocale } from "@/lib/i18n/locale-context";
 import { navigateHomeCarouselSearch } from "@/lib/nav/navigate-offers-route";
 import { cn } from "@/lib/utils";
@@ -31,7 +29,8 @@ const labelClass =
   "mb-1.5 block font-mono text-[10px] tracking-[0.18em] text-cm-ink-muted uppercase";
 
 const triggerClass = cn(
-  "input-light h-auto min-h-[44px] w-full justify-between gap-2 px-3 py-2.5",
+  "flex w-full items-center justify-between gap-2 rounded-lg outline-none select-none",
+  "input-light h-auto min-h-[44px] px-3 py-2.5",
   "font-display text-sm text-cm-ink shadow-cm-light-xs",
   "data-placeholder:text-cm-ink-muted",
   "hover:border-cm-accent/35 hover:shadow-cm-light-sm",
@@ -51,16 +50,14 @@ const itemClass = cn(
   "[&_[data-slot=select-item-indicator]_svg]:text-cm-accent",
 );
 
-const groupLabelClass =
-  "px-2.5 py-1.5 font-mono text-[9px] tracking-[0.16em] text-cm-ink-muted uppercase";
-
 export function HeroSearchBar({ className }: { className?: string }) {
-  const { t, locale } = useLocale();
+  const { t } = useLocale();
   const pathname = usePathname();
   const router = useRouter();
+  const formRef = useRef<HTMLFormElement>(null);
 
   const [deal, setDeal] = useState<string>(ALL);
-  const [containerType, setContainerType] = useState<string>(ALL);
+  const [containerTypes, setContainerTypes] = useState<string[]>([]);
 
   const dealLabels: Record<string, string> = {
     [ALL]: t.heroSearch.dealAll,
@@ -68,20 +65,13 @@ export function HeroSearchBar({ className }: { className?: string }) {
     rent: t.heroSearch.rent,
   };
 
-  const selectedType = containerType !== ALL ? getContainerTypeById(containerType) : null;
-
-  const containerTypeLabel = useMemo(() => {
-    if (!selectedType) return t.heroSearch.containerTypeAll;
-    return locale === "en" ? selectedType.name.en : selectedType.name.el;
-  }, [selectedType, locale, t.heroSearch.containerTypeAll]);
-
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
 
     navigateHomeCarouselSearch(
       {
         deal: deal === ALL ? undefined : (deal as "sale" | "rent"),
-        containerType: containerType === ALL ? undefined : containerType,
+        containerTypes: containerTypes.length > 0 ? containerTypes : undefined,
         tab: deal === "rent" ? "rent" : undefined,
       },
       pathname,
@@ -91,6 +81,7 @@ export function HeroSearchBar({ className }: { className?: string }) {
 
   return (
     <form
+      ref={formRef}
       onSubmit={handleSubmit}
       className={[
         "glass-light flex h-full flex-col justify-center gap-4 rounded-2xl p-5 md:p-6",
@@ -131,51 +122,13 @@ export function HeroSearchBar({ className }: { className?: string }) {
         </Select>
       </div>
 
-      <div className="space-y-1.5">
-        <Label htmlFor="hero-container-type" className={labelClass}>
-          {t.heroSearch.containerTypeLabel}
-        </Label>
-        <Select value={containerType} onValueChange={(value) => setContainerType(value ?? ALL)}>
-          <SelectTrigger id="hero-container-type" className={triggerClass}>
-            <span className="flex min-w-0 items-center gap-2">
-              <Package className="size-4 shrink-0 text-cm-rent" aria-hidden="true" />
-              <SelectValue placeholder={t.heroSearch.containerTypeAll}>
-                {containerTypeLabel}
-              </SelectValue>
-            </span>
-          </SelectTrigger>
-          <SelectContent className={contentClass}>
-            <SelectItem value={ALL} className={itemClass}>
-              <span className="font-display text-sm">{t.heroSearch.containerTypeAll}</span>
-            </SelectItem>
-            {containerTypeGroups.map((group) => (
-              <SelectGroup key={group.label.el}>
-                <SelectLabel className={groupLabelClass}>
-                  {locale === "en" ? group.label.en : group.label.el}
-                </SelectLabel>
-                {group.ids.map((id) => {
-                  const spec = getContainerTypeById(id);
-                  if (!spec) return null;
-                  const name = locale === "en" ? spec.name.en : spec.name.el;
-                  const summary =
-                    locale === "en" ? spec.shortDescription.en : spec.shortDescription.el;
-
-                  return (
-                    <SelectItem key={id} value={id} className={itemClass}>
-                      <span className="flex min-w-0 flex-col gap-0.5 text-left">
-                        <span className="font-display text-sm leading-tight">{name}</span>
-                        <span className="font-mono text-[10px] leading-snug text-cm-ink-muted">
-                          ISO {spec.isoCode} · {summary}
-                        </span>
-                      </span>
-                    </SelectItem>
-                  );
-                })}
-              </SelectGroup>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      <HeroContainerTypeMultiSelect
+        selectedIds={containerTypes}
+        onChange={setContainerTypes}
+        triggerClass={triggerClass}
+        labelClass={labelClass}
+        panelAnchorRef={formRef}
+      />
 
       <button
         type="submit"

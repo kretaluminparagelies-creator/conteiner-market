@@ -39,12 +39,27 @@ export function listingMatchesContainerType(listing: Listing, containerTypeId: s
   return resolveListingContainerTypeId(listing.type) === containerTypeId;
 }
 
+export function listingMatchesAnyContainerType(listing: Listing, containerTypeIds: string[]): boolean {
+  if (containerTypeIds.length === 0) return true;
+  const listingTypeId = resolveListingContainerTypeId(listing.type);
+  if (!listingTypeId) return false;
+  return containerTypeIds.includes(listingTypeId);
+}
+
 export function filterListingsByContainerType(
   listings: Listing[],
   containerTypeId?: string,
 ): Listing[] {
   if (!containerTypeId || !isKnownContainerTypeId(containerTypeId)) return listings;
   return listings.filter((listing) => listingMatchesContainerType(listing, containerTypeId));
+}
+
+export function filterListingsByContainerTypes(
+  listings: Listing[],
+  containerTypeIds?: string[],
+): Listing[] {
+  if (!containerTypeIds?.length) return listings;
+  return listings.filter((listing) => listingMatchesAnyContainerType(listing, containerTypeIds));
 }
 
 /** Container types that appear in at least one active listing */

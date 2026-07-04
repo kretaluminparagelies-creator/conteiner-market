@@ -6,8 +6,11 @@
  */
 
 import { emitHomeListingTabChange, isListingCarouselTab } from "@/lib/nav/home-listing-tab-sync";
-import { isKnownContainerTypeId } from "@/lib/constants/container-types";
 import type { ListingCarouselTab } from "@/lib/utils/listing-carousel-filters";
+import {
+  parseContainerTypeParam,
+  serializeContainerTypeParam,
+} from "@/lib/utils/container-type-params";
 
 export const listingsHref = "/listings";
 
@@ -21,17 +24,20 @@ export const dealParam = "deal";
 
 export type HomeCarouselSearchParams = {
   tab?: ListingCarouselTab;
-  containerType?: string;
+  containerTypes?: string[];
   deal?: "sale" | "rent";
 };
 
 const navHeightPx = 60;
 const sectionGapPx = 12;
+/** Extra scroll past section top — keep carousel in view without overshooting */
+const carouselScrollExtraPx = 0;
+const carouselLeadBelowNavPx = 100;
 
 export const homeCarouselFilterEvent = "cm-home-carousel-filter";
 
 export type HomeCarouselFilterEventDetail = {
-  containerType: string | null;
+  containerTypes: string[];
   deal: "sale" | "rent" | null;
   source: "hero" | "section";
 };
@@ -54,27 +60,45 @@ export function buildHomeCarouselUrl(
 
   const search = new URLSearchParams();
   if (options.tab) search.set(listingCarouselTabParam, options.tab);
-  if (options.containerType && isKnownContainerTypeId(options.containerType)) {
-    search.set(containerTypeParam, options.containerType);
-  }
+  const containerTypesQuery = serializeContainerTypeParam(options.containerTypes ?? []);
+  if (containerTypesQuery) search.set(containerTypeParam, containerTypesQuery);
   if (options.deal === "sale" || options.deal === "rent") {
     search.set(dealParam, options.deal);
   }
 
   const query = search.toString();
-  return `/${query ? `?${query}` : ""}#${offersCarouselSectionId}`;
+  return query ? `/?${query}` : "/";
+}
+
+export function stripHomeCarouselHashFromUrl(): void {
+  if (typeof window === "undefined") return;
+  if (window.location.hash !== `#${offersCarouselSectionId}`) return;
+  window.history.replaceState(null, "", window.location.pathname + window.location.search);
+}
+
+let homeLoadedViaReload: boolean | null = null;
+
+/** True once per full page load when the user refreshed (F5 / restart). */
+export function isHomePageReload(): boolean {
+  if (typeof window === "undefined") return false;
+  if (homeLoadedViaReload === null) {
+    const nav = performance.getEntriesByType("navigation")[0] as
+      | PerformanceNavigationTiming
+      | undefined;
+    homeLoadedViaReload = nav?.type === "reload";
+  }
+  return homeLoadedViaReload;
 }
 
 export function parseHomeCarouselSearch(search: string): HomeCarouselSearchParams {
   const params = new URLSearchParams(search);
   const tab = params.get(listingCarouselTabParam);
-  const containerType = params.get(containerTypeParam);
   const deal = params.get(dealParam);
+  const containerTypes = parseContainerTypeParam(params.get(containerTypeParam));
 
   return {
     tab: tab && isListingCarouselTab(tab) ? tab : undefined,
-    containerType:
-      containerType && isKnownContainerTypeId(containerType) ? containerType : undefined,
+    containerTypes: containerTypes.length > 0 ? containerTypes : undefined,
     deal: deal === "sale" || deal === "rent" ? deal : undefined,
   };
 }
@@ -90,7 +114,14 @@ export function scrollToOffersCarousel(
   const options: HomeCarouselSearchParams =
     typeof params === "string" ? { tab: params } : (params ?? {});
 
-  const top = section.getBoundingClientRect().top + window.scrollY - navHeightPx - sectionGapPx;
+  const carousel = section.querySelector<HTMLElement>("[data-offers-carousel]");
+  const target = carousel ?? section;
+  const top =
+    target.getBoundingClientRect().top +
+    window.scrollY -
+    navHeightPx -
+    (carousel ? carouselLeadBelowNavPx : sectionGapPx) +
+    (carousel ? carouselScrollExtraPx : carouselScrollExtraPx / 2);
 
   window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
   window.history.replaceState(null, "", buildHomeCarouselUrl(options));
@@ -121,7 +152,7 @@ export function navigateHomeCarouselSearch(
 ): void {
   if (options.tab) emitHomeListingTabChange(options.tab, "hero");
   emitHomeCarouselFilterChange({
-    containerType: options.containerType ?? null,
+    containerTypes: options.containerTypes ?? [],
     deal: options.deal ?? null,
     source: "hero",
   });

@@ -26,7 +26,7 @@ import {
   type ListingCarouselTab,
 } from "@/lib/utils/listing-carousel-filters";
 import { getContainerTypeById } from "@/lib/constants/container-types";
-import { filterListingsByContainerType } from "@/lib/utils/container-type-match";
+import { filterListingsByContainerTypes } from "@/lib/utils/container-type-match";
 import {
   buildHomeCarouselUrl,
   homeCarouselFilterEvent,
@@ -40,8 +40,8 @@ type ListingsCarouselBrowseProps = {
   listings: Listing[];
   /** Initial tab — home defaults to offers */
   initialTab?: ListingCarouselTab;
-  /** Hero / URL container type filter */
-  initialContainerType?: string;
+  /** Hero / URL container type filter (one or more) */
+  initialContainerTypes?: string[];
   /** Hero / URL deal filter */
   initialDeal?: ListingType;
   /** Called after tab change — e.g. sync URL on /listings */
@@ -60,7 +60,7 @@ function filterListingsByDeal(listings: Listing[], deal?: ListingType): Listing[
 export function ListingsCarouselBrowse({
   listings,
   initialTab = defaultListingCarouselTab,
-  initialContainerType,
+  initialContainerTypes,
   initialDeal,
   onTabChange,
   showSectionHeader = false,
@@ -69,13 +69,13 @@ export function ListingsCarouselBrowse({
   const { locale, t } = useLocale();
   const isLight = tone === "light";
   const [activeTab, setActiveTab] = useState<ListingCarouselTab>(initialTab);
-  const [containerTypeFilter, setContainerTypeFilter] = useState<string | undefined>(
-    initialContainerType,
+  const [containerTypesFilter, setContainerTypesFilter] = useState<string[]>(
+    initialContainerTypes ?? [],
   );
   const [dealFilter, setDealFilter] = useState<ListingType | undefined>(initialDeal);
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
 
-  const hasHeroFilters = Boolean(containerTypeFilter || dealFilter);
+  const hasHeroFilters = containerTypesFilter.length > 0 || Boolean(dealFilter);
 
   const tabCounts = useMemo(
     () =>
@@ -83,18 +83,18 @@ export function ListingsCarouselBrowse({
         listingCarouselTabs.map((tab) => {
           const byTab = filterListingsByCarouselTab(listings, tab);
           const byDeal = filterListingsByDeal(byTab, dealFilter);
-          const byType = filterListingsByContainerType(byDeal, containerTypeFilter);
+          const byType = filterListingsByContainerTypes(byDeal, containerTypesFilter);
           return [tab, byType.length];
         }),
       ) as Record<ListingCarouselTab, number>,
-    [listings, containerTypeFilter, dealFilter],
+    [listings, containerTypesFilter, dealFilter],
   );
 
   const filteredListings = useMemo(() => {
     const byTab = filterListingsByCarouselTab(listings, activeTab);
     const byDeal = filterListingsByDeal(byTab, dealFilter);
-    return filterListingsByContainerType(byDeal, containerTypeFilter);
-  }, [listings, activeTab, dealFilter, containerTypeFilter]);
+    return filterListingsByContainerTypes(byDeal, containerTypesFilter);
+  }, [listings, activeTab, dealFilter, containerTypesFilter]);
 
   const localizedListings = filteredListings.map((listing) => localizeListing(listing, locale));
   const carouselItems = mapListingsToCarousel(localizedListings);
@@ -107,9 +107,23 @@ export function ListingsCarouselBrowse({
   };
 
   const clearHeroFilters = () => {
-    setContainerTypeFilter(undefined);
+    setContainerTypesFilter([]);
     setDealFilter(undefined);
     window.history.replaceState(null, "", buildHomeCarouselUrl({ tab: activeTab }));
+  };
+
+  const removeContainerTypeFilter = (id: string) => {
+    const next = containerTypesFilter.filter((entry) => entry !== id);
+    setContainerTypesFilter(next);
+    window.history.replaceState(
+      null,
+      "",
+      buildHomeCarouselUrl({
+        tab: activeTab,
+        containerTypes: next,
+        deal: dealFilter,
+      }),
+    );
   };
 
   useEffect(() => {
@@ -123,10 +137,10 @@ export function ListingsCarouselBrowse({
     };
 
     const handleFilterChange = (event: Event) => {
-      const { containerType, deal, source } = (event as CustomEvent<HomeCarouselFilterEventDetail>)
+      const { containerTypes, deal, source } = (event as CustomEvent<HomeCarouselFilterEventDetail>)
         .detail;
       if (source === "section") return;
-      setContainerTypeFilter(containerType ?? undefined);
+      setContainerTypesFilter(containerTypes);
       setDealFilter(deal ?? undefined);
       setSelectedListing(null);
     };
@@ -146,14 +160,13 @@ export function ListingsCarouselBrowse({
 
   if (listings.length === 0) return null;
 
-  const activeTypeSpec = containerTypeFilter
-    ? getContainerTypeById(containerTypeFilter)
-    : undefined;
-  const activeTypeName = activeTypeSpec
-    ? locale === "en"
-      ? activeTypeSpec.name.en
-      : activeTypeSpec.name.el
-    : null;
+  const activeTypeChips = containerTypesFilter
+    .map((id) => getContainerTypeById(id))
+    .filter((spec): spec is NonNullable<typeof spec> => Boolean(spec))
+    .map((spec) => ({
+      id: spec.id,
+      name: locale === "en" ? spec.name.en : spec.name.el,
+    }));
 
   return (
     <>
@@ -182,11 +195,17 @@ export function ListingsCarouselBrowse({
               {dealFilter === "rent" ? t.heroSearch.rent : t.heroSearch.sale}
             </span>
           ) : null}
-          {activeTypeName ? (
-            <span className="rounded-full bg-cm-rent/12 px-2.5 py-1 font-display text-xs font-semibold text-cm-rent">
-              {activeTypeName}
-            </span>
-          ) : null}
+          {activeTypeChips.map((chip) => (
+            <button
+              key={chip.id}
+              type="button"
+              onClick={() => removeContainerTypeFilter(chip.id)}
+              className="rounded-full bg-cm-rent/12 px-2.5 py-1 font-display text-xs font-semibold text-cm-rent hover:bg-cm-rent/20"
+              title={t.heroSearch.clearFilters}
+            >
+              {chip.name} ×
+            </button>
+          ))}
           <button
             type="button"
             onClick={clearHeroFilters}
