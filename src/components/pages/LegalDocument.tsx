@@ -55,6 +55,11 @@ export function LegalDocument({
                     ))}
                   </ul>
                 ) : null}
+                {section.paragraphsAfterBullets?.map((paragraph) => (
+                  <p key={paragraph} className="text-sm leading-relaxed text-cm-sub">
+                    {paragraph}
+                  </p>
+                ))}
               </div>
             </article>
           ))}

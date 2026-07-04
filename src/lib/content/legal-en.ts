@@ -93,70 +93,110 @@ export const termsSections: LegalSection[] = [
 
 export const privacySections: LegalSection[] = [
   {
-    id: "controller",
-    title: "1. Data controller",
+    id: "intro",
+    title: "1. Introduction",
     paragraphs: [
-      `${companyName} — ${siteName}`,
-      `Email: ${contactEmail}`,
-      "Greece — nationwide service",
+      `${companyName} (the "Company"), administrator of ${siteName}, respects the privacy of visitors to ${siteUrl} (the "Website") and is committed to protecting their personal data.`,
+      "This Privacy Policy explains how personal data is collected, used, and protected when you visit and use the Website, in accordance with the General Data Protection Regulation (GDPR — EU Regulation 2016/679) and Greek law.",
     ],
   },
   {
     id: "data",
-    title: "2. Data we collect",
-    paragraphs: ["We may process the following, depending on how you contact us:"],
+    title: "2. Information we collect",
+    paragraphs: ["When using the Website, the following information may be collected:"],
     bullets: [
-      "Contact details (name, email, phone) when you send us a message",
-      "Message content / quote request",
-      "Technical data (IP, browser, device) via server logs",
+      "Name and contact details",
+      "Email address",
+      "Phone number",
+      "Information submitted via contact forms or quote requests (e.g. container type, location)",
+      "Technical data such as IP address, browser type, and access device",
       "Language preferences (localStorage) — see Cookie Policy",
+    ],
+    paragraphsAfterBullets: [
+      "This information is collected only when provided voluntarily or through Website analytics tools.",
     ],
   },
   {
     id: "purpose",
-    title: "3. Purposes of processing",
+    title: "3. Use of information",
     paragraphs: ["Data is used to:"],
     bullets: [
-      "Respond to purchase, rental, or space rental requests",
-      "Prepare quotes and conclude agreements",
-      "Operate and secure the Website",
-      "Comply with legal obligations",
+      "Respond to contact requests",
+      "Provide information about containers, offers, and services",
+      "Improve Website operation",
+      "Ensure system security and proper operation",
+      "Comply with legal obligations, where applicable",
+    ],
+    paragraphsAfterBullets: [
+      "The Company does not sell or share personal data with third parties for advertising purposes.",
     ],
   },
   {
-    id: "legal-basis",
-    title: "4. Legal basis (GDPR)",
-    paragraphs: ["Processing is based on:"],
-    bullets: [
-      "Performance of pre-contractual/contractual measures (Article 6(1)(b))",
-      "Legitimate interest in Website operation and security (Article 6(1)(f))",
-      "Consent where required (e.g. non-essential cookies — when enabled)",
-    ],
-  },
-  {
-    id: "retention",
-    title: "5. Retention period",
+    id: "protection",
+    title: "4. Data protection",
     paragraphs: [
-      "Contact data is kept as long as needed for the purpose of collection and in line with legal obligations (e.g. tax/accounting where applicable).",
-      "Technical logs: usually up to 12 months, unless a longer period is required for security.",
+      "The Company takes appropriate technical and organisational measures to protect personal data from unauthorised access, loss, or misuse.",
+      "However, no data transmission over the internet can be considered completely secure.",
+    ],
+  },
+  {
+    id: "cookies",
+    title: "5. Cookies",
+    paragraphs: ["The Website may use cookies and similar technologies to:"],
+    bullets: [
+      "improve user experience",
+      "analyse traffic (when relevant tools are enabled)",
+      "operate essential Website services",
+    ],
+    paragraphsAfterBullets: ["For more information, see the Cookie Policy."],
+  },
+  {
+    id: "third-party",
+    title: "6. Third-party services",
+    paragraphs: [
+      "The Website may use or integrate third-party services in the future, such as:",
+    ],
+    bullets: [
+      "Google Analytics",
+      "Social networks (Facebook, Instagram, YouTube)",
+      "Hosting and technical support providers",
+    ],
+    paragraphsAfterBullets: [
+      "We do not currently use Google Analytics or third-party marketing cookies; if enabled, this policy will be updated and consent will be requested where required by law. These services may collect data under their own privacy policies.",
     ],
   },
   {
     id: "rights",
-    title: "6. Your rights",
+    title: "7. User rights",
     paragraphs: [
-      "You have the right of access, rectification, erasure, restriction, portability, and objection, as well as withdrawal of consent where applicable.",
+      "Under the General Data Protection Regulation (GDPR), users have the right to:",
     ],
     bullets: [
-      "Request at: " + contactEmail,
-      "Complaint to the Hellenic Data Protection Authority (www.dpa.gr)",
+      "request access to their personal data",
+      "request rectification or erasure of data",
+      "request restriction of processing",
+      "object to processing",
+      "request data portability, where applicable",
+      "withdraw consent where processing is based on consent",
+    ],
+    paragraphsAfterBullets: [
+      `For any request, contact us at ${contactEmail}. You also have the right to lodge a complaint with the Hellenic Data Protection Authority (www.dpa.gr).`,
     ],
   },
   {
-    id: "sharing",
-    title: "7. Sharing with third parties",
+    id: "changes",
+    title: "8. Policy changes",
     paragraphs: [
-      "We do not sell your personal data. Data may be shared with hosting/technical support providers (processors under contractual obligations) or when required by law.",
+      "The Company reserves the right to amend this Privacy Policy at any time. Changes will be published on this page.",
+    ],
+  },
+  {
+    id: "contact",
+    title: "9. Contact details",
+    paragraphs: [
+      `${companyName} — ${siteName}`,
+      `Email: ${contactEmail}`,
+      "Greece — nationwide service",
     ],
   },
 ];
