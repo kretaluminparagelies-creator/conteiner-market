@@ -21,6 +21,7 @@ const staticRoutes = [
   "/oroi",
   "/aporrito",
   "/cookies",
+  "/epistrofes",
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

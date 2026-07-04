@@ -28,6 +28,7 @@
 | /oroi | Terms of use (EL + EN) |
 | /aporrito | Privacy policy / GDPR (EL + EN) |
 | /cookies | Cookie policy (EL + EN) |
+| /epistrofes | Returns & withdrawal policy (EL + EN) |
 
 Redirects:
 - /prosfores → /listings

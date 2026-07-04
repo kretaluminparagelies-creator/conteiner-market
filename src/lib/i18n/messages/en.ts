@@ -32,6 +32,7 @@ export const en: Messages = {
     terms: "Terms",
     privacy: "Privacy",
     cookies: "Cookies",
+    returns: "Returns",
   },
   hero: {
     ticker:
@@ -346,6 +347,14 @@ export const en: Messages = {
         metaDescription: "Cookie and local storage (localStorage) policy — Container Market GR.",
         title: "Cookie policy",
         intro: "Information about cookies, localStorage, and sessionStorage used on this website.",
+      },
+      returns: {
+        metaTitle: "Returns & Withdrawal Policy",
+        metaDescription:
+          "14-day withdrawal right, return conditions, and refunds — Container Market GR / Logiworkpass P.C.",
+        title: "Returns & withdrawal policy",
+        intro:
+          "How to exercise your right of withdrawal, when returns are accepted, and when refunds are issued.",
       },
     },
   },

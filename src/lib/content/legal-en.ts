@@ -280,3 +280,56 @@ export const legalMeta = {
   contactEmail,
   lastUpdated: "July 2026",
 };
+
+export const returnsSections: LegalSection[] = [
+  {
+    id: "withdrawal",
+    title: "1. Right of withdrawal",
+    paragraphs: [
+      "Under applicable EU and Greek law, consumers have the right to withdraw within 14 calendar days from the date of delivery of the product or container.",
+    ],
+  },
+  {
+    id: "exercise",
+    title: "2. Exercising the right",
+    paragraphs: [
+      `To exercise the right of withdrawal, the customer must inform the Company in writing by email at ${contactEmail} before the deadline expires.`,
+    ],
+  },
+  {
+    id: "conditions",
+    title: "3. Return conditions",
+    paragraphs: ["For a return to be accepted:"],
+    bullets: [
+      "The product or container must be in its original condition",
+      "It must not have been damaged through misuse",
+      "It must be accompanied by proof of purchase",
+    ],
+    paragraphsAfterBullets: [
+      "The Company reserves the right to reject returns that do not meet the above conditions.",
+    ],
+  },
+  {
+    id: "shipping",
+    title: "4. Return shipping costs",
+    paragraphs: [
+      "Return shipping costs are borne by the customer, unless the product is defective or incorrect.",
+    ],
+  },
+  {
+    id: "refund",
+    title: "5. Refunds",
+    paragraphs: [
+      "After inspection of the product, refunds are issued within 14 days using the same payment method.",
+    ],
+  },
+  {
+    id: "contact",
+    title: "6. Contact details",
+    paragraphs: [
+      `${companyName} — ${siteName}`,
+      `Email: ${contactEmail}`,
+      "Greece — nationwide service",
+    ],
+  },
+];

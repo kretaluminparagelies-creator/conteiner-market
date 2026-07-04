@@ -55,4 +55,9 @@ export const footerLegal: NavItem[] = [
     href: "/cookies",
     description: "Πολιτική cookies",
   },
+  {
+    label: "Επιστροφές",
+    href: "/epistrofes",
+    description: "Πολιτική επιστροφών και υπαναχώρησης",
+  },
 ];

@@ -26,6 +26,7 @@ export function Footer({ compact = false }: FooterProps) {
     { href: "/oroi", label: t.footer.terms },
     { href: "/aporrito", label: t.footer.privacy },
     { href: "/cookies", label: t.footer.cookies },
+    { href: "/epistrofes", label: t.footer.returns },
   ];
 
   if (compact) {

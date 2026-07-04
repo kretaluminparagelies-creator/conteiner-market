@@ -31,6 +31,7 @@ export const el = {
     terms: "Όροι",
     privacy: "Απόρρητο",
     cookies: "Cookies",
+    returns: "Επιστροφές",
   },
   hero: {
     ticker:
@@ -352,6 +353,14 @@ export const el = {
         title: "Πολιτική cookies",
         intro:
           "Πληροφορίες για cookies, localStorage και sessionStorage που χρησιμοποιεί ο ιστότοπος.",
+      },
+      returns: {
+        metaTitle: "Πολιτική Επιστροφών & Υπαναχώρησης",
+        metaDescription:
+          "Δικαίωμα υπαναχώρησης 14 ημερών, προϋποθέσεις επιστροφής και επιστροφή χρημάτων — Container Market GR / Logiworkpass P.C.",
+        title: "Πολιτική επιστροφών & υπαναχώρησης",
+        intro:
+          "Πώς ασκείται το δικαίωμα υπαναχώρησης, υπό ποιες προϋποθέσεις γίνονται δεκτές επιστροφές και πότε επιστρέφονται τα χρήματα.",
       },
     },
   },

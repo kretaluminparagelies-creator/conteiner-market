@@ -39,6 +39,7 @@ function resolvePageMeta(pathname: string, t: Messages): PageMeta {
   if (pathname === "/oroi") return pickMeta(pages.legal.terms);
   if (pathname === "/aporrito") return pickMeta(pages.legal.privacy);
   if (pathname === "/cookies") return pickMeta(pages.legal.cookies);
+  if (pathname === "/epistrofes") return pickMeta(pages.legal.returns);
 
   return {
     title: `${site.nameFull} — ${t.siteMeta.tagline}`,
