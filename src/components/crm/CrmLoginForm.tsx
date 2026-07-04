@@ -1,15 +1,14 @@
 /**
  * @file CrmLoginForm.tsx
- * @description Admin login form (browser session — reliable cookie handling)
+ * @description Admin login — server actions (no browser fetch to Supabase)
  * @author Katsoulakis
  * @copyright 2026 Katsoulakis. All rights reserved.
  */
 
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import { loginAction, requestPasswordResetAction } from "@/lib/crm/actions/auth-actions";
 
 const inputClass =
   "w-full rounded-lg border border-cm-border bg-cm-bg px-3 py-2.5 text-sm text-cm-text outline-none transition-colors focus:border-cm-accent";
@@ -20,28 +19,7 @@ type CrmLoginFormProps = {
   nextPath: string;
 };
 
-function mapLoginError(message: string): string {
-  const lower = message.toLowerCase();
-  if (lower.includes("invalid supabaseurl") || lower.includes("invalid url")) {
-    return "Λάθος Supabase URL στο Vercel. Πρέπει: https://sltptoydeqwcspyuedsr.supabase.co";
-  }
-  if (lower.includes("supabase env")) {
-    return message;
-  }
-  if (lower.includes("invalid login") || lower.includes("invalid credentials")) {
-    return "Λάθος email ή κωδικός.";
-  }
-  if (lower.includes("email not confirmed")) {
-    return "Το email δεν έχει επιβεβαιωθεί. Στο Supabase → Users → Confirm user.";
-  }
-  if (lower.includes("too many requests")) {
-    return "Πολλές προσπάθειες. Περίμενε 1–2 λεπτά.";
-  }
-  return message;
-}
-
 export function CrmLoginForm({ nextPath }: CrmLoginFormProps) {
-  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
@@ -49,33 +27,12 @@ export function CrmLoginForm({ nextPath }: CrmLoginFormProps) {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
-
+    setInfo(null);
     const formData = new FormData(event.currentTarget);
-    const email = String(formData.get("email") ?? "").trim();
-    const password = String(formData.get("password") ?? "");
-    const next = String(formData.get("next") ?? "/admin").trim() || "/admin";
-
-    if (!email || !password) {
-      setError("Συμπλήρωσε email και κωδικό.");
-      return;
-    }
 
     startTransition(async () => {
-      try {
-        const supabase = createSupabaseBrowserClient();
-        const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
-
-        if (signInError) {
-          setError(mapLoginError(signInError.message));
-          return;
-        }
-
-        router.refresh();
-        router.push(next.startsWith("/admin") ? next : "/admin");
-      } catch (err) {
-        const message = err instanceof Error ? err.message : "Άγνωστο σφάλμα";
-        setError(mapLoginError(message));
-      }
+      const result = await loginAction(formData);
+      if (result?.error) setError(result.error);
     });
   };
 
@@ -91,21 +48,9 @@ export function CrmLoginForm({ nextPath }: CrmLoginFormProps) {
     }
 
     startTransition(async () => {
-      try {
-        const supabase = createSupabaseBrowserClient();
-        const redirectTo = `${window.location.origin}/admin/reset-password`;
-        const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
-
-        if (resetError) {
-          setError(mapLoginError(resetError.message));
-          return;
-        }
-
-        setInfo("Στάλθηκε email reset. Άνοιξε τον σύνδεσμο και όρισε νέο κωδικό.");
-      } catch (err) {
-        const message = err instanceof Error ? err.message : "Άγνωστο σφάλμα";
-        setError(mapLoginError(message));
-      }
+      const result = await requestPasswordResetAction(email);
+      if (result.error) setError(result.error);
+      if (result.success) setInfo(result.success);
     });
   };
 
@@ -172,7 +117,7 @@ export function CrmLoginForm({ nextPath }: CrmLoginFormProps) {
       </button>
 
       <p className="text-center text-xs leading-relaxed text-cm-muted">
-        Ο λογαριασμός δημιουργείται στο Supabase → Authentication → Users (Add user).
+        Λογαριασμός από Supabase → Authentication → Users (Add user, Auto Confirm ON).
       </p>
     </form>
   );
