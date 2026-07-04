@@ -16,65 +16,77 @@ const contactEmail = site.contactEmail;
 export const termsSections: LegalSection[] = [
   {
     id: "intro",
-    title: "1. General",
+    title: "1. Introduction",
     paragraphs: [
-      `The website ${siteUrl} (the "Website") is operated by ${companyName} (the "Company"), which is also its administrator. The Company sells and rents its own shipping containers and provides storage space rental services in Greece.`,
-      `Use of the Website is governed by these Terms of Use. By accessing and using the Website, you confirm that you have read, understood, and accept these terms without reservation. If you do not agree, you must not use the Website.`,
-      "These terms may be amended at any time. Continued use after changes constitutes acceptance of the updated terms.",
+      `This website ${siteUrl} (the "Website") is operated by ${companyName} (the "Company"), administrator of ${siteName}. The Company sells and rents its own shipping containers and provides storage space rental services in Greece.`,
+      "By accessing and using the Website, you agree to these Terms of Use. If you do not agree, please do not use the Website.",
+      "Processing of personal data is governed by the Website Privacy Policy, in accordance with the GDPR (EU Regulation 2016/679) and Greek law.",
     ],
   },
   {
-    id: "services",
-    title: "2. Services & offers",
+    id: "product-info",
+    title: "2. Product information",
     paragraphs: [
-      "Information, prices, and container availability shown on the Website (including Offers) are indicative and do not constitute a binding offer unless agreed otherwise in writing.",
-      "A final agreement for purchase, container rental, or storage space rental is formed only after contact with the Company and confirmation of terms, price, delivery, and availability.",
+      "The Company makes every effort to ensure that information about containers and offers (descriptions, prices, technical specifications, ISO types, and photos) is accurate and up to date.",
+      "However, typographical errors or variations may occur, and the Company reserves the right to correct them without prior notice.",
+      "Information and prices shown on the Website are indicative and do not constitute a binding offer unless agreed otherwise in writing after contact with us.",
     ],
-    bullets: [
-      "Container purchase — sale of our own containers",
-      "Container rental — lease of our own containers",
-      "Space rental — storage in an organised facility",
-      "Buy-back from customers — after evaluation and quote",
+  },
+  {
+    id: "prices",
+    title: "3. Prices",
+    paragraphs: [
+      "All prices are shown in euros (€), unless stated otherwise (e.g. /month for rental).",
+      "The Company reserves the right to change prices without prior notice.",
+      "In case of an incorrect price due to technical or human error, the Company reserves the right not to proceed with an agreement or to cancel it after informing you.",
+    ],
+  },
+  {
+    id: "availability",
+    title: "4. Product availability",
+    paragraphs: [
+      "Container and offer availability may change without notice.",
+      "The Company is not liable for unavailability of a specific type or offer. Final availability is confirmed after contact.",
     ],
   },
   {
     id: "ip",
-    title: "3. Intellectual property",
+    title: "5. Intellectual property",
     paragraphs: [
-      "All Website content (text, graphics, logos, photos, designs, video, software, structure) is protected by applicable intellectual property law and belongs to the Company or its lawful rights holders.",
-      "Copying, reproduction, modification, distribution, or commercial exploitation without prior written permission is prohibited. For permission requests: " +
-        contactEmail +
-        ".",
-    ],
-  },
-  {
-    id: "links",
-    title: "4. Third-party links",
-    paragraphs: [
-      "The Website may contain links to third-party sites. The Company does not control their content or practices and is not liable for damages arising from their use.",
-    ],
-  },
-  {
-    id: "privacy-ref",
-    title: "5. Personal data",
-    paragraphs: [
-      "Processing of personal data is governed by the Website Privacy Policy, in accordance with the GDPR (EU Regulation 2016/679) and Greek law.",
+      "All Website content (text, photos, logos, graphics, design, software, and structure) is the intellectual property of the Company or its lawful rights holders and is protected by applicable law.",
+      `Copying, reproduction, or use of the content without prior written permission is prohibited. For permission requests: ${contactEmail}.`,
     ],
   },
   {
     id: "liability",
     title: "6. Limitation of liability",
     paragraphs: [
-      "The Company makes every effort to provide accurate and up-to-date information but does not guarantee uninterrupted, error-free operation or freedom from viruses or malicious software.",
-      "The Company is not liable for indirect, incidental, or consequential damages arising from use or inability to use the Website, except where required by law.",
+      "The Company is not liable for any direct or indirect damage arising from use of the Website or the information it contains, except where required by law.",
+      "The Company makes every effort to operate the Website securely but does not guarantee uninterrupted, error-free operation or freedom from viruses or malicious software.",
     ],
   },
   {
-    id: "law",
-    title: "7. Governing law — Contact",
+    id: "links",
+    title: "7. Third-party links",
     paragraphs: [
-      "These terms are governed by Greek law. The courts of Greece have exclusive jurisdiction over any dispute.",
-      `For questions about these Terms of Use: ${contactEmail}.`,
+      "The Website may include links to third-party websites. The Company is not responsible for the content or policies of those websites.",
+    ],
+  },
+  {
+    id: "changes",
+    title: "8. Changes to terms",
+    paragraphs: [
+      "The Company reserves the right to amend these Terms of Use at any time. Changes are published on this page. Continued use after changes constitutes acceptance of the updated terms.",
+      "These terms are governed by Greek law. The courts of Greece have jurisdiction over any dispute.",
+    ],
+  },
+  {
+    id: "company",
+    title: "9. Company details",
+    paragraphs: [
+      `${companyName} — ${siteName}`,
+      `Email: ${contactEmail}`,
+      "Greece — nationwide service",
     ],
   },
 ];
