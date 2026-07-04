@@ -11,6 +11,7 @@ import { revalidatePath } from "next/cache";
 import { requireCrmSession } from "@/lib/crm/auth";
 import { createLead, updateLeadStatus } from "@/lib/crm/lead-store";
 import type { LeadSource, LeadStatus } from "@/lib/crm/types";
+import { sendLeadNotification } from "@/lib/email/send-lead-notification";
 
 export async function updateLeadStatusAction(leadId: string, status: LeadStatus) {
   await requireCrmSession();
@@ -37,7 +38,22 @@ export async function submitContactLeadAction(formData: FormData) {
   }
 
   try {
-    await createLead({ name, email, phone: phone || undefined, message, source, listingSlug });
+    const leadInput = {
+      name,
+      email,
+      phone: phone || undefined,
+      message,
+      source,
+      listingSlug,
+    };
+    await createLead(leadInput);
+
+    try {
+      await sendLeadNotification(leadInput);
+    } catch (notifyError) {
+      console.error("[submitContactLeadAction] email notify failed:", notifyError);
+    }
+
     return { success: true };
   } catch (error) {
     console.error("[submitContactLeadAction]", error);

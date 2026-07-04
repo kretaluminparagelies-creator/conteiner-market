@@ -78,7 +78,7 @@ Home anchor: `/#prosfores` scrolls to the featured carousel on the home page.
 
 ## Contact
 
-- Email: info@containermarket.gr
+- Email: support@logiworkpass.com
 - Phone: see /epikoinonia
 - Coverage: Greece nationwide
 - Company: Logiworkpass P.C.

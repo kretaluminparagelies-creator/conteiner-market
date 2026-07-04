@@ -5,6 +5,8 @@
  * @copyright 2026 Katsoulakis. All rights reserved.
  */
 
+import { site } from "@/lib/constants/site";
+
 export type LegalSection = {
   id: string;
   title: string;
@@ -15,7 +17,7 @@ export type LegalSection = {
 const companyName = "Logiworkpass P.C.";
 const siteName = "Container Market GR";
 const siteUrl = "containermarket.gr";
-const contactEmail = "info@containermarket.gr";
+const contactEmail = site.contactEmail;
 
 export const termsSections: LegalSection[] = [
   {

@@ -30,7 +30,7 @@ const organizationSchema = {
   contactPoint: {
     "@type": "ContactPoint",
     contactType: "customer service",
-    email: "info@containermarket.gr",
+    email: site.contactEmail,
     availableLanguage: ["Greek", "English"],
     areaServed: "GR",
   },
@@ -42,7 +42,7 @@ const localBusinessSchema = {
   name: site.nameFull,
   url: site.url,
   description: site.description,
-  email: "info@containermarket.gr",
+  email: site.contactEmail,
   address: {
     "@type": "PostalAddress",
     addressCountry: "GR",

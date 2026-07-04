@@ -13,6 +13,8 @@ export const site = {
     "Container Market GR — πουλάμε και ενοικιάζουμε δικά μας shipping containers στην Ελλάδα. Άμεση επαφή, χωρίς ενδιάμεσους, παράδοση σε όλη τη χώρα.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   author: "Logiworkpass P.C.",
+  /** Shared with LogiWork — Resend verified @logiworkpass.com */
+  contactEmail: "support@logiworkpass.com",
   locale: "el_GR",
   language: "el",
   copyrightYear: 2026,

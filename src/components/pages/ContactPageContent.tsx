@@ -8,9 +8,9 @@
 "use client";
 
 import { ContactLeadForm } from "@/components/pages/ContactLeadForm";
+import { site } from "@/lib/constants/site";
 import { useLocale } from "@/lib/i18n/locale-context";
 
-const contactEmail = "info@containermarket.gr";
 const contactPhone = "+30 210 000 0000";
 
 export function ContactPageContent() {
@@ -31,7 +31,11 @@ export function ContactPageContent() {
             <p className="font-mono text-[10px] tracking-[0.2em] text-cm-muted uppercase">
               {t.common.email}
             </p>
-            <p className="mt-2 text-cm-text">{contactEmail}</p>
+            <p className="mt-2 text-cm-text">
+              <a href={`mailto:${site.contactEmail}`} className="text-cm-accent hover:underline">
+                {site.contactEmail}
+              </a>
+            </p>
           </div>
           <div>
             <p className="font-mono text-[10px] tracking-[0.2em] text-cm-muted uppercase">

@@ -6,11 +6,12 @@
  */
 
 import type { LegalSection } from "@/lib/content/legal-el";
+import { site } from "@/lib/constants/site";
 
 const companyName = "Logiworkpass P.C.";
 const siteName = "Container Market GR";
 const siteUrl = "containermarket.gr";
-const contactEmail = "info@containermarket.gr";
+const contactEmail = site.contactEmail;
 
 export const termsSections: LegalSection[] = [
   {
