@@ -211,6 +211,7 @@ export const en: Messages = {
   common: {
     email: "Email",
     phone: "Phone",
+    name: "Name",
     area: "Area",
     lastUpdated: "Last updated",
   },
@@ -279,6 +280,10 @@ export const en: Messages = {
       title: "Get in touch",
       intro: "For buying, selling, or renting containers — we are here for you.",
       areaValue: "Greece — nationwide coverage",
+      formTitle: "Contact form",
+      formMessage: "Message",
+      formSubmit: "Send",
+      formSuccess: "Your message was sent. We will get back to you soon.",
     },
     listings: {
       metaTitle: "Container Offers",

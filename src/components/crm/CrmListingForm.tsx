@@ -9,12 +9,17 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
+import { CrmListingImages } from "@/components/crm/CrmListingImages";
 import {
   containerTypeOptions,
   emptyListingForm,
   type ListingFormInput,
 } from "@/lib/crm/listing-form";
-import { createListingAction, updateListingAction } from "@/lib/crm/actions/listing-actions";
+import {
+  createListingAction,
+  deleteListingAction,
+  updateListingAction,
+} from "@/lib/crm/actions/listing-actions";
 import type { ListingType } from "@/lib/types/listing";
 
 type CrmListingFormProps = {
@@ -275,20 +280,14 @@ export function CrmListingForm({ mode, initial, slug }: CrmListingFormProps) {
             onChange={(e) => setField("descriptionEn", e.target.value)}
           />
         </div>
-
-        <div>
-          <label className={labelClass} htmlFor="image">
-            Εικόνα (path)
-          </label>
-          <input
-            id="image"
-            className={inputClass}
-            value={form.image}
-            onChange={(e) => setField("image", e.target.value)}
-            placeholder="Κενό = placeholder ανά τύπο"
-          />
-        </div>
       </section>
+
+      <CrmListingImages
+        image={form.image}
+        images={form.images}
+        onImageChange={(image) => setField("image", image)}
+        onGalleryChange={(images) => setField("images", images)}
+      />
 
       <div className="flex flex-wrap gap-3">
         <button
@@ -305,6 +304,25 @@ export function CrmListingForm({ mode, initial, slug }: CrmListingFormProps) {
         >
           Ακύρωση
         </button>
+        {mode === "edit" && slug ? (
+          <button
+            type="button"
+            disabled={pending}
+            onClick={() => {
+              if (!window.confirm("Διαγραφή προσφοράς; Δεν αναιρείται.")) return;
+              startTransition(async () => {
+                try {
+                  await deleteListingAction(slug);
+                } catch (err) {
+                  setError(err instanceof Error ? err.message : "Αποτυχία διαγραφής.");
+                }
+              });
+            }}
+            className="rounded-lg border border-red-500/40 px-5 py-2.5 font-display text-sm text-red-300 hover:bg-red-500/10 disabled:opacity-50"
+          >
+            Διαγραφή
+          </button>
+        ) : null}
       </div>
     </form>
   );

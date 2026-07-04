@@ -211,6 +211,7 @@ export const el = {
   common: {
     email: "Email",
     phone: "Τηλέφωνο",
+    name: "Όνομα",
     area: "Περιοχή",
     lastUpdated: "Τελευταία ενημέρωση",
   },
@@ -280,6 +281,10 @@ export const el = {
       title: "Επικοινωνήστε μαζί μας",
       intro: "Για αγορά, πώληση ή ενοικίαση κοντέινερ — είμαστε εδώ για εσάς.",
       areaValue: "Ελλάδα — πανελλαδική κάλυψη",
+      formTitle: "Φόρμα επικοινωνίας",
+      formMessage: "Μήνυμα",
+      formSubmit: "Αποστολή",
+      formSuccess: "Το μήνυμά σας στάλθηκε. Θα επικοινωνήσουμε σύντομα.",
     },
     listings: {
       metaTitle: "Προσφορές Κοντέινερ",

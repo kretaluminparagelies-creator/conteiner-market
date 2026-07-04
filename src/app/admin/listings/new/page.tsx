@@ -12,7 +12,7 @@ export default function AdminNewListingPage() {
   return (
     <CrmShell
       title="Νέα προσφορά"
-      description="Πρόσθεσε κοντέινερ — αποθηκεύεται στο listings.json (preview)."
+      description="Πρόσθεσε κοντέινερ — αποθηκεύεται στο Supabase."
     >
       <CrmListingForm mode="create" />
     </CrmShell>

@@ -7,6 +7,7 @@
 
 "use client";
 
+import { ContactLeadForm } from "@/components/pages/ContactLeadForm";
 import { useLocale } from "@/lib/i18n/locale-context";
 
 const contactEmail = "info@containermarket.gr";
@@ -45,6 +46,8 @@ export function ContactPageContent() {
             <p className="mt-2 text-cm-text">{page.areaValue}</p>
           </div>
         </div>
+
+        <ContactLeadForm />
       </div>
     </section>
   );

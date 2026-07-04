@@ -10,6 +10,7 @@ import "server-only";
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { ListingFormInput } from "@/lib/crm/listing-form";
+import { resolveListingImages } from "@/lib/crm/listing-images";
 import { site } from "@/lib/constants/site";
 import {
   formatPriceEur,
@@ -19,6 +20,7 @@ import {
 } from "@/lib/repositories/listing-format";
 import {
   createListingInSupabase,
+  deleteListingInSupabase,
   fetchListingBySlugFromSupabase,
   fetchListingsFromSupabase,
   updateListingInSupabase,
@@ -53,6 +55,7 @@ function buildListing(input: ListingFormInput, id: string, slug: string): Listin
   const unit = input.listingType === "rent" && !input.unit ? "/μήνα" : input.unit;
   const unitEn =
     input.listingType === "rent" && !input.unitEn ? (unit ? "/month" : "") : input.unitEn;
+  const { image, images } = resolveListingImages(input);
 
   return {
     id,
@@ -69,7 +72,8 @@ function buildListing(input: ListingFormInput, id: string, slug: string): Listin
     listingType: input.listingType,
     stockCondition: input.stockCondition,
     isOffer: input.isOffer,
-    image: input.image.trim() || placeholderImageForType(input.type),
+    image,
+    images: images ?? undefined,
     description: input.description.trim(),
     descriptionEn: input.descriptionEn.trim() || undefined,
     active: input.active,
@@ -149,6 +153,22 @@ export async function updateListingOnDisk(
   await writeListingsToDisk(listings);
 
   return listing;
+}
+
+export async function deleteListing(slug: string): Promise<void> {
+  if (isSupabaseAdminConfigured()) {
+    await deleteListingInSupabase(slug);
+    return;
+  }
+
+  const listings = await readListingsFromDisk();
+  const next = listings.filter((l) => l.slug !== slug);
+
+  if (next.length === listings.length) {
+    throw new Error("Listing not found");
+  }
+
+  await writeListingsToDisk(next);
 }
 
 /** Whether public reads should come from Supabase */

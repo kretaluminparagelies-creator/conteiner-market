@@ -6,8 +6,9 @@
  */
 
 import type { ListingFormInput } from "@/lib/crm/listing-form";
+import { resolveListingImages } from "@/lib/crm/listing-images";
 import { site } from "@/lib/constants/site";
-import { formatPriceEur, placeholderImageForType } from "@/lib/repositories/listing-format";
+import { formatPriceEur } from "@/lib/repositories/listing-format";
 import type { ListingInsert, ListingRow } from "@/lib/supabase/server";
 import type { Listing } from "@/lib/types/listing";
 
@@ -39,6 +40,7 @@ export function listingFormToInsert(input: ListingFormInput, slug: string): List
   const unit = input.listingType === "rent" && !input.unit ? "/μήνα" : input.unit;
   const unitEn =
     input.listingType === "rent" && !input.unitEn ? (unit ? "/month" : "") : input.unitEn;
+  const { image, images } = resolveListingImages(input);
 
   return {
     slug,
@@ -54,8 +56,8 @@ export function listingFormToInsert(input: ListingFormInput, slug: string): List
     listing_type: input.listingType,
     stock_condition: input.stockCondition,
     is_offer: input.isOffer,
-    image: input.image.trim() || placeholderImageForType(input.type),
-    images: null,
+    image,
+    images,
     description: input.description.trim(),
     description_en: input.descriptionEn.trim() || null,
     active: input.active,

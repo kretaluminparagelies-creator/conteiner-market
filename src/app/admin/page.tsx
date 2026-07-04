@@ -22,7 +22,7 @@ export default async function AdminDashboardPage() {
   return (
     <CrmShell
       title="Πίνακας ελέγχου"
-      description="Επισκόπηση προσφορών και αιτημάτων — preview mode."
+      description="Επισκόπηση προσφορών και αιτημάτων."
     >
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <CrmStatCard label="Ενεργά στο site" value={activeListings} accent="orange" />
@@ -31,7 +31,7 @@ export default async function AdminDashboardPage() {
         <CrmStatCard
           label="Νέα αιτήματα"
           value={await countLeadsByStatus("new")}
-          hint="Demo δεδομένα"
+          hint="Από φόρμα επικοινωνίας"
           accent="neutral"
         />
       </div>

@@ -8,9 +8,9 @@
 import "server-only";
 
 import type { ListingFormInput } from "@/lib/crm/listing-form";
+import { resolveListingImages } from "@/lib/crm/listing-images";
 import {
   formatPriceEur,
-  placeholderImageForType,
   slugifyListing,
   uniqueSlug,
 } from "@/lib/repositories/listing-format";
@@ -128,6 +128,7 @@ export async function updateListingInSupabase(
   const unit = input.listingType === "rent" && !input.unit ? "/μήνα" : input.unit;
   const unitEn =
     input.listingType === "rent" && !input.unitEn ? (unit ? "/month" : "") : input.unitEn;
+  const { image, images } = resolveListingImages(input);
 
   const { data, error } = await client
     .from("listings")
@@ -145,7 +146,8 @@ export async function updateListingInSupabase(
       listing_type: input.listingType,
       stock_condition: input.stockCondition,
       is_offer: input.isOffer,
-      image: input.image.trim() || placeholderImageForType(input.type),
+      image,
+      images,
       description: input.description.trim(),
       description_en: input.descriptionEn.trim() || null,
       active: input.active,
@@ -160,4 +162,13 @@ export async function updateListingInSupabase(
   }
 
   return listingRowToListing(data as ListingRow);
+}
+
+export async function deleteListingInSupabase(slug: string): Promise<void> {
+  const client = getSupabaseAdminClient();
+  const { error } = await client.from("listings").delete().eq("slug", slug);
+
+  if (error) {
+    throw new Error(`Supabase listing delete failed: ${error.message}`);
+  }
 }

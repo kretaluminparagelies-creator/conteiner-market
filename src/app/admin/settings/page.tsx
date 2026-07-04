@@ -1,25 +1,29 @@
 /**
  * @file page.tsx
- * @description CRM settings — Supabase connection status
+ * @description CRM settings — backend, account, password
  * @author Katsoulakis
  * @copyright 2026 Katsoulakis. All rights reserved.
  */
 
+import { CrmPasswordForm } from "@/components/crm/CrmPasswordForm";
 import { CrmShell } from "@/components/crm/CrmShell";
 import {
-  crmServiceRoleNotice,
   getCrmConnectionStatus,
   getCrmLeadsSourceLabel,
   getCrmListingsSourceLabel,
   isCrmWriteEnabled,
 } from "@/lib/crm/connection";
+import { isCrmAuthEnabled } from "@/lib/crm/auth";
+import { getCrmSessionUser } from "@/lib/supabase/server-auth";
 
-export default function AdminSettingsPage() {
+export default async function AdminSettingsPage() {
   const status = getCrmConnectionStatus();
   const writeEnabled = isCrmWriteEnabled();
+  const authEnabled = isCrmAuthEnabled();
+  const user = await getCrmSessionUser();
 
   return (
-    <CrmShell title="Ρυθμίσεις" description="Σύνδεση backend και εταιρικά στοιχεία.">
+    <CrmShell title="Ρυθμίσεις" description="Σύνδεση backend, λογαριασμός και ασφάλεια.">
       <div className="max-w-2xl space-y-6">
         <section className="rounded-xl border border-cm-border bg-cm-card/50 p-6">
           <h2 className="font-display text-base font-semibold">Backend</h2>
@@ -55,34 +59,42 @@ export default function AdminSettingsPage() {
           </dl>
         </section>
 
-        {status === "connected" && !writeEnabled ? (
-          <section className="rounded-xl border border-amber-500/40 bg-amber-500/5 p-6 text-sm text-amber-100/90">
-            {crmServiceRoleNotice}
+        {authEnabled ? (
+          <section className="rounded-xl border border-cm-border bg-cm-card/50 p-6">
+            <h2 className="font-display text-base font-semibold">Λογαριασμός</h2>
+            <p className="mt-2 text-sm text-cm-sub">
+              Συνδεδεμένος ως{" "}
+              <span className="font-mono text-cm-text">{user?.email ?? "—"}</span>
+            </p>
+            <div className="mt-6">
+              <h3 className="font-display text-sm font-semibold">Αλλαγή κωδικού</h3>
+              <div className="mt-4">
+                <CrmPasswordForm />
+              </div>
+            </div>
+          </section>
+        ) : null}
+
+        {authEnabled ? (
+          <section className="rounded-xl border border-dashed border-cm-border p-6 text-sm text-cm-sub">
+            <h2 className="font-display text-base font-semibold text-cm-text">Νέος διαχειριστής</h2>
+            <ol className="mt-3 list-decimal space-y-2 pl-5 leading-relaxed">
+              <li>Supabase → Authentication → Users → Add user</li>
+              <li>Email + προσωρινός κωδικός (min 8 χαρακτήρες)</li>
+              <li>Σύνδεση στο <code className="text-cm-text">/admin/login</code></li>
+              <li>Αλλαγή κωδικού από αυτή τη σελίδα</li>
+            </ol>
           </section>
         ) : null}
 
         <section className="rounded-xl border border-cm-border bg-cm-card/50 p-6">
-          <h2 className="font-display text-base font-semibold">Vercel env vars</h2>
-          <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-relaxed text-cm-sub">
-            <li>
-              <code className="text-cm-text">NEXT_PUBLIC_SUPABASE_URL</code> — public reads
-            </li>
-            <li>
-              <code className="text-cm-text">NEXT_PUBLIC_SUPABASE_ANON_KEY</code> — public reads
-            </li>
-            <li>
-              <code className="text-cm-text">SUPABASE_SERVICE_ROLE_KEY</code> — CRM writes (server
-              only)
-            </li>
-            <li>
-              <code className="text-cm-text">NEXT_PUBLIC_SITE_URL</code> —{" "}
-              https://conteiner-market.vercel.app
-            </li>
-          </ul>
-        </section>
-
-        <section className="rounded-xl border border-dashed border-cm-border p-6 text-sm text-cm-muted">
-          Auth (login) θα προστεθεί πριν το production admin — τώρα preview τοπικά / στο Vercel.
+          <h2 className="font-display text-base font-semibold">Φωτογραφίες listings</h2>
+          <p className="mt-3 text-sm leading-relaxed text-cm-sub">
+            Ανέβασμα από τη φόρμα προσφοράς (CRM → Προσφορές → Νέα/Επεξεργασία). Αποθηκεύονται στο
+            Supabase Storage bucket <code className="text-cm-text">listing-images</code>. Τρέξε
+            migration <code className="text-cm-text">20260704040000_storage_listing_images.sql</code>{" "}
+            αν δεν το έχεις κάνει.
+          </p>
         </section>
       </div>
     </CrmShell>

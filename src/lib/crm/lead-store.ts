@@ -7,10 +7,19 @@
 
 import "server-only";
 
-import type { Lead, LeadStatus } from "@/lib/crm/types";
+import type { Lead, LeadSource, LeadStatus } from "@/lib/crm/types";
 import { countLeadsByStatus as countMockLeadsByStatus, getMockLeads } from "@/lib/crm/mock-leads";
 import { isSupabaseAdminConfigured } from "@/lib/supabase/env";
 import { getSupabaseAdminClient, type LeadRow } from "@/lib/supabase/server";
+
+export type CreateLeadInput = {
+  name: string;
+  email: string;
+  phone?: string;
+  message: string;
+  source: LeadSource;
+  listingSlug?: string;
+};
 
 function leadRowToLead(row: LeadRow): Lead {
   return {
@@ -48,6 +57,24 @@ export async function readLeads(): Promise<Lead[]> {
   }
 }
 
+export async function readLeadById(id: string): Promise<Lead | undefined> {
+  if (!isSupabaseAdminConfigured()) {
+    return getMockLeads().find((lead) => lead.id === id);
+  }
+
+  const { data, error } = await getSupabaseAdminClient()
+    .from("leads")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(`Supabase lead fetch failed: ${error.message}`);
+  }
+
+  return data ? leadRowToLead(data as LeadRow) : undefined;
+}
+
 export async function countLeadsByStatus(status: LeadStatus): Promise<number> {
   if (!isSupabaseAdminConfigured()) {
     return countMockLeadsByStatus(status);
@@ -68,4 +95,49 @@ export async function countLeadsByStatus(status: LeadStatus): Promise<number> {
     console.error("[lead-store] Supabase count failed, falling back to demo leads:", error);
     return countMockLeadsByStatus(status);
   }
+}
+
+export async function updateLeadStatus(id: string, status: LeadStatus): Promise<Lead> {
+  if (!isSupabaseAdminConfigured()) {
+    throw new Error("Lead updates require Supabase service role.");
+  }
+
+  const { data, error } = await getSupabaseAdminClient()
+    .from("leads")
+    .update({ status, updated_at: new Date().toISOString() })
+    .eq("id", id)
+    .select("*")
+    .single();
+
+  if (error) {
+    throw new Error(`Supabase lead update failed: ${error.message}`);
+  }
+
+  return leadRowToLead(data as LeadRow);
+}
+
+export async function createLead(input: CreateLeadInput): Promise<Lead> {
+  if (!isSupabaseAdminConfigured()) {
+    throw new Error("Lead storage requires Supabase service role.");
+  }
+
+  const { data, error } = await getSupabaseAdminClient()
+    .from("leads")
+    .insert({
+      name: input.name,
+      email: input.email,
+      phone: input.phone ?? null,
+      message: input.message,
+      source: input.source,
+      listing_slug: input.listingSlug ?? null,
+      status: "new",
+    })
+    .select("*")
+    .single();
+
+  if (error) {
+    throw new Error(`Supabase lead create failed: ${error.message}`);
+  }
+
+  return leadRowToLead(data as LeadRow);
 }

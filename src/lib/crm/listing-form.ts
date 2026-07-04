@@ -16,7 +16,10 @@ export const containerTypeOptions = [
   "40ft Dry",
   "40ft High Cube",
   "20ft Reefer",
+  "40ft Reefer",
   "20ft Open Top",
+  "20ft Flat Rack",
+  "20ft Side Opener",
   "45ft Pallet Wide",
 ] as const;
 
@@ -33,6 +36,7 @@ export type ListingFormInput = {
   description: string;
   descriptionEn: string;
   image: string;
+  images: string[];
   active: boolean;
 };
 
@@ -49,10 +53,13 @@ export const emptyListingForm: ListingFormInput = {
   description: "",
   descriptionEn: "",
   image: "",
+  images: [],
   active: true,
 };
 
 export function listingToFormInput(listing: Listing): ListingFormInput {
+  const gallery = listing.images?.length ? listing.images : listing.image ? [listing.image] : [];
+
   return {
     type: listing.type,
     listingType: listing.listingType,
@@ -66,6 +73,7 @@ export function listingToFormInput(listing: Listing): ListingFormInput {
     description: listing.description,
     descriptionEn: listing.descriptionEn ?? "",
     image: listing.image,
+    images: gallery,
     active: listing.active,
   };
 }

@@ -7,6 +7,8 @@
 
 "use client";
 
+import { CrmLogoutButton } from "@/components/crm/CrmLogoutButton";
+import { useCrmSession } from "@/components/crm/CrmSessionProvider";
 import {
   ExternalLink,
   LayoutDashboard,
@@ -33,6 +35,7 @@ function isActive(href: string, pathname: string): boolean {
 
 export function CrmNav() {
   const pathname = usePathname();
+  const { adminEmail } = useCrmSession();
 
   return (
     <nav className="flex h-full flex-col">
@@ -70,7 +73,13 @@ export function CrmNav() {
         })}
       </ul>
 
-      <div className="border-t border-cm-border p-4">
+      <div className="space-y-2 border-t border-cm-border p-4">
+        {adminEmail ? (
+          <p className="truncate px-3 font-mono text-[10px] text-cm-muted" title={adminEmail}>
+            {adminEmail}
+          </p>
+        ) : null}
+        {adminEmail ? <CrmLogoutButton /> : null}
         <Link
           href={crmSiteLink}
           className="flex items-center gap-2 font-mono text-[11px] text-cm-muted transition-colors hover:text-cm-accent"

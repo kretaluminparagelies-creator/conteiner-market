@@ -1,11 +1,13 @@
 /**
  * @file CrmLeadsTable.tsx
- * @description Leads table for CRM preview
+ * @description Leads table with status updates
  * @author Katsoulakis
  * @copyright 2026 Katsoulakis. All rights reserved.
  */
 
-import { leadSourceLabels, leadStatusLabels, leadStatusStyles } from "@/lib/crm/lead-labels";
+import Link from "next/link";
+import { CrmLeadStatusSelect } from "@/components/crm/CrmLeadStatusSelect";
+import { leadSourceLabels } from "@/lib/crm/lead-labels";
 import type { Lead } from "@/lib/crm/types";
 
 type CrmLeadsTableProps = {
@@ -34,7 +36,7 @@ export function CrmLeadsTable({ leads }: CrmLeadsTableProps) {
   return (
     <div className="overflow-hidden rounded-xl border border-cm-border">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[720px] text-left text-sm">
+        <table className="w-full min-w-[820px] text-left text-sm">
           <thead className="border-b border-cm-border bg-cm-surf/50 font-mono text-[10px] tracking-[0.12em] text-cm-muted uppercase">
             <tr>
               <th className="px-4 py-3">Ημερομηνία</th>
@@ -42,6 +44,7 @@ export function CrmLeadsTable({ leads }: CrmLeadsTableProps) {
               <th className="px-4 py-3">Πηγή</th>
               <th className="px-4 py-3">Κατάσταση</th>
               <th className="px-4 py-3">Μήνυμα</th>
+              <th className="px-4 py-3" />
             </tr>
           </thead>
           <tbody className="divide-y divide-cm-border/70 bg-cm-card/30">
@@ -56,17 +59,18 @@ export function CrmLeadsTable({ leads }: CrmLeadsTableProps) {
                 </td>
                 <td className="px-4 py-3 text-cm-sub">{leadSourceLabels[lead.source]}</td>
                 <td className="px-4 py-3">
-                  <span
-                    className={[
-                      "inline-flex rounded-full px-2 py-0.5 font-mono text-[10px] tracking-wide uppercase",
-                      leadStatusStyles[lead.status],
-                    ].join(" ")}
-                  >
-                    {leadStatusLabels[lead.status]}
-                  </span>
+                  <CrmLeadStatusSelect leadId={lead.id} status={lead.status} />
                 </td>
                 <td className="max-w-xs truncate px-4 py-3 text-cm-sub" title={lead.message}>
                   {lead.message}
+                </td>
+                <td className="px-4 py-3 text-right">
+                  <Link
+                    href={`/admin/leads/${lead.id}`}
+                    className="font-mono text-[11px] text-cm-accent hover:underline"
+                  >
+                    Λεπτομέρειες
+                  </Link>
                 </td>
               </tr>
             ))}
