@@ -178,7 +178,7 @@ export function HeroContainerTypeMultiSelect({
                     onClick={clearAll}
                     className="font-display text-xs font-semibold text-cm-accent hover:underline"
                   >
-                    {t.heroSearch.clearFilters}
+                    {t.heroSearch.clearSelection}
                   </button>
                 ) : null}
               </div>

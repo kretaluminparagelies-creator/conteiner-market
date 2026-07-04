@@ -47,7 +47,7 @@ export const containerTypes: ContainerTypeSpec[] = [
     isoCode: "22G1",
     lengthFt: 20,
     category: "standard",
-    name: { el: "20DC — Dry Standard", en: "20DC — Dry Standard" },
+    name: { el: "20DC — Κλειστό standard", en: "20DC — Dry Standard" },
     shortDescription: {
       el: "Κλειστό γενικής χρήσης · 33,2 m³",
       en: "General purpose dry · 33.2 m³",
@@ -65,7 +65,7 @@ export const containerTypes: ContainerTypeSpec[] = [
     isoCode: "25G1",
     lengthFt: 20,
     category: "standard",
-    name: { el: "20HC — High Cube", en: "20HC — High Cube" },
+    name: { el: "20HC — Ύψηλό κοντέινερ", en: "20HC — High Cube" },
     shortDescription: {
       el: "Επιπλέον ύψος · ~37,4 m³",
       en: "Extra height · ~37.4 m³",
@@ -83,7 +83,7 @@ export const containerTypes: ContainerTypeSpec[] = [
     isoCode: "42G1",
     lengthFt: 40,
     category: "standard",
-    name: { el: "40DC — Dry Standard", en: "40DC — Dry Standard" },
+    name: { el: "40DC — Κλειστό standard", en: "40DC — Dry Standard" },
     shortDescription: {
       el: "Κλειστό γενικής χρήσης · 67,7 m³",
       en: "General purpose dry · 67.7 m³",
@@ -101,7 +101,7 @@ export const containerTypes: ContainerTypeSpec[] = [
     isoCode: "45G1",
     lengthFt: 40,
     category: "standard",
-    name: { el: "40HC — High Cube", en: "40HC — High Cube" },
+    name: { el: "40HC — Ύψηλό κοντέινερ", en: "40HC — High Cube" },
     shortDescription: {
       el: "Επιπλέον ύψος · 76,4 m³",
       en: "Extra height · 76.4 m³",
@@ -119,7 +119,7 @@ export const containerTypes: ContainerTypeSpec[] = [
     isoCode: "L5G1",
     lengthFt: 45,
     category: "standard",
-    name: { el: "45HC — High Cube", en: "45HC — High Cube" },
+    name: { el: "45HC — Ύψηλό κοντέινερ", en: "45HC — High Cube" },
     shortDescription: {
       el: "Μέγιστο μήκος & ύψος",
       en: "Maximum length & height",
@@ -141,14 +141,14 @@ export const containerTypes: ContainerTypeSpec[] = [
     isoCode: "L5G1",
     lengthFt: 45,
     category: "specialty",
-    name: { el: "45HC Pallet Wide", en: "45HC Pallet Wide" },
+    name: { el: "45HC — Ευρύ για παλέτες", en: "45HC — Pallet Wide" },
     shortDescription: {
-      el: "Ευρύτερο εσωτερικό για euro pallets",
-      en: "Wider interior for euro pallets",
+      el: "Ευρύτερο εσωτερικό για ευρωπαλέτες",
+      en: "Wider interior for Euro pallets",
     },
     specialtyNotes: {
-      el: "Εσωτερικό πλάτος για παλέτες 2.500×1.244m — logistics υψηλού όγκου.",
-      en: "Interior width for 2.500×1.244m pallets — high-volume logistics.",
+      el: "Εσωτερικό πλάτος για παλέτες 2.500×1.244 m — μεταφορές υψηλού όγκου.",
+      en: "Interior width for 2.500×1.244 m pallets — high-volume logistics.",
     },
   },
   {
@@ -156,14 +156,14 @@ export const containerTypes: ContainerTypeSpec[] = [
     isoCode: "22R1",
     lengthFt: 20,
     category: "specialty",
-    name: { el: "20 Reefer", en: "20 Reefer" },
+    name: { el: "20 Reefer — Ψυγείο", en: "20 Reefer — Refrigerated" },
     shortDescription: {
       el: "Ψυχόμενο · -54°C έως +40°C",
       en: "Refrigerated · -54°C to +40°C",
     },
     specialtyNotes: {
-      el: "ISO R1 — ψυχόμενο για τρόφιμα, φάρμακα, cold chain.",
-      en: "ISO R1 — refrigerated for food, pharma, cold chain.",
+      el: "ISO R1 — ψυχόμενο για τρόφιμα, φάρμακα και εφοδιαστική αλυσίδα ψύξης.",
+      en: "ISO R1 — refrigerated for food, pharmaceuticals, and cold chain logistics.",
     },
   },
   {
@@ -171,14 +171,14 @@ export const containerTypes: ContainerTypeSpec[] = [
     isoCode: "45R1",
     lengthFt: 40,
     category: "specialty",
-    name: { el: "40 Reefer", en: "40 Reefer" },
+    name: { el: "40 Reefer — Ψυγείο", en: "40 Reefer — Refrigerated" },
     shortDescription: {
       el: "Ψυχόμενο μεγάλου όγκου",
       en: "Large-volume refrigerated",
     },
     specialtyNotes: {
-      el: "ISO R1 — cold chain logistics, catering, χονδρικό εμπόριο.",
-      en: "ISO R1 — cold chain logistics, catering, wholesale.",
+      el: "ISO R1 — εφοδιαστική αλυσίδα ψύξης, catering, χονδρικό εμπόριο.",
+      en: "ISO R1 — cold chain logistics, catering, and wholesale.",
     },
   },
   {
@@ -186,7 +186,7 @@ export const containerTypes: ContainerTypeSpec[] = [
     isoCode: "22U1",
     lengthFt: 20,
     category: "specialty",
-    name: { el: "Open Top", en: "Open Top" },
+    name: { el: "Open Top — Ανοιχτή οροφή", en: "Open Top — Removable roof" },
     shortDescription: {
       el: "Αφαιρούμενη οροφή · φόρτωση με γερανό",
       en: "Removable roof · crane loading",
@@ -201,9 +201,9 @@ export const containerTypes: ContainerTypeSpec[] = [
     isoCode: "22P1",
     lengthFt: 20,
     category: "specialty",
-    name: { el: "Flat Rack", en: "Flat Rack" },
+    name: { el: "Flat Rack — Πλατφόρμα", en: "Flat Rack — Platform" },
     shortDescription: {
-      el: "Χωρίς τοίχους/οροφή · out-of-gauge",
+      el: "Χωρίς τοίχους/οροφή · εκτός κανονικών διαστάσεων",
       en: "No sides/roof · out-of-gauge cargo",
     },
     specialtyNotes: {
@@ -216,7 +216,7 @@ export const containerTypes: ContainerTypeSpec[] = [
     isoCode: "22G1",
     lengthFt: 20,
     category: "specialty",
-    name: { el: "Double Door", en: "Double Door" },
+    name: { el: "Double Door — Διπλή πόρτα", en: "Double Door — Both ends" },
     shortDescription: {
       el: "Πόρτες και στα δύο άκρα",
       en: "Doors at both ends",
@@ -231,14 +231,14 @@ export const containerTypes: ContainerTypeSpec[] = [
     isoCode: "22G1",
     lengthFt: 20,
     category: "specialty",
-    name: { el: "Side Door / Open Side", en: "Side Door / Open Side" },
+    name: { el: "Side Door — Πλαϊνή πόρτα", en: "Side Door — Full side opening" },
     shortDescription: {
       el: "Πλήρες άνοιγμα πλαϊνής πλευράς",
       en: "Full side opening access",
     },
     specialtyNotes: {
-      el: "Open Side Full Open — forklift, retail pop-up, events.",
-      en: "Open Side Full Open — forklift, retail pop-up, events.",
+      el: "Πλήρες άνοιγμα πλευράς — φόρτωση με κλάρκ, pop-up κατάστημα, events.",
+      en: "Full side opening — forklift loading, retail pop-up, events.",
     },
   },
 ];
@@ -290,15 +290,15 @@ export function decodeIsoContainerCode(code: string): {
 
 export const containerTypeGroups: { label: { el: string; en: string }; ids: string[] }[] = [
   {
-    label: { el: "6 m", en: "6 m" },
+    label: { el: "Μήκος ~6 m", en: "Length ~6 m" },
     ids: ["20dc", "20hc", "20-reefer", "open-top", "flat-rack", "double-door", "side-door"],
   },
   {
-    label: { el: "12 m", en: "12 m" },
+    label: { el: "Μήκος ~12 m", en: "Length ~12 m" },
     ids: ["40dc", "40hc", "40-reefer"],
   },
   {
-    label: { el: "13,6 m", en: "13.6 m" },
+    label: { el: "Μήκος ~13,6 m", en: "Length ~13.6 m" },
     ids: ["45hc", "45-pallet-wide"],
   },
 ];

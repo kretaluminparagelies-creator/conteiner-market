@@ -123,7 +123,8 @@ export const en: Messages = {
     containerTypeLabel: "Container type",
     containerTypeAll: "All types",
     containerTypePick: "Select types",
-    containerTypesSelected: "{count} selected",
+    containerTypesSelected: "{count} types selected",
+    clearSelection: "Clear selection",
     sizeLabel: "Size",
     sizeAll: "All sizes",
     submit: "Search",
@@ -149,7 +150,7 @@ export const en: Messages = {
       {
         question: "How do I find a container?",
         answer:
-          "On the home page, use the search bar (Type + Size) or open «Offers» in the menu. Filter by buy or rent and size (20ft, 40ft, 45ft).",
+          "On the home page, use the search bar (Deal + Container type) or open «Offers» in the menu. Pick one or more types (20DC, 40HC, Reefer, etc.) — the (i) icon next to each type shows dimensions, volume, and typical uses.",
       },
       {
         question: "What do Buy and Rent mean?",

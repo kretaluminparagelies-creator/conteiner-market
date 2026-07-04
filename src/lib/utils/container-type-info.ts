@@ -27,10 +27,19 @@ function metricFromDimension(raw: string): string {
   return match?.[1]?.trim() ?? raw.trim();
 }
 
-export function formatInternalDimensions(spec: ContainerTypeSpec): string | null {
+function localizeMetricText(text: string, locale: "el" | "en"): string {
+  if (locale === "el") return text.replace(/(\d)\.(\d+)/g, "$1,$2");
+  return text.replace(/(\d),(\d+)/g, "$1.$2");
+}
+
+export function formatInternalDimensions(
+  spec: ContainerTypeSpec,
+  locale: "el" | "en",
+): string | null {
   const internal = spec.dimensions?.internal;
   if (!internal) return null;
-  return `${metricFromDimension(internal.length)} × ${metricFromDimension(internal.width)} × ${metricFromDimension(internal.height)}`;
+  const dims = `${metricFromDimension(internal.length)} × ${metricFromDimension(internal.width)} × ${metricFromDimension(internal.height)}`;
+  return localizeMetricText(dims, locale);
 }
 
 export function buildContainerTypeInfoRows(
@@ -40,20 +49,26 @@ export function buildContainerTypeInfoRows(
 ): ContainerTypeInfoRow[] {
   const rows: ContainerTypeInfoRow[] = [{ label: labels.iso, value: spec.isoCode }];
 
-  const internal = formatInternalDimensions(spec);
+  const internal = formatInternalDimensions(spec, locale);
   if (internal) rows.push({ label: labels.internalDims, value: internal });
 
   if (spec.volume?.m3) {
-    const m3 = spec.volume.m3.replace(".", locale === "el" ? "," : ".");
+    const m3 = localizeMetricText(spec.volume.m3, locale);
     rows.push({ label: labels.volume, value: `${m3} m³` });
   }
 
   if (spec.tareWeight?.kg) {
-    rows.push({ label: labels.tare, value: `${spec.tareWeight.kg} kg` });
+    rows.push({
+      label: labels.tare,
+      value: `${localizeMetricText(spec.tareWeight.kg, locale)} kg`,
+    });
   }
 
   if (spec.payload?.kg) {
-    rows.push({ label: labels.payload, value: `${spec.payload.kg} kg` });
+    rows.push({
+      label: labels.payload,
+      value: `${localizeMetricText(spec.payload.kg, locale)} kg`,
+    });
   }
 
   const notes = spec.specialtyNotes
