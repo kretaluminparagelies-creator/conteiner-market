@@ -1,4 +1,11 @@
--- Listing filters: stock condition + special offer flag
+-- =============================================================================
+-- Container Market GR — Migration 002: Listing filters
+-- Author: Katsoulakis
+-- Date: 2026-07-04
+-- Project: conteiner-market
+-- File: 20260704010000_listing_filters.sql
+-- Description: stock_condition + is_offer columns on listings
+-- =============================================================================
 
 create type stock_condition as enum ('new', 'used');
 

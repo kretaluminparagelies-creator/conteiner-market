@@ -7,9 +7,9 @@
 
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { ListingCarouselTabBar } from "@/components/listings/ListingCarouselTabBar";
-import { getAllListings } from "@/lib/data/listings";
+import { useListings } from "@/lib/context/listings-context";
 import {
   emitHomeListingTabChange,
   homeListingTabEvent,
@@ -25,7 +25,7 @@ import {
 } from "@/lib/utils/listing-carousel-filters";
 
 export function NavListingTabs() {
-  const listings = useMemo(() => getAllListings(), []);
+  const listings = useListings();
   const [activeTab, setActiveTab] = useState<ListingCarouselTab>(defaultListingCarouselTab);
 
   useEffect(() => {

@@ -10,7 +10,7 @@
 import { useRouter } from "next/navigation";
 import { useMemo, useState, type FormEvent } from "react";
 import { Search } from "lucide-react";
-import { getAllListings } from "@/lib/data/listings";
+import { useListings } from "@/lib/context/listings-context";
 import { getListingSizes } from "@/lib/utils/listing-filters";
 import { useLocale } from "@/lib/i18n/locale-context";
 
@@ -26,7 +26,8 @@ export function HeroSearchBar({ className }: { className?: string }) {
   const { t } = useLocale();
   const router = useRouter();
 
-  const sizes = useMemo(() => getListingSizes(getAllListings()), []);
+  const listings = useListings();
+  const sizes = useMemo(() => getListingSizes(listings), [listings]);
 
   const [deal, setDeal] = useState("");
   const [size, setSize] = useState("");

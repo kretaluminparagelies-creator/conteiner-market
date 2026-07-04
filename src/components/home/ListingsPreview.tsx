@@ -9,7 +9,7 @@
 
 import { useEffect } from "react";
 import { ListingsCarouselBrowse } from "@/components/listings/ListingsCarouselBrowse";
-import { getAllListings } from "@/lib/data/listings";
+import { useListings } from "@/lib/context/listings-context";
 import { showFeaturedListings } from "@/lib/constants/listing-carousel";
 import {
   offersCarouselSectionId,
@@ -17,7 +17,7 @@ import {
 } from "@/lib/nav/navigate-offers-route";
 
 export function ListingsPreview() {
-  const listings = getAllListings();
+  const listings = useListings();
 
   useEffect(() => {
     if (window.location.hash !== `#${offersCarouselSectionId}`) return;

@@ -1,5 +1,11 @@
--- Container Market GR — initial schema (run when Supabase is ready)
--- No changes needed to CRM UI after this migration + repository swap.
+-- =============================================================================
+-- Container Market GR — Migration 001: Initial CRM schema
+-- Author: Katsoulakis
+-- Date: 2026-07-04
+-- Project: conteiner-market
+-- File: 20260704000000_initial_crm.sql
+-- Description: Listings + leads tables, enums, indexes
+-- =============================================================================
 
 create extension if not exists "pgcrypto";
 

@@ -1,6 +1,6 @@
 /**
  * @file listing-store.ts
- * @description Server-only listings.json read/write
+ * @description Server-only listings persistence — Supabase or JSON fallback
  * @author Katsoulakis
  * @copyright 2026 Katsoulakis. All rights reserved.
  */
@@ -10,8 +10,28 @@ import "server-only";
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { ListingFormInput } from "@/lib/crm/listing-form";
-import type { Listing } from "@/lib/types/listing";
 import { site } from "@/lib/constants/site";
+import {
+  formatPriceEur,
+  placeholderImageForType,
+  slugifyListing,
+  uniqueSlug,
+} from "@/lib/repositories/listing-format";
+import {
+  createListingInSupabase,
+  fetchListingBySlugFromSupabase,
+  fetchListingsFromSupabase,
+  updateListingInSupabase,
+} from "@/lib/repositories/supabase-listings";
+import { isSupabaseAdminConfigured, isSupabaseReadConfigured } from "@/lib/supabase/env";
+import type { Listing } from "@/lib/types/listing";
+
+export {
+  formatPriceEur,
+  placeholderImageForType,
+  slugifyListing,
+  uniqueSlug,
+} from "@/lib/repositories/listing-format";
 
 const listingsPath = path.join(process.cwd(), "src/data/listings.json");
 
@@ -24,47 +44,9 @@ export async function writeListingsToDisk(listings: Listing[]): Promise<void> {
   await writeFile(listingsPath, `${JSON.stringify(listings, null, 2)}\n`, "utf-8");
 }
 
-export function formatPriceEur(price: number): string {
-  return `€${price.toLocaleString("el-GR")}`;
-}
-
-export function slugifyListing(type: string): string {
-  const base = type
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
-
-  return base || "listing";
-}
-
 export function nextListingId(listings: Listing[]): string {
   const max = listings.reduce((acc, item) => Math.max(acc, Number.parseInt(item.id, 10) || 0), 0);
   return String(max + 1);
-}
-
-export function uniqueSlug(base: string, listings: Listing[], excludeSlug?: string): string {
-  let slug = base;
-  let counter = 2;
-
-  while (listings.some((l) => l.slug === slug && l.slug !== excludeSlug)) {
-    slug = `${base}-${counter}`;
-    counter += 1;
-  }
-
-  return slug;
-}
-
-export function placeholderImageForType(type: string): string {
-  const normalized = type.toLowerCase();
-  if (normalized.includes("reefer")) return "/images/containers/placeholder-20ft-reefer.jpg";
-  if (normalized.includes("open")) return "/images/containers/placeholder-20ft-open.jpg";
-  if (normalized.includes("45ft")) return "/images/containers/placeholder-45ft-pw.jpg";
-  if (normalized.includes("high cube") || normalized.includes("40ft")) {
-    return "/images/containers/placeholder-40ft-hc.jpg";
-  }
-  return "/images/containers/placeholder-20ft-dry.jpg";
 }
 
 function buildListing(input: ListingFormInput, id: string, slug: string): Listing {
@@ -95,20 +77,35 @@ function buildListing(input: ListingFormInput, id: string, slug: string): Listin
 }
 
 export async function readAdminListings(includeInactive = true): Promise<Listing[]> {
+  if (isSupabaseAdminConfigured()) {
+    return fetchListingsFromSupabase({ includeInactive, admin: true });
+  }
+
   const listings = await readListingsFromDisk();
   if (includeInactive) return listings;
   return listings.filter((l) => l.active);
 }
 
 export async function readAdminListingBySlug(slug: string): Promise<Listing | undefined> {
+  if (isSupabaseAdminConfigured()) {
+    return fetchListingBySlugFromSupabase(slug, { admin: true });
+  }
+
   const listings = await readListingsFromDisk();
   return listings.find((l) => l.slug === slug);
 }
 
 export async function createListingOnDisk(input: ListingFormInput): Promise<Listing> {
+  if (isSupabaseAdminConfigured()) {
+    return createListingInSupabase(input);
+  }
+
   const listings = await readListingsFromDisk();
   const baseSlug = slugifyListing(input.type);
-  const slug = uniqueSlug(baseSlug, listings);
+  const slug = uniqueSlug(
+    baseSlug,
+    listings.map((l) => l.slug),
+  );
   const listing = buildListing(input, nextListingId(listings), slug);
 
   listings.push(listing);
@@ -121,6 +118,10 @@ export async function updateListingOnDisk(
   existingSlug: string,
   input: ListingFormInput,
 ): Promise<Listing> {
+  if (isSupabaseAdminConfigured()) {
+    return updateListingInSupabase(existingSlug, input);
+  }
+
   const listings = await readListingsFromDisk();
   const index = listings.findIndex((l) => l.slug === existingSlug);
 
@@ -129,11 +130,20 @@ export async function updateListingOnDisk(
   }
 
   const baseSlug = slugifyListing(input.type);
-  const slug = uniqueSlug(baseSlug, listings, existingSlug);
+  const slug = uniqueSlug(
+    baseSlug,
+    listings.map((l) => l.slug),
+    existingSlug,
+  );
   const listing = buildListing(input, listings[index].id, slug);
 
   listings[index] = listing;
   await writeListingsToDisk(listings);
 
   return listing;
+}
+
+/** Whether public reads should come from Supabase */
+export function useSupabaseForPublicReads(): boolean {
+  return isSupabaseReadConfigured();
 }

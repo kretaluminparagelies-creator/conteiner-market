@@ -7,15 +7,15 @@
 
 import { CrmLeadsTable } from "@/components/crm/CrmLeadsTable";
 import { CrmShell } from "@/components/crm/CrmShell";
-import { getMockLeads } from "@/lib/crm/mock-leads";
+import { readLeads } from "@/lib/crm/lead-store";
 
-export default function AdminLeadsPage() {
-  const leads = getMockLeads();
+export default async function AdminLeadsPage() {
+  const leads = await readLeads();
 
   return (
     <CrmShell
       title="Αιτήματα"
-      description="Επικοινωνίες, πωλήσεις, ενοικιάσεις — demo leads μέχρι τη σύνδεση."
+      description="Επικοινωνίες, πωλήσεις, ενοικιάσεις — από Supabase ή demo."
     >
       <CrmLeadsTable leads={leads} />
     </CrmShell>

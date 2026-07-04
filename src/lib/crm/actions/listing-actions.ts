@@ -7,15 +7,17 @@
 
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import type { ListingFormInput } from "@/lib/crm/listing-form";
+import { LISTINGS_CACHE_TAG } from "@/lib/data/listings-server";
 import {
   createListingOnDisk,
   updateListingOnDisk,
 } from "@/lib/repositories/listing-store";
 
 function revalidateListingPaths(slug?: string) {
+  updateTag(LISTINGS_CACHE_TAG);
   revalidatePath("/admin/listings");
   revalidatePath("/listings");
   revalidatePath("/");

@@ -9,7 +9,7 @@ import { notFound } from "next/navigation";
 import { PageShell } from "@/components/layout/PageShell";
 import { ListingDetailPageContent } from "@/components/listings/detail/ListingDetailPageContent";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { getAllListings, getListingBySlug } from "@/lib/data/listings";
+import { fetchPublicListingBySlug, fetchPublicListings } from "@/lib/data/listings-server";
 import { createPageMetadata } from "@/lib/seo/metadata";
 import {
   createListingPageMetadata,
@@ -22,12 +22,13 @@ type ListingPageProps = {
 };
 
 export async function generateStaticParams() {
-  return getAllListings().map((listing) => ({ slug: listing.slug }));
+  const listings = await fetchPublicListings();
+  return listings.map((listing) => ({ slug: listing.slug }));
 }
 
 export async function generateMetadata({ params }: ListingPageProps) {
   const { slug } = await params;
-  const listing = getListingBySlug(slug);
+  const listing = await fetchPublicListingBySlug(slug);
   if (!listing) return {};
 
   const meta = createListingPageMetadata(listing);
@@ -36,7 +37,7 @@ export async function generateMetadata({ params }: ListingPageProps) {
 
 export default async function ListingDetailPage({ params }: ListingPageProps) {
   const { slug } = await params;
-  const listing = getListingBySlug(slug);
+  const listing = await fetchPublicListingBySlug(slug);
 
   if (!listing) notFound();
 

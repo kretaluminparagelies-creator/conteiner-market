@@ -8,7 +8,7 @@
 import { PageShell } from "@/components/layout/PageShell";
 import { ListingsCatalogPage } from "@/components/listings/ListingsCatalogPage";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { getAllListings } from "@/lib/data/listings";
+import { fetchPublicListings } from "@/lib/data/listings-server";
 import {
   filterListings,
   hasActiveFilters,
@@ -41,7 +41,8 @@ export default async function ListingsPage({
   const filters = parseListingFilters(rawParams);
   const isFiltered = hasActiveFilters(filters);
   const initialTab = resolveInitialCarouselTab(rawParams);
-  const listings = filterListings(getAllListings(), filters);
+  const allListings = await fetchPublicListings();
+  const listings = filterListings(allListings, filters);
 
   const itemListSchema = {
     "@context": "https://schema.org",

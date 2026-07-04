@@ -8,13 +8,13 @@
 import { CrmLeadsTable } from "@/components/crm/CrmLeadsTable";
 import { CrmShell } from "@/components/crm/CrmShell";
 import { CrmStatCard } from "@/components/crm/CrmStatCard";
-import { countLeadsByStatus, getMockLeads } from "@/lib/crm/mock-leads";
+import { countLeadsByStatus, readLeads } from "@/lib/crm/lead-store";
 import { readAdminListings } from "@/lib/repositories/listing-store";
 import { resolveIsOffer } from "@/lib/utils/listing-carousel-filters";
 
 export default async function AdminDashboardPage() {
   const listings = await readAdminListings();
-  const leads = getMockLeads();
+  const leads = await readLeads();
   const activeListings = listings.filter((l) => l.active).length;
   const offerCount = listings.filter((l) => l.active && resolveIsOffer(l)).length;
   const rentCount = listings.filter((l) => l.active && l.listingType === "rent").length;
@@ -30,7 +30,7 @@ export default async function AdminDashboardPage() {
         <CrmStatCard label="Προς ενοικίαση" value={rentCount} hint="Rent listings" accent="blue" />
         <CrmStatCard
           label="Νέα αιτήματα"
-          value={countLeadsByStatus("new")}
+          value={await countLeadsByStatus("new")}
           hint="Demo δεδομένα"
           accent="neutral"
         />

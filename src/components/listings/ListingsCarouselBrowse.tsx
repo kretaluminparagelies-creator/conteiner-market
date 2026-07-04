@@ -12,7 +12,7 @@ import { motion, useReducedMotion } from "motion/react";
 import { ContainerCarousel3D } from "@/components/listings/carousel/ContainerCarousel3D";
 import { ListingDetailModal } from "@/components/listings/detail/ListingDetailModal";
 import { ListingCarouselTabs } from "@/components/listings/ListingCarouselTabs";
-import { getListingBySlug, localizeListing } from "@/lib/data/listings";
+import { localizeListing } from "@/lib/data/listings";
 import { useLocale } from "@/lib/i18n/locale-context";
 import {
   emitHomeListingTabChange,
@@ -88,7 +88,7 @@ export function ListingsCarouselBrowse({
   }, [showSectionHeader]);
 
   const handleListingClick = (item: CarouselListingItem) => {
-    const listing = getListingBySlug(item.slug);
+    const listing = listings.find((entry) => entry.slug === item.slug);
     if (listing) setSelectedListing(localizeListing(listing, locale));
   };
 

@@ -12,6 +12,7 @@ import { HowItWorks } from "@/components/home/HowItWorks";
 import { ListingsPreview } from "@/components/home/ListingsPreview";
 import { Stats } from "@/components/home/Stats";
 import { PageShell } from "@/components/layout/PageShell";
+import { fetchPublicListings } from "@/lib/data/listings-server";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { site } from "@/lib/constants/site";
 
@@ -57,9 +58,11 @@ const websiteSchema = {
   },
 };
 
-export default function HomePage() {
+export default async function HomePage() {
+  const homeListings = await fetchPublicListings();
+
   return (
-    <PageShell>
+    <PageShell homeListings={homeListings}>
       <JsonLd data={organizationSchema} />
       <JsonLd data={websiteSchema} />
       <Hero />

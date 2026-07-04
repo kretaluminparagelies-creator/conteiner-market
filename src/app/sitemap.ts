@@ -6,7 +6,7 @@
  */
 
 import type { MetadataRoute } from "next";
-import { getAllListings } from "@/lib/data/listings";
+import { fetchPublicListings } from "@/lib/data/listings-server";
 import { site } from "@/lib/constants/site";
 
 const staticRoutes = [
@@ -23,8 +23,9 @@ const staticRoutes = [
   "/cookies",
 ];
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
+  const listings = await fetchPublicListings();
 
   const staticEntries = staticRoutes.map((route) => ({
     url: `${site.url}${route}`,
@@ -33,7 +34,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: route === "" ? 1 : route === "/listings" ? 0.9 : 0.7,
   }));
 
-  const listingEntries = getAllListings().map((listing) => ({
+  const listingEntries = listings.map((listing) => ({
     url: `${site.url}/listings/${listing.slug}`,
     lastModified: now,
     changeFrequency: "weekly" as const,
