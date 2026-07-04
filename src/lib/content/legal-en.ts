@@ -151,33 +151,73 @@ export const privacySections: LegalSection[] = [
 
 export const cookiesSections: LegalSection[] = [
   {
-    id: "what",
-    title: "1. What are cookies",
+    id: "intro",
+    title: "1. Introduction",
     paragraphs: [
-      "Cookies are small files stored on your device when you visit a website. They are used for functionality, preferences, or statistics.",
-      "The Website may also use localStorage / sessionStorage (similar browser technology).",
+      `The website ${siteUrl} (the "Website") is operated by ${companyName} (the "Company"), administrator of ${siteName}.`,
+      "The Website uses cookies and similar technologies for proper operation, to improve user experience, and — where enabled — to analyse traffic.",
+      "By using the Website, you agree to the use of cookies under this policy, unless you have rejected or restricted non-essential cookies in your browser settings.",
     ],
   },
   {
-    id: "we-use",
-    title: "2. What we use now",
-    paragraphs: ["Currently the Website uses only essential/functional stored items:"],
-    bullets: ["cm-locale (localStorage) — EL/EN language preference"],
+    id: "what",
+    title: "2. What are Cookies",
+    paragraphs: [
+      "Cookies are small text files stored on your device (computer, tablet, or mobile) when you visit a website. They help the site remember information about your visit and your preferences.",
+      "The Website may also use localStorage or sessionStorage (similar browser technology), for example to store your language preference.",
+    ],
   },
   {
-    id: "no-tracking",
-    title: "3. Analytics & marketing",
+    id: "how-we-use",
+    title: "3. How we use Cookies",
+    paragraphs: ["Cookies and similar technologies are used to:"],
+    bullets: [
+      "ensure proper Website operation",
+      "improve user experience",
+      "analyse traffic (when relevant tools are enabled)",
+      "store basic user preferences (e.g. language)",
+    ],
+  },
+  {
+    id: "types",
+    title: "4. Types of Cookies used",
     paragraphs: [
-      "We do not currently use Google Analytics, Meta Pixel, or other tracking/marketing cookies.",
-      "If added in the future, this policy will be updated and consent will be requested where required.",
+      "Essential Cookies — required for proper Website operation (e.g. security, basic navigation).",
+      "Functional Cookies — allow the Website to remember user choices and preferences. We currently use: cm-locale (localStorage) for EL/EN language preference.",
+      "Analytics Cookies — used to collect traffic statistics and improve Website performance. We do not currently use Google Analytics or other analytics tools; if added, this policy will be updated.",
     ],
   },
   {
     id: "manage",
-    title: "4. Management",
+    title: "5. Managing Cookies",
     paragraphs: [
-      "You can delete cookies and localStorage in your browser settings. Disabling them may affect features (e.g. language persistence).",
-      "For questions: " + contactEmail + ".",
+      "You can configure your browser to accept or reject cookies, and to delete cookies and localStorage.",
+      "Disabling certain cookies may affect Website functionality (e.g. saving language preference).",
+    ],
+  },
+  {
+    id: "third-party",
+    title: "6. Third-party Cookies",
+    paragraphs: [
+      "The Website does not currently set third-party marketing or analytics cookies.",
+      "In the future, third-party services such as Google Analytics or social network integrations may be used. If enabled, those services may use cookies under their own privacy policies; we will update this policy and request consent where required by law.",
+    ],
+  },
+  {
+    id: "changes",
+    title: "7. Policy changes",
+    paragraphs: [
+      "This Cookie Policy may be amended from time to time. Any change will be published on this page with an updated last-revision date.",
+    ],
+  },
+  {
+    id: "contact",
+    title: "8. Contact details",
+    paragraphs: [
+      "For any information about cookie use, contact the Company:",
+      `${companyName} — ${siteName}`,
+      `Email: ${contactEmail}`,
+      "Greece — nationwide service",
     ],
   },
 ];
