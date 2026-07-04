@@ -78,7 +78,11 @@ function buildListing(input: ListingFormInput, id: string, slug: string): Listin
 
 export async function readAdminListings(includeInactive = true): Promise<Listing[]> {
   if (isSupabaseAdminConfigured()) {
-    return fetchListingsFromSupabase({ includeInactive, admin: true });
+    try {
+      return await fetchListingsFromSupabase({ includeInactive, admin: true });
+    } catch (error) {
+      console.error("[listing-store] Supabase admin read failed, falling back to JSON:", error);
+    }
   }
 
   const listings = await readListingsFromDisk();
@@ -88,7 +92,11 @@ export async function readAdminListings(includeInactive = true): Promise<Listing
 
 export async function readAdminListingBySlug(slug: string): Promise<Listing | undefined> {
   if (isSupabaseAdminConfigured()) {
-    return fetchListingBySlugFromSupabase(slug, { admin: true });
+    try {
+      return await fetchListingBySlugFromSupabase(slug, { admin: true });
+    } catch (error) {
+      console.error("[listing-store] Supabase admin read failed, falling back to JSON:", error);
+    }
   }
 
   const listings = await readListingsFromDisk();
