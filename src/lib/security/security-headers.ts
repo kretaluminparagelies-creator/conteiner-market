@@ -5,15 +5,34 @@
  * @copyright 2026 Katsoulakis. All rights reserved.
  */
 
+function supabaseOrigin(): string | null {
+  const raw = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+  if (!raw) return null;
+
+  const withProtocol =
+    raw.startsWith("http://") || raw.startsWith("https://") ? raw : `https://${raw}`;
+
+  try {
+    return new URL(withProtocol).origin;
+  } catch {
+    return null;
+  }
+}
+
 function buildProductionContentSecurityPolicy(): string {
-  // Three.js GLB loader uses WebAssembly — needs wasm-unsafe-eval / unsafe-eval.
+  const supabase = supabaseOrigin();
+  const connectSrc = ["'self'", supabase].filter(Boolean).join(" ");
+  const imgSrc =
+    "'self' data: blob: https://images.pexels.com https://images.unsplash.com" +
+    (supabase ? ` ${supabase}` : "");
+
   const directives = [
     "default-src 'self'",
     "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' 'unsafe-eval'",
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: blob: https://images.pexels.com https://images.unsplash.com",
+    `img-src ${imgSrc}`,
     "font-src 'self' https://fonts.gstatic.com",
-    "connect-src 'self'",
+    `connect-src ${connectSrc}`,
     "worker-src 'self' blob:",
     "child-src 'self' blob:",
     "object-src 'none'",
@@ -42,7 +61,6 @@ export function getSecurityHeaders(): { key: string; value: string }[] {
   const isDev = process.env.NODE_ENV === "development";
 
   if (isDev) {
-    // No CSP in dev — React/Turbopack need eval(); Three.js needs WebAssembly compile.
     return baseHeaders;
   }
 

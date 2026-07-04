@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "set-admin-password": "node scripts/set-admin-password.mjs",
+    "env:init": "copy env.template .env.local"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",

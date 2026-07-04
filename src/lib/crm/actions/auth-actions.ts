@@ -24,6 +24,9 @@ function mapAuthError(message: string): string {
   if (lower.includes("redirect") || lower.includes("url")) {
     return "Πρόσθεσε redirect URL στο Supabase: /admin/reset-password";
   }
+  if (lower.includes("rate limit")) {
+    return "Πολλά email reset σε σύντομο διάστημα. Περίμενε ~1 ώρα ή όρισε κωδικό από Supabase → Users.";
+  }
   return message;
 }
 

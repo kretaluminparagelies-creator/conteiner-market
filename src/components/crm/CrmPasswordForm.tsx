@@ -22,7 +22,8 @@ export function CrmPasswordForm() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setMessage(null);
-    const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
 
     startTransition(async () => {
       const result = await changePasswordAction(formData);
@@ -32,7 +33,7 @@ export function CrmPasswordForm() {
       }
       if (result?.success) {
         setMessage({ type: "success", text: result.success });
-        event.currentTarget.reset();
+        form.reset();
       }
     });
   };

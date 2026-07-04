@@ -46,6 +46,10 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
+      <head>
+        <link rel="alternate" type="text/plain" href="/llms.txt" title="AI site documentation" />
+        <link rel="alternate" type="text/plain" href="/ai.txt" title="AI quick reference" />
+      </head>
       <body className="min-h-full">{children}</body>
     </html>
   );

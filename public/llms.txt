@@ -1,13 +1,14 @@
 # Container Market GR
 
 > We sell and rent our own shipping containers in Greece — direct from Logiworkpass P.C.
-> Not a third-party marketplace. Bilingual: Greek (default) + English (client toggle, stored in localStorage key `cm-locale`).
+> Not a third-party marketplace. Bilingual: Greek (default) + English (client toggle, localStorage key `cm-locale`).
 
 ## Site
 
-- Production URL: https://containermarket.gr (set via NEXT_PUBLIC_SITE_URL)
-- Stack: Next.js 16, React 19, static listings JSON (Supabase planned)
-- Version: 0.9.0
+- Production URL: https://containermarket.gr
+- Vercel URL: https://conteiner-market.vercel.app
+- Stack: Next.js 16, React 19, Supabase (listings + CRM leads)
+- Version: 0.9.1
 - AI guide (this file): /llms.txt
 - Short pointer: /ai.txt
 
@@ -21,7 +22,8 @@
 | /enoikiasi | Rent our containers |
 | /enoikiasis-xoron | Storage space rental |
 | /listings | Full catalog — sale & rent, 3D carousel, filterable |
-| /epikoinonia | Contact — email, phone, coverage area |
+| /listings/{slug} | Individual listing — Product JSON-LD, photos, price, bilingual |
+| /epikoinonia | Contact form → CRM leads, email, phone, coverage |
 | /help | FAQ (JSON-LD FAQPage) — how to search, buy, rent, contact |
 | /oroi | Terms of use (EL + EN) |
 | /aporrito | Privacy policy / GDPR (EL + EN) |
@@ -30,10 +32,13 @@
 Redirects:
 - /prosfores → /listings
 
+Blocked (robots):
+- /admin/* — CRM admin (login required, Supabase Auth)
+
 ## Language
 
 - Default UI: Greek (el)
-- English: toggle in nav (ΕΛ / EN) — no separate /en/ URLs
+- English: toggle in nav (ΕΛ / EN) — same URLs, no /en/ prefix
 - Legal, service pages, FAQ, listings descriptions support both locales
 - Server HTML metadata defaults to Greek; title/description update client-side when EN is selected
 
@@ -55,35 +60,36 @@ Home anchor: `/#prosfores` scrolls to the featured carousel on the home page.
 
 ## Listings data
 
-- Source: `src/data/listings.json` — our own inventory (static)
-- Active listings only (`active: true`)
-- Fields: id, slug, type, condition, price, priceFormatted, unit, location, listingType (sale|rent), description
+- Primary source: Supabase `listings` table (fallback: static JSON)
+- Active listings only on public site (`active = true`)
+- Fields: id, slug, type, condition, price, priceFormatted, unit, location, listingType (sale|rent), stockCondition (new|used), isOffer, images, description
 - Bilingual fields: conditionEn, locationEn, descriptionEn, unitEn
-- Detail view: modal on carousel click OR dedicated page `/listings/{slug}` (recommended for citations)
-- Example: /listings/20ft-dry-peiraias — Product JSON-LD, bilingual EL/EN
-- All slugs listed in /sitemap.xml
-- Images: `/images/containers/` — SVG/icon fallback until real photos are added
+- Detail page: /listings/{slug} — Product + Offer JSON-LD
+- Example listing: /listings/20ft-dry
+- All slugs in /sitemap.xml
+- Images: Supabase Storage bucket `listing-images` or external URLs
 
 ## Services (business model)
 
-1. **Buy (Αγορά)** — customer purchases our containers
-2. **Rent (Ενοικίαση)** — customer rents our containers (e.g. per month)
-3. **Sell to us (Πώληση)** — we buy containers from customers (buyback, not in catalog)
-4. **Offers (Προσφορές)** — our available containers for sale or rent at /listings
+1. **Buy (Αγορά)** — customer purchases our containers at /agora and /listings?deal=sale
+2. **Rent (Ενοικίαση)** — customer rents our containers at /enoikiasi and /listings?deal=rent
+3. **Sell to us (Πώληση)** — we buy containers from customers (buyback) at /polisi
+4. **Storage space (Ενοικίαση χώρου)** — at /enoikiasis-xoron
 
 ## Contact
 
 - Email: info@containermarket.gr
-- Phone: see /epikoinonia (placeholder until final number is set)
+- Phone: see /epikoinonia
 - Coverage: Greece nationwide
 - Company: Logiworkpass P.C.
+- Contact form on /epikoinonia saves leads to Supabase CRM
 
 ## Crawling & structured data
 
-- robots.txt: /robots.txt — allows /, disallows /admin/
-- sitemap: /sitemap.xml — all public routes
+- robots.txt: /robots.txt — allows public routes + /llms.txt + /ai.txt; disallows /admin/
+- sitemap: /sitemap.xml — all public routes + every active listing slug
 - JSON-LD:
-  - Home: WebSite + SearchAction + Organization
+  - Home: Organization + LocalBusiness + WebSite + SearchAction
   - /listings: ItemList of Products (each with url)
   - /listings/{slug}: Product + Offer per listing
   - /help: FAQPage
@@ -91,19 +97,24 @@ Home anchor: `/#prosfores` scrolls to the featured carousel on the home page.
 ## Recommended agent workflow
 
 1. Read this file (/llms.txt) for routes and filters
-2. Fetch /sitemap.xml for URL list
-3. For inventory: GET /listings or filter; for one item: GET /listings/{slug}
-4. Example listing URL: /listings/20ft-dry-peiraias
+2. Fetch /sitemap.xml for complete URL list
+3. For inventory: GET /listings or filter by deal/size; for one item: GET /listings/{slug}
+4. Example listing URL: /listings/20ft-dry
 5. For user questions: /help FAQ first, then /epikoinonia for contact
-6. Respect bilingual UI — prefer Greek for Greek users unless EN is requested
+6. Prefer Greek for Greek users unless English is requested
 
-## Not yet implemented
+## CRM (admin — not public)
 
-- Admin panel (/admin/ blocked in robots, no route)
-- CRM, auth, contact form, Supabase backend
-- Individual listing pages (/listings/{slug}) — implemented
-- Real listing photos, final phone number, tax ID (ΑΦΜ) on legal pages
-- Public API / MCP server
+- /admin/login — Supabase Auth (email/password)
+- /admin — dashboard, listings CRUD, leads, settings, photo upload
+- Not indexed; blocked in robots.txt
+
+## Still pending / optional
+
+- Custom domain containermarket.gr DNS → Vercel (if not live yet)
+- Final phone number on /epikoinonia
+- Tax ID (ΑΦΜ) on legal pages
+- Public REST/MCP API for third-party integrations
 
 ## For developers
 
@@ -111,3 +122,4 @@ Home anchor: `/#prosfores` scrolls to the featured carousel on the home page.
 - i18n: `src/lib/i18n/messages/` (el.ts, en.ts)
 - Listings filters: `src/lib/utils/listing-filters.ts`
 - Legal content: `src/lib/content/legal-el.ts`, `legal-en.ts`
+- SEO: `src/lib/seo/metadata.ts`, `src/app/sitemap.ts`, `src/app/robots.ts`

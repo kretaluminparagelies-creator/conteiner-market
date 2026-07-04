@@ -24,7 +24,8 @@ export function ContactLeadForm() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setMessage(null);
-    const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
 
     startTransition(async () => {
       const result = await submitContactLeadAction(formData);
@@ -36,7 +37,7 @@ export function ContactLeadForm() {
         type: "success",
         text: t.pages.contact.formSuccess ?? "Το μήνυμά σας στάλθηκε. Θα επικοινωνήσουμε σύντομα.",
       });
-      event.currentTarget.reset();
+      form.reset();
     });
   };
 

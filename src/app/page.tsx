@@ -36,6 +36,33 @@ const organizationSchema = {
   },
 };
 
+const localBusinessSchema = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  name: site.nameFull,
+  url: site.url,
+  description: site.description,
+  email: "info@containermarket.gr",
+  address: {
+    "@type": "PostalAddress",
+    addressCountry: "GR",
+    addressLocality: "Greece",
+  },
+  areaServed: {
+    "@type": "Country",
+    name: "Greece",
+  },
+  priceRange: "€€",
+  knowsAbout: [
+    "shipping containers",
+    "container sales",
+    "container rental",
+    "storage containers",
+    "20ft containers",
+    "40ft containers",
+  ],
+};
+
 const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
@@ -64,6 +91,7 @@ export default async function HomePage() {
   return (
     <PageShell homeListings={homeListings}>
       <JsonLd data={organizationSchema} />
+      <JsonLd data={localBusinessSchema} />
       <JsonLd data={websiteSchema} />
       <Hero />
       <ListingsPreview />

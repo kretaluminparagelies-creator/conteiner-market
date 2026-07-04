@@ -8,6 +8,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import { loginAction, requestPasswordResetAction } from "@/lib/crm/actions/auth-actions";
 
 const inputClass =
@@ -20,9 +21,15 @@ type CrmLoginFormProps = {
 };
 
 export function CrmLoginForm({ nextPath }: CrmLoginFormProps) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [fieldsReady, setFieldsReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
   const [pending, startTransition] = useTransition();
+
+  const enableFields = () => setFieldsReady(true);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -39,24 +46,25 @@ export function CrmLoginForm({ nextPath }: CrmLoginFormProps) {
   const handleForgotPassword = () => {
     setError(null);
     setInfo(null);
-    const emailInput = document.getElementById("email") as HTMLInputElement | null;
-    const email = emailInput?.value.trim();
 
-    if (!email) {
+    const trimmed = email.trim();
+    if (!trimmed) {
       setError("Βάλε πρώτα το email σου στο πεδίο πάνω.");
       return;
     }
 
     startTransition(async () => {
-      const result = await requestPasswordResetAction(email);
+      const result = await requestPasswordResetAction(trimmed);
       if (result.error) setError(result.error);
       if (result.success) setInfo(result.success);
     });
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form onSubmit={handleSubmit} className="space-y-5" autoComplete="off">
       <input type="hidden" name="next" value={nextPath} />
+      <input type="text" name="prevent_autofill" className="hidden" tabIndex={-1} autoComplete="off" aria-hidden />
+      <input type="password" name="prevent_autofill_pw" className="hidden" tabIndex={-1} autoComplete="off" aria-hidden />
 
       {error ? (
         <div className="rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">
@@ -71,32 +79,53 @@ export function CrmLoginForm({ nextPath }: CrmLoginFormProps) {
       ) : null}
 
       <div>
-        <label className={labelClass} htmlFor="email">
+        <label className={labelClass} htmlFor="admin-email">
           Email
         </label>
         <input
-          id="email"
+          id="admin-email"
           name="email"
           type="email"
-          autoComplete="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          readOnly={!fieldsReady}
+          onFocus={enableFields}
+          autoComplete="off"
+          data-1p-ignore
+          data-lpignore="true"
           required
           className={inputClass}
-          placeholder="kretalumin.paragelies@gmail.com"
         />
       </div>
 
       <div>
-        <label className={labelClass} htmlFor="password">
+        <label className={labelClass} htmlFor="admin-password">
           Κωδικός
         </label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          autoComplete="current-password"
-          required
-          className={inputClass}
-        />
+        <div className="relative">
+          <input
+            id="admin-password"
+            name="password"
+            type={showPassword ? "text" : "password"}
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            readOnly={!fieldsReady}
+            onFocus={enableFields}
+            autoComplete="new-password"
+            data-1p-ignore
+            data-lpignore="true"
+            required
+            className={`${inputClass} pr-11`}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((value) => !value)}
+            className="absolute top-1/2 right-3 -translate-y-1/2 text-cm-muted transition-colors hover:text-cm-text"
+            aria-label={showPassword ? "Απόκρυψη κωδικού" : "Εμφάνιση κωδικού"}
+          >
+            {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+          </button>
+        </div>
       </div>
 
       <button
@@ -113,12 +142,8 @@ export function CrmLoginForm({ nextPath }: CrmLoginFormProps) {
         onClick={handleForgotPassword}
         className="w-full text-center font-mono text-[11px] text-cm-muted transition-colors hover:text-cm-accent disabled:opacity-50"
       >
-        Ξέχασα τον κωδικό → email reset
+        Ξέχασα τον κωδικό
       </button>
-
-      <p className="text-center text-xs leading-relaxed text-cm-muted">
-        Λογαριασμός από Supabase → Authentication → Users (Add user, Auto Confirm ON).
-      </p>
     </form>
   );
 }
