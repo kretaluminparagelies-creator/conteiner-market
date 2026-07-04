@@ -7,6 +7,7 @@
 
 import "server-only";
 
+import { cache } from "react";
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { ListingFormInput } from "@/lib/crm/listing-form";
@@ -21,6 +22,7 @@ import {
 import {
   createListingInSupabase,
   deleteListingInSupabase,
+  fetchAdminListingSummariesFromSupabase,
   fetchListingBySlugFromSupabase,
   fetchListingsFromSupabase,
   updateListingInSupabase,
@@ -80,10 +82,10 @@ function buildListing(input: ListingFormInput, id: string, slug: string): Listin
   };
 }
 
-export async function readAdminListings(includeInactive = true): Promise<Listing[]> {
+async function readAdminListingsUncached(includeInactive = true): Promise<Listing[]> {
   if (isSupabaseAdminConfigured()) {
     try {
-      return await fetchListingsFromSupabase({ includeInactive, admin: true });
+      return await fetchAdminListingSummariesFromSupabase(includeInactive);
     } catch (error) {
       console.error("[listing-store] Supabase admin read failed, falling back to JSON:", error);
     }
@@ -93,6 +95,8 @@ export async function readAdminListings(includeInactive = true): Promise<Listing
   if (includeInactive) return listings;
   return listings.filter((l) => l.active);
 }
+
+export const readAdminListings = cache(readAdminListingsUncached);
 
 export async function readAdminListingBySlug(slug: string): Promise<Listing | undefined> {
   if (isSupabaseAdminConfigured()) {

@@ -16,14 +16,42 @@ import {
 } from "@/lib/repositories/listing-format";
 import { site } from "@/lib/constants/site";
 import {
+  listingAdminRowToListing,
   listingFormToInsert,
   listingRowToListing,
+  type ListingAdminRow,
 } from "@/lib/supabase/listing-mapper";
 import { getSupabaseAdminClient, getSupabaseAnonServerClient, type ListingRow } from "@/lib/supabase/server";
 import type { Listing, ListingType } from "@/lib/types/listing";
 
 const listingColumns =
   "id, slug, type, condition, condition_en, price, price_formatted, unit, unit_en, location, location_en, listing_type, stock_condition, is_offer, image, images, description, description_en, active, created_at, updated_at";
+
+const listingAdminColumns =
+  "id, slug, type, condition, price, price_formatted, unit, listing_type, stock_condition, is_offer, active";
+
+export async function fetchAdminListingSummariesFromSupabase(
+  includeInactive = true,
+): Promise<Listing[]> {
+  const client = getSupabaseAdminClient();
+
+  let query = client
+    .from("listings")
+    .select(listingAdminColumns)
+    .order("created_at", { ascending: true });
+
+  if (!includeInactive) {
+    query = query.eq("active", true);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    throw new Error(`Supabase admin listings fetch failed: ${error.message}`);
+  }
+
+  return (data ?? []).map((row) => listingAdminRowToListing(row as ListingAdminRow));
+}
 
 export async function fetchListingsFromSupabase(options?: {
   includeInactive?: boolean;

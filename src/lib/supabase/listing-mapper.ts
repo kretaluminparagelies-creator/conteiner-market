@@ -12,6 +12,41 @@ import { formatPriceEur } from "@/lib/repositories/listing-format";
 import type { ListingInsert, ListingRow } from "@/lib/supabase/server";
 import type { Listing } from "@/lib/types/listing";
 
+/** Columns needed for CRM listings table — skips descriptions, images, locations */
+export type ListingAdminRow = Pick<
+  ListingRow,
+  | "id"
+  | "slug"
+  | "type"
+  | "condition"
+  | "price"
+  | "price_formatted"
+  | "unit"
+  | "listing_type"
+  | "stock_condition"
+  | "is_offer"
+  | "active"
+>;
+
+export function listingAdminRowToListing(row: ListingAdminRow): Listing {
+  return {
+    id: row.id,
+    slug: row.slug,
+    type: row.type,
+    condition: row.condition,
+    price: Number(row.price),
+    priceFormatted: row.price_formatted,
+    unit: row.unit ?? "",
+    listingType: row.listing_type,
+    stockCondition: row.stock_condition,
+    isOffer: row.is_offer,
+    active: row.active,
+    location: "",
+    image: "",
+    description: "",
+  };
+}
+
 export function listingRowToListing(row: ListingRow): Listing {
   return {
     id: row.id,

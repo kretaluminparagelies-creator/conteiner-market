@@ -7,7 +7,27 @@
 
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { CRM_USER_EMAIL_HEADER } from "@/lib/supabase/crm-session-header";
 import { getSupabaseAnonKey, getSupabaseUrl, isSupabaseReadConfigured } from "@/lib/supabase/env";
+
+function forwardSessionCookies(from: NextResponse, to: NextResponse) {
+  for (const cookie of from.headers.getSetCookie()) {
+    to.headers.append("Set-Cookie", cookie);
+  }
+}
+
+/** Attach verified email to the request so layout/pages skip a second getUser() call */
+function withUserEmailHeader(request: NextRequest, response: NextResponse, email: string) {
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set(CRM_USER_EMAIL_HEADER, email);
+
+  const nextResponse = NextResponse.next({
+    request: { headers: requestHeaders },
+  });
+
+  forwardSessionCookies(response, nextResponse);
+  return nextResponse;
+}
 
 export async function updateSupabaseSession(request: NextRequest) {
   let response = NextResponse.next({ request });
@@ -46,14 +66,22 @@ export async function updateSupabaseSession(request: NextRequest) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = "/admin/login";
     loginUrl.searchParams.set("next", pathname);
-    return NextResponse.redirect(loginUrl);
+    const redirect = NextResponse.redirect(loginUrl);
+    forwardSessionCookies(response, redirect);
+    return redirect;
   }
 
   if (isPublicAdmin && pathname === "/admin/login" && user) {
     const adminUrl = request.nextUrl.clone();
     adminUrl.pathname = "/admin";
     adminUrl.search = "";
-    return NextResponse.redirect(adminUrl);
+    const redirect = NextResponse.redirect(adminUrl);
+    forwardSessionCookies(response, redirect);
+    return redirect;
+  }
+
+  if (user?.email) {
+    return withUserEmailHeader(request, response, user.email);
   }
 
   return response;

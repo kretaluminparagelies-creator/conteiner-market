@@ -8,7 +8,8 @@
 import "server-only";
 
 import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
+import { CRM_USER_EMAIL_HEADER } from "@/lib/supabase/crm-session-header";
 import { getSupabaseAnonKey, getSupabaseUrl, isSupabaseReadConfigured } from "@/lib/supabase/env";
 
 export async function createSupabaseAuthServerClient() {
@@ -34,6 +35,12 @@ export async function createSupabaseAuthServerClient() {
       },
     },
   });
+}
+
+/** Email from proxy auth — no extra Supabase roundtrip */
+export async function getCrmSessionEmail(): Promise<string | null> {
+  const headerStore = await headers();
+  return headerStore.get(CRM_USER_EMAIL_HEADER);
 }
 
 export async function getCrmSessionUser() {

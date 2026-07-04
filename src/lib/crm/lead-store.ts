@@ -7,6 +7,7 @@
 
 import "server-only";
 
+import { cache } from "react";
 import type { Lead, LeadSource, LeadStatus } from "@/lib/crm/types";
 import { countLeadsByStatus as countMockLeadsByStatus, getMockLeads } from "@/lib/crm/mock-leads";
 import { isSupabaseAdminConfigured } from "@/lib/supabase/env";
@@ -20,6 +21,8 @@ export type CreateLeadInput = {
   source: LeadSource;
   listingSlug?: string;
 };
+
+const leadListColumns = "id, name, email, source, status, message, created_at";
 
 function leadRowToLead(row: LeadRow): Lead {
   return {
@@ -35,7 +38,7 @@ function leadRowToLead(row: LeadRow): Lead {
   };
 }
 
-export async function readLeads(): Promise<Lead[]> {
+async function readLeadsUncached(): Promise<Lead[]> {
   if (!isSupabaseAdminConfigured()) {
     return getMockLeads();
   }
@@ -43,7 +46,7 @@ export async function readLeads(): Promise<Lead[]> {
   try {
     const { data, error } = await getSupabaseAdminClient()
       .from("leads")
-      .select("*")
+      .select(leadListColumns)
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -54,6 +57,31 @@ export async function readLeads(): Promise<Lead[]> {
   } catch (error) {
     console.error("[lead-store] Supabase fetch failed, falling back to demo leads:", error);
     return getMockLeads();
+  }
+}
+
+export const readLeads = cache(readLeadsUncached);
+
+export async function readRecentLeads(limit: number): Promise<Lead[]> {
+  if (!isSupabaseAdminConfigured()) {
+    return getMockLeads().slice(0, limit);
+  }
+
+  try {
+    const { data, error } = await getSupabaseAdminClient()
+      .from("leads")
+      .select(leadListColumns)
+      .order("created_at", { ascending: false })
+      .limit(limit);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return (data ?? []).map((row) => leadRowToLead(row as LeadRow));
+  } catch (error) {
+    console.error("[lead-store] Supabase recent leads failed, falling back to demo:", error);
+    return getMockLeads().slice(0, limit);
   }
 }
 

@@ -14,13 +14,13 @@ import {
   isCrmWriteEnabled,
 } from "@/lib/crm/connection";
 import { isCrmAuthEnabled } from "@/lib/crm/auth";
-import { getCrmSessionUser } from "@/lib/supabase/server-auth";
+import { getCrmSessionEmail } from "@/lib/supabase/server-auth";
 
 export default async function AdminSettingsPage() {
   const status = getCrmConnectionStatus();
   const writeEnabled = isCrmWriteEnabled();
   const authEnabled = isCrmAuthEnabled();
-  const user = await getCrmSessionUser();
+  const adminEmail = await getCrmSessionEmail();
 
   return (
     <CrmShell title="Ρυθμίσεις" description="Σύνδεση backend, λογαριασμός και ασφάλεια.">
@@ -64,7 +64,7 @@ export default async function AdminSettingsPage() {
             <h2 className="font-display text-base font-semibold">Λογαριασμός</h2>
             <p className="mt-2 text-sm text-cm-sub">
               Συνδεδεμένος ως{" "}
-              <span className="font-mono text-cm-text">{user?.email ?? "—"}</span>
+              <span className="font-mono text-cm-text">{adminEmail ?? "—"}</span>
             </p>
             <div className="mt-6">
               <h3 className="font-display text-sm font-semibold">Αλλαγή κωδικού</h3>

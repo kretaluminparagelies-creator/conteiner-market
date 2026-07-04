@@ -6,7 +6,7 @@
  */
 
 import { CrmSessionProvider } from "@/components/crm/CrmSessionProvider";
-import { getCrmSessionUser } from "@/lib/supabase/server-auth";
+import { getCrmSessionEmail } from "@/lib/supabase/server-auth";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  const user = await getCrmSessionUser();
+  const adminEmail = await getCrmSessionEmail();
 
-  return <CrmSessionProvider adminEmail={user?.email ?? null}>{children}</CrmSessionProvider>;
+  return <CrmSessionProvider adminEmail={adminEmail}>{children}</CrmSessionProvider>;
 }

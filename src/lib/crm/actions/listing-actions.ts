@@ -20,6 +20,7 @@ import {
 
 function revalidateListingPaths(slug?: string) {
   updateTag(LISTINGS_CACHE_TAG);
+  revalidatePath("/admin");
   revalidatePath("/admin/listings");
   revalidatePath("/listings");
   revalidatePath("/");
