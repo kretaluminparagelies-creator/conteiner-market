@@ -23,7 +23,7 @@ export function CrmListingsTable({ listings }: CrmListingsTableProps) {
               <th className="px-4 py-3">Τύπος</th>
               <th className="px-4 py-3">Deal</th>
               <th className="px-4 py-3">Stock</th>
-              <th className="px-4 py-3">Προσφορά</th>
+              <th className="px-4 py-3">Ειδ. προσφ.</th>
               <th className="px-4 py-3">Τιμή</th>
               <th className="px-4 py-3">Ενεργό</th>
               <th className="px-4 py-3">Προβολή</th>

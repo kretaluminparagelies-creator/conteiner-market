@@ -11,8 +11,8 @@ import { CrmShell } from "@/components/crm/CrmShell";
 export default function AdminNewListingPage() {
   return (
     <CrmShell
-      title="Νέα προσφορά"
-      description="Πρόσθεσε κοντέινερ — αποθηκεύεται στο Supabase."
+      title="Νέα καταχώριση"
+      description="Πρόσθεσε κοντέινερ στο catalog — αποθηκεύεται στο Supabase."
     >
       <CrmListingForm mode="create" />
     </CrmShell>

@@ -16,7 +16,7 @@ export const crmNavItems: CrmNavItem[] = [
   },
   {
     href: "/admin/listings",
-    label: "Προσφορές",
+    label: "Καταχωρίσεις",
     labelEn: "Listings",
     icon: "listings",
   },

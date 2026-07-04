@@ -22,7 +22,7 @@ export default async function AdminDashboardPage() {
   return (
     <CrmShell
       title="Πίνακας ελέγχου"
-      description="Επισκόπηση προσφορών και αιτημάτων."
+      description="Επισκόπηση καταχωρίσεων και αιτημάτων."
     >
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <CrmStatCard label="Ενεργά στο site" value={activeListings} accent="orange" />

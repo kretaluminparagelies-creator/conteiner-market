@@ -1,18 +1,19 @@
 /**
  * @file upload-actions.ts
- * @description Upload listing images to Supabase Storage
+ * @description Upload listing images to Supabase Storage (auto-compressed)
  * @author Katsoulakis
  * @copyright 2026 Katsoulakis. All rights reserved.
  */
 
 "use server";
 
+import { compressListingImage } from "@/lib/crm/compress-listing-image";
 import { requireCrmSession } from "@/lib/crm/auth";
 import { getSupabaseAdminClient } from "@/lib/supabase/server";
 import { isSupabaseAdminConfigured } from "@/lib/supabase/env";
 
 const BUCKET = "listing-images";
-const MAX_BYTES = 5 * 1024 * 1024;
+const MAX_INPUT_BYTES = 12 * 1024 * 1024;
 const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
 
 export async function uploadListingImageAction(formData: FormData): Promise<{ url?: string; error?: string }> {
@@ -28,23 +29,21 @@ export async function uploadListingImageAction(formData: FormData): Promise<{ ur
     return { error: "Δεν επιλέχθηκε αρχείο." };
   }
 
-  if (file.size > MAX_BYTES) {
-    return { error: "Μέγιστο μέγεθος: 5 MB." };
+  if (file.size > MAX_INPUT_BYTES) {
+    return { error: "Μέγιστο αρχικό μέγεθος: 12 MB (θα συμπιεστεί αυτόματα)." };
   }
 
   if (!ALLOWED_TYPES.has(file.type)) {
     return { error: "Μόνο JPEG, PNG, WebP ή GIF." };
   }
 
-  const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
-  const safeExt = ["jpg", "jpeg", "png", "webp", "gif"].includes(ext) ? ext : "jpg";
-  const path = `${Date.now()}-${crypto.randomUUID().slice(0, 8)}.${safeExt}`;
-
-  const buffer = Buffer.from(await file.arrayBuffer());
+  const raw = Buffer.from(await file.arrayBuffer());
+  const { buffer, contentType, extension } = await compressListingImage(raw);
+  const path = `${Date.now()}-${crypto.randomUUID().slice(0, 8)}.${extension}`;
   const client = getSupabaseAdminClient();
 
   const { error: uploadError } = await client.storage.from(BUCKET).upload(path, buffer, {
-    contentType: file.type,
+    contentType,
     upsert: false,
   });
 

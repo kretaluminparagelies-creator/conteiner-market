@@ -102,9 +102,13 @@ export function CrmListingImages({
           className="inline-flex items-center gap-2 rounded-lg border border-cm-border px-4 py-2.5 text-sm text-cm-sub transition-colors hover:border-cm-accent hover:text-cm-text disabled:opacity-50"
         >
           <Upload className="h-4 w-4" />
-          {pending ? "Ανέβασμα…" : "Ανέβασμα αρχείου"}
+          {pending ? "Συμπίεση & ανέβασμα…" : "Ανέβασμα φωτογραφίας"}
         </button>
       </div>
+
+      <p className="text-xs text-cm-muted">
+        Αυτόματη συμπίεση σε WebP (έως 1400px) — κατάλληλο για site χωρίς βαριές εικόνες.
+      </p>
 
       <div className="flex gap-2">
         <input

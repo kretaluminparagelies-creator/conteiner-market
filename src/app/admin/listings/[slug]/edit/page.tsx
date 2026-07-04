@@ -22,7 +22,7 @@ export default async function AdminEditListingPage({ params }: EditListingPagePr
   if (!listing) notFound();
 
   return (
-    <CrmShell title="Επεξεργασία προσφοράς" description={listing.type}>
+    <CrmShell title="Επεξεργασία καταχώρισης" description={listing.type}>
       <CrmListingForm mode="edit" slug={slug} initial={listingToFormInput(listing)} />
     </CrmShell>
   );

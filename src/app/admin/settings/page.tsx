@@ -90,7 +90,7 @@ export default async function AdminSettingsPage() {
         <section className="rounded-xl border border-cm-border bg-cm-card/50 p-6">
           <h2 className="font-display text-base font-semibold">Φωτογραφίες listings</h2>
           <p className="mt-3 text-sm leading-relaxed text-cm-sub">
-            Ανέβασμα από τη φόρμα προσφοράς (CRM → Προσφορές → Νέα/Επεξεργασία). Αποθηκεύονται στο
+            Ανέβασμα από τη φόρμα (CRM → Καταχωρίσεις → Νέα/Επεξεργασία). Οι φωτογραφίες συμπιέζονται αυτόματα (WebP, max 1400px) και αποθηκεύονται στο
             Supabase Storage bucket <code className="text-cm-text">listing-images</code>. Τρέξε
             migration <code className="text-cm-text">20260704040000_storage_listing_images.sql</code>{" "}
             αν δεν το έχεις κάνει.

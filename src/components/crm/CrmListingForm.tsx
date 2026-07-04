@@ -249,7 +249,7 @@ export function CrmListingForm({ mode, initial, slug }: CrmListingFormProps) {
         </div>
 
         <p className="text-xs text-cm-muted">
-          Τοποθεσία: πάντα η έδρα σας (ρυθμίζεται στο site config) — όχi ανά προσφορά.
+          Τοποθεσία: πάντα η έδρα σας (ρυθμίζεται στο site config) — όχι ανά καταχώριση.
         </p>
       </section>
 
@@ -295,7 +295,7 @@ export function CrmListingForm({ mode, initial, slug }: CrmListingFormProps) {
           disabled={pending}
           className="rounded-lg bg-cm-accent px-5 py-2.5 font-display text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
         >
-          {pending ? "Αποθήκευση…" : mode === "create" ? "Δημιουργία προσφοράς" : "Αποθήκευση αλλαγών"}
+          {pending ? "Αποθήκευση…" : mode === "create" ? "Δημιουργία καταχώρισης" : "Αποθήκευση αλλαγών"}
         </button>
         <button
           type="button"
@@ -309,7 +309,7 @@ export function CrmListingForm({ mode, initial, slug }: CrmListingFormProps) {
             type="button"
             disabled={pending}
             onClick={() => {
-              if (!window.confirm("Διαγραφή προσφοράς; Δεν αναιρείται.")) return;
+              if (!window.confirm("Διαγραφή καταχώρισης; Δεν αναιρείται.")) return;
               startTransition(async () => {
                 try {
                   await deleteListingAction(slug);

@@ -20,22 +20,22 @@ export default async function AdminListingsPage({ searchParams }: AdminListingsP
 
   return (
     <CrmShell
-      title="Προσφορές"
-      description="Διαχείριση κοντέινερ — προσθήκη, επεξεργασία, ενεργές/ανενεργές."
+      title="Καταχωρίσεις"
+      description="Διαχείριση κοντέινερ — νέα καταχώριση, επεξεργασία, ενεργές/ανενεργές."
     >
       {saved ? (
         <div className="mb-4 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200">
-          Αποθηκεύτηκε η προσφορά «{saved}». Κάνε refresh στο site για να τη δεις στο carousel.
+          Αποθηκεύτηκε η καταχώριση «{saved}». Εμφανίζεται στο site μετά το cache refresh (~1 λεπτό).
         </div>
       ) : null}
 
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <p className="text-sm text-cm-sub">{listings.length} entries στο catalog</p>
+        <p className="text-sm text-cm-sub">{listings.length} καταχωρίσεις στο catalog</p>
         <Link
           href="/admin/listings/new"
           className="rounded-md bg-cm-accent px-4 py-2 font-display text-sm font-semibold text-white transition-opacity hover:opacity-90"
         >
-          + Νέα προσφορά
+          + Νέα καταχώριση
         </Link>
       </div>
       <CrmListingsTable listings={listings} />

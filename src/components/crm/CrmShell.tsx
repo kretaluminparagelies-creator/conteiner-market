@@ -47,7 +47,7 @@ function CrmNavMobile() {
     <div className="mb-4 flex gap-2 overflow-x-auto pb-2">
       {[
         { href: "/admin", label: "Πίνακας" },
-        { href: "/admin/listings", label: "Προσφορές" },
+        { href: "/admin/listings", label: "Καταχωρίσεις" },
         { href: "/admin/leads", label: "Αιτήματα" },
         { href: "/admin/settings", label: "Ρυθμίσεις" },
       ].map((item) => (
