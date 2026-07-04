@@ -8,7 +8,7 @@
 - Production URL: https://containermarket.gr
 - Vercel URL: https://conteiner-market.vercel.app
 - Stack: Next.js 16, React 19, Supabase (listings + CRM leads)
-- Version: 0.9.1
+- Version: 1.0.0
 - AI guide (this file): /llms.txt
 - Short pointer: /ai.txt
 
