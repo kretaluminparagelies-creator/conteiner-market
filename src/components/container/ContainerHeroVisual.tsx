@@ -8,10 +8,11 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Component, useRef, useState, type ReactNode } from "react";
+import { Component, useEffect, useRef, useState, type ReactNode } from "react";
 import { ContainerVisual2D } from "@/components/container/ContainerVisual2D";
 import { useIsDesktop } from "@/lib/hooks/useIsDesktop";
 import { usePrefersReducedMotion } from "@/lib/hooks/usePrefersReducedMotion";
+import { canUseWebGL, isWebGLRelatedError, markWebGLBlocked } from "@/lib/webgl/detect-webgl";
 
 const USE_PLAN_A_3D = true;
 const USE_SKETCHFAB_GLB = true;
@@ -56,6 +57,12 @@ class ModelErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryStat
     return { hasError: true };
   }
 
+  componentDidCatch(error: unknown) {
+    if (isWebGLRelatedError(error)) {
+      markWebGLBlocked();
+    }
+  }
+
   render() {
     if (this.state.hasError) return this.props.fallback;
     return this.props.children;
@@ -74,7 +81,17 @@ export function ContainerHeroVisual({ className, plan }: ContainerHeroVisualProp
   const reducedMotion = usePrefersReducedMotion();
   const usePlanA = plan === "2d" ? false : USE_PLAN_A_3D && isDesktop && !reducedMotion;
   const [doorsOpen, setDoorsOpen] = useState(true);
+  const [clientReady, setClientReady] = useState(false);
+  const [webglFailed, setWebglFailed] = useState(false);
   const closeTimerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    setClientReady(true);
+  }, []);
+
+  const handleWebGLFailure = () => {
+    setWebglFailed(true);
+  };
 
   const handleMouseEnter = () => {
     if (closeTimerRef.current) {
@@ -88,15 +105,15 @@ export function ContainerHeroVisual({ className, plan }: ContainerHeroVisualProp
     closeTimerRef.current = window.setTimeout(() => setDoorsOpen(false), 800);
   };
 
-  if (!usePlanA || plan === "2d") {
+  if (!usePlanA || plan === "2d" || !clientReady || webglFailed || !canUseWebGL()) {
     return <ContainerVisual2DFallback />;
   }
 
   const useGlb = plan === "glb" || (plan === undefined && USE_SKETCHFAB_GLB);
-  const CodeScene = <ContainerScene doorsOpen={doorsOpen} />;
+  const CodeScene = <ContainerScene doorsOpen={doorsOpen} onContextLost={handleWebGLFailure} />;
   const GlbScene = (
-    <ModelErrorBoundary fallback={CodeScene}>
-      <ContainerSceneGLB doorsOpen={doorsOpen} />
+    <ModelErrorBoundary fallback={<ContainerVisual2DFallback />}>
+      <ContainerSceneGLB doorsOpen={doorsOpen} onContextLost={handleWebGLFailure} />
     </ModelErrorBoundary>
   );
 

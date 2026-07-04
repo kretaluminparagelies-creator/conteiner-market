@@ -11,7 +11,7 @@ export function NavBrand() {
   return (
     <Link
       href="/"
-      className="nav-brand-live relative flex items-center overflow-hidden rounded-[4px] px-2 py-1.5"
+      className="nav-brand-live relative flex shrink-0 items-center overflow-hidden rounded-[4px] px-2 py-1.5"
     >
       <span
         aria-hidden="true"

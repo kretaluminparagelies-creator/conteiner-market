@@ -8,12 +8,15 @@
 "use client";
 
 import { Canvas } from "@react-three/fiber";
-import { Suspense } from "react";
+import { Suspense, useEffect, useRef } from "react";
+import type { WebGLRenderer } from "three";
 import { ContainerModelGLB } from "@/components/container/ContainerModelGLB";
 import { sketchfabModel } from "@/lib/constants/sketchfab";
+import { markWebGLBlocked } from "@/lib/webgl/detect-webgl";
 
 type ContainerSceneGLBProps = {
   doorsOpen?: boolean;
+  onContextLost?: () => void;
 };
 
 function LoadingFallback() {
@@ -25,18 +28,50 @@ function LoadingFallback() {
   );
 }
 
-export function ContainerSceneGLB({ doorsOpen = false }: ContainerSceneGLBProps) {
+export function ContainerSceneGLB({ doorsOpen = false, onContextLost }: ContainerSceneGLBProps) {
+  const rendererRef = useRef<WebGLRenderer | null>(null);
+
+  useEffect(() => {
+    return () => {
+      const renderer = rendererRef.current;
+      if (!renderer) return;
+
+      renderer.dispose();
+      renderer.forceContextLoss();
+      rendererRef.current = null;
+    };
+  }, []);
+
+  const handleContextLost = () => {
+    markWebGLBlocked();
+    onContextLost?.();
+  };
+
   return (
     <Canvas
-      dpr={[1, 1.5]}
-      frameloop="always"
-      gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
+      dpr={[1, 1.35]}
+      frameloop="demand"
+      gl={{
+        antialias: true,
+        alpha: false,
+        powerPreference: "high-performance",
+        failIfMajorPerformanceCaveat: false,
+      }}
       camera={{
         position: [...sketchfabModel.cameraPosition],
         fov: sketchfabModel.cameraFov,
       }}
       onCreated={({ gl }) => {
+        rendererRef.current = gl;
         gl.setClearColor(sketchfabModel.canvasBackground, 1);
+
+        const canvas = gl.domElement;
+        const onLost = (event: Event) => {
+          event.preventDefault();
+          handleContextLost();
+        };
+
+        canvas.addEventListener("webglcontextlost", onLost, { once: true });
       }}
       style={{ width: "100%", height: "100%", background: sketchfabModel.canvasBackground }}
     >

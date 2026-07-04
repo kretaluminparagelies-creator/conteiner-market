@@ -7,22 +7,41 @@
 
 "use client";
 
-import { X } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useCallback, useEffect } from "react";
-import { ListingDetailContent } from "@/components/listings/detail/ListingDetailContent";
+import { useCallback, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+import { ListingDetailWithPeers } from "@/components/listings/detail/ListingDetailWithPeers";
 import { useLocale } from "@/lib/i18n/locale-context";
+import { getPeerListings } from "@/lib/utils/listing-detail-peers";
+import type { ListingCarouselTab } from "@/lib/utils/listing-carousel-filters";
 import type { Listing } from "@/lib/types/listing";
 
 type ListingDetailModalProps = {
   listing: Listing | null;
+  categoryListings?: Listing[];
+  categoryTab?: ListingCarouselTab;
   onClose: () => void;
 };
 
-export function ListingDetailModal({ listing, onClose }: ListingDetailModalProps) {
+export function ListingDetailModal({
+  listing,
+  categoryListings = [],
+  categoryTab = "offers",
+  onClose,
+}: ListingDetailModalProps) {
   const { t } = useLocale();
   const reduceMotion = useReducedMotion();
   const open = listing !== null;
+  const [activeListing, setActiveListing] = useState<Listing | null>(listing);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    setActiveListing(listing);
+  }, [listing]);
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
@@ -41,11 +60,19 @@ export function ListingDetailModal({ listing, onClose }: ListingDetailModalProps
     };
   }, [open, handleKeyDown]);
 
-  return (
+  const hasPeers =
+    activeListing !== null && getPeerListings(categoryListings, activeListing.slug).length > 0;
+
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
-      {open && listing ? (
+      {open && activeListing ? (
         <motion.div
-          className="fixed inset-0 z-[300] grid place-items-center overflow-y-auto p-4 sm:p-6"
+          className={[
+            "fixed inset-0 z-[500] grid place-items-center overflow-y-auto",
+            hasPeers ? "px-2 py-6 sm:px-3" : "p-4 sm:p-6",
+          ].join(" ")}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -54,7 +81,7 @@ export function ListingDetailModal({ listing, onClose }: ListingDetailModalProps
           <button
             type="button"
             aria-label={t.listings.detailClose}
-            className="absolute inset-0 bg-cm-bg/80 backdrop-blur-sm"
+            className="absolute inset-0 bg-cm-bg backdrop-blur-md"
             onClick={onClose}
           />
 
@@ -62,33 +89,31 @@ export function ListingDetailModal({ listing, onClose }: ListingDetailModalProps
             role="dialog"
             aria-modal="true"
             aria-labelledby="listing-detail-title"
-            className="relative z-10 my-auto w-full max-w-4xl translate-y-4 overflow-hidden sm:translate-y-7"
+            className={[
+              "relative z-10 my-auto w-full translate-y-4 overflow-visible sm:translate-y-7",
+              hasPeers ? "max-w-none" : "max-w-5xl",
+            ].join(" ")}
             initial={reduceMotion ? false : { opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={reduceMotion ? undefined : { opacity: 0, scale: 0.97 }}
             transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
             onClick={(event) => event.stopPropagation()}
           >
-            <button
-              type="button"
-              onClick={onClose}
-              aria-label={t.listings.detailClose}
-              className={[
-                "absolute top-3 right-3 z-30 flex h-10 w-10 items-center justify-center rounded-full",
-                "border border-cm-border bg-cm-card/95 text-cm-sub backdrop-blur-sm",
-                "transition-colors hover:border-cm-accent hover:text-cm-text",
-              ].join(" ")}
-            >
-              <X className="h-5 w-5" />
-            </button>
-
             <div id="listing-detail-title" className="sr-only">
-              {listing.type}
+              {activeListing.type}
             </div>
-            <ListingDetailContent listing={listing} />
+
+            <ListingDetailWithPeers
+              listing={activeListing}
+              categoryListings={categoryListings}
+              categoryTab={categoryTab}
+              onListingSelect={setActiveListing}
+              onClose={onClose}
+            />
           </motion.div>
         </motion.div>
       ) : null}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   );
 }

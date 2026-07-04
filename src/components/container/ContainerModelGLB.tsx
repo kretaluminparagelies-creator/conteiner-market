@@ -8,8 +8,8 @@
 "use client";
 
 import { Center, useGLTF } from "@react-three/drei";
-import { useFrame } from "@react-three/fiber";
-import { useMemo, useRef } from "react";
+import { useFrame, useThree } from "@react-three/fiber";
+import { useMemo, useRef, useEffect } from "react";
 import {
   Color,
   MathUtils,
@@ -67,6 +67,7 @@ function brightenMaterials(root: Object3D) {
 function ContainerModelInner({ doorsOpen = true }: ContainerModelGLBProps) {
   const groupRef = useRef<Group>(null);
   const initializedRef = useRef(false);
+  const { invalidate } = useThree();
   const { scene } = useGLTF(sketchfabModel.path);
 
   const model = useMemo(() => {
@@ -77,6 +78,10 @@ function ContainerModelInner({ doorsOpen = true }: ContainerModelGLBProps) {
     return clone;
   }, [scene]);
 
+  useEffect(() => {
+    invalidate();
+  }, [doorsOpen, invalidate]);
+
   useFrame((_, delta) => {
     if (!groupRef.current) return;
 
@@ -86,6 +91,7 @@ function ContainerModelInner({ doorsOpen = true }: ContainerModelGLBProps) {
       groupRef.current.rotation.y = sketchfabModel.faceCameraYaw;
       groupRef.current.rotation.x = 0;
       initializedRef.current = true;
+      invalidate();
       return;
     }
 
@@ -104,6 +110,8 @@ function ContainerModelInner({ doorsOpen = true }: ContainerModelGLBProps) {
       groupRef.current.rotation.y += dt * sketchfabModel.rotationSpeed;
       groupRef.current.rotation.x = Math.sin(groupRef.current.rotation.y * 0.5) * 0.05;
     }
+
+    invalidate();
   });
 
   return (

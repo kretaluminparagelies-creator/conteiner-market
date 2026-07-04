@@ -10,11 +10,15 @@
 import { LanguageToggle } from "@/components/layout/LanguageToggle";
 import { NavBrand } from "@/components/layout/NavBrand";
 import { NavLink } from "@/components/layout/NavLink";
+import { NavListingTabs } from "@/components/layout/NavListingTabs";
 import { useLocale } from "@/lib/i18n/locale-context";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 
 export function Nav() {
   const { t } = useLocale();
+  const pathname = usePathname();
+  const isHome = pathname === "/";
 
   const mainNav = [
     { href: "/agora", label: t.nav.buy },
@@ -27,17 +31,25 @@ export function Nav() {
   return (
     <nav
       aria-label={t.nav.ariaLabel}
-      className="fixed inset-x-0 top-0 z-[200] flex h-[60px] items-center justify-between border-b border-cm-border bg-cm-bg/92 px-[6%] backdrop-blur-[14px]"
+      className="fixed inset-x-0 top-0 z-[200] grid h-[60px] grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 border-b border-cm-border bg-cm-bg/92 px-[4%] backdrop-blur-[14px] sm:gap-3 sm:px-[6%]"
     >
-      <NavBrand />
-
-      <div className="hidden items-center gap-7 lg:flex">
-        {mainNav.slice(0, 4).map((item) => (
-          <NavLink key={item.href} href={item.href} label={item.label} />
-        ))}
+      <div className="min-w-0 justify-self-start">
+        <NavBrand />
       </div>
 
-      <div className="flex items-center gap-2.5 sm:gap-3">
+      {isHome ? (
+        <div className="max-w-full justify-self-center overflow-x-auto px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <NavListingTabs />
+        </div>
+      ) : (
+        <div className="hidden items-center justify-center gap-7 justify-self-center lg:flex">
+          {mainNav.slice(0, 4).map((item) => (
+            <NavLink key={item.href} href={item.href} label={item.label} />
+          ))}
+        </div>
+      )}
+
+      <div className="flex shrink-0 items-center justify-self-end gap-2 sm:gap-3">
         <LanguageToggle />
         <Link
           href="/epikoinonia"

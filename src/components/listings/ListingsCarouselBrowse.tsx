@@ -7,12 +7,18 @@
 
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { motion, useReducedMotion } from "motion/react";
 import { ContainerCarousel3D } from "@/components/listings/carousel/ContainerCarousel3D";
 import { ListingDetailModal } from "@/components/listings/detail/ListingDetailModal";
 import { ListingCarouselTabs } from "@/components/listings/ListingCarouselTabs";
 import { getListingBySlug, localizeListing } from "@/lib/data/listings";
 import { useLocale } from "@/lib/i18n/locale-context";
+import {
+  emitHomeListingTabChange,
+  homeListingTabEvent,
+  type HomeListingTabEventDetail,
+} from "@/lib/nav/home-listing-tab-sync";
 import { mapListingsToCarousel } from "@/lib/utils/map-listing-carousel";
 import {
   defaultListingCarouselTab,
@@ -29,14 +35,18 @@ type ListingsCarouselBrowseProps = {
   initialTab?: ListingCarouselTab;
   /** Called after tab change — e.g. sync URL on /listings */
   onTabChange?: (tab: ListingCarouselTab) => void;
+  /** Show section title above tabs (home page) */
+  showSectionHeader?: boolean;
 };
 
 export function ListingsCarouselBrowse({
   listings,
   initialTab = defaultListingCarouselTab,
   onTabChange,
+  showSectionHeader = false,
 }: ListingsCarouselBrowseProps) {
   const { locale, t } = useLocale();
+  const reduceMotion = useReducedMotion();
   const [activeTab, setActiveTab] = useState<ListingCarouselTab>(initialTab);
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
 
@@ -60,7 +70,22 @@ export function ListingsCarouselBrowse({
     setActiveTab(tab);
     setSelectedListing(null);
     onTabChange?.(tab);
+    if (showSectionHeader) emitHomeListingTabChange(tab, "section");
   };
+
+  useEffect(() => {
+    if (!showSectionHeader) return;
+
+    const handleExternalTabChange = (event: Event) => {
+      const { tab, source } = (event as CustomEvent<HomeListingTabEventDetail>).detail;
+      if (source === "section") return;
+      setActiveTab(tab);
+      setSelectedListing(null);
+    };
+
+    window.addEventListener(homeListingTabEvent, handleExternalTabChange);
+    return () => window.removeEventListener(homeListingTabEvent, handleExternalTabChange);
+  }, [showSectionHeader]);
 
   const handleListingClick = (item: CarouselListingItem) => {
     const listing = getListingBySlug(item.slug);
@@ -75,6 +100,7 @@ export function ListingsCarouselBrowse({
         activeTab={activeTab}
         onTabChange={handleTabChange}
         counts={tabCounts}
+        showSectionHeader={showSectionHeader}
       />
 
       {carouselItems.length === 0 ? (
@@ -89,12 +115,24 @@ export function ListingsCarouselBrowse({
           </button>
         </div>
       ) : (
-        <div data-offers-carousel>
+        <motion.div
+          key={activeTab}
+          data-offers-carousel
+          className={showSectionHeader ? "-mt-1.5 md:-mt-2" : undefined}
+          initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+        >
           <ContainerCarousel3D listings={carouselItems} onListingClick={handleListingClick} />
-        </div>
+        </motion.div>
       )}
 
-      <ListingDetailModal listing={selectedListing} onClose={() => setSelectedListing(null)} />
+      <ListingDetailModal
+        listing={selectedListing}
+        categoryListings={localizedListings}
+        categoryTab={activeTab}
+        onClose={() => setSelectedListing(null)}
+      />
     </>
   );
 }

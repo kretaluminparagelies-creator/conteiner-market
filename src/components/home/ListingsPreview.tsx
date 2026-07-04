@@ -33,7 +33,7 @@ export function ListingsPreview() {
   return (
     <section
       id="prosfores"
-      className="relative scroll-mt-[60px] overflow-hidden bg-cm-bg px-[6%] pt-10 pb-16 md:pt-12 md:pb-20"
+      className="relative scroll-mt-[60px] overflow-hidden bg-cm-bg px-[6%] pt-4 pb-16 md:pt-5 md:pb-20"
     >
       <div
         aria-hidden="true"
@@ -49,7 +49,7 @@ export function ListingsPreview() {
       />
 
       <div className="relative z-10 mx-auto max-w-6xl">
-        <ListingsCarouselBrowse listings={listings} />
+        <ListingsCarouselBrowse listings={listings} showSectionHeader />
       </div>
     </section>
   );
