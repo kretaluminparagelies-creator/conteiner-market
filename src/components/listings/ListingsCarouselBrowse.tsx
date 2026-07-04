@@ -37,6 +37,8 @@ type ListingsCarouselBrowseProps = {
   onTabChange?: (tab: ListingCarouselTab) => void;
   /** Show section title above tabs (home page) */
   showSectionHeader?: boolean;
+  /** Light surface for home page below hero */
+  tone?: "dark" | "light";
 };
 
 export function ListingsCarouselBrowse({
@@ -44,9 +46,11 @@ export function ListingsCarouselBrowse({
   initialTab = defaultListingCarouselTab,
   onTabChange,
   showSectionHeader = false,
+  tone = "dark",
 }: ListingsCarouselBrowseProps) {
   const { locale, t } = useLocale();
   const reduceMotion = useReducedMotion();
+  const isLight = tone === "light";
   const [activeTab, setActiveTab] = useState<ListingCarouselTab>(initialTab);
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
 
@@ -101,11 +105,19 @@ export function ListingsCarouselBrowse({
         onTabChange={handleTabChange}
         counts={tabCounts}
         showSectionHeader={showSectionHeader}
+        tone={tone}
       />
 
       {carouselItems.length === 0 ? (
-        <div className="flex flex-col items-start gap-3 rounded-xl border border-cm-border bg-cm-card/50 p-8">
-          <p className="text-cm-sub">{t.listings.noTabResults}</p>
+        <div
+          className={[
+            "flex flex-col items-start gap-3 rounded-xl border p-8",
+            isLight
+              ? "border-cm-light-border bg-cm-light-surf shadow-sm"
+              : "border-cm-border bg-cm-card/50",
+          ].join(" ")}
+        >
+          <p className={isLight ? "text-cm-ink-sub" : "text-cm-sub"}>{t.listings.noTabResults}</p>
           <button
             type="button"
             onClick={() => handleTabChange(defaultListingCarouselTab)}

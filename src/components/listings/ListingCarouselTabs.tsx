@@ -16,6 +16,7 @@ type ListingCarouselTabsProps = {
   onTabChange: (tab: ListingCarouselTab) => void;
   counts?: Partial<Record<ListingCarouselTab, number>>;
   showSectionHeader?: boolean;
+  tone?: "dark" | "light";
 };
 
 export function ListingCarouselTabs({
@@ -23,14 +24,21 @@ export function ListingCarouselTabs({
   onTabChange,
   counts,
   showSectionHeader = false,
+  tone = "dark",
 }: ListingCarouselTabsProps) {
   const { t } = useLocale();
+  const isLight = tone === "light";
 
   return (
     <div className={showSectionHeader ? "mb-0" : "mb-3 md:mb-4"}>
       {showSectionHeader ? (
         <div className="mb-1.5 text-center md:mb-2">
-          <h2 className="font-display text-[clamp(1.25rem,2.2vw,1.625rem)] font-bold tracking-tight text-cm-text">
+          <h2
+            className={[
+              "font-display text-[clamp(1.25rem,2.2vw,1.625rem)] font-bold tracking-tight",
+              isLight ? "text-cm-ink" : "text-cm-text",
+            ].join(" ")}
+          >
             {t.listings.sectionSubtitle}
           </h2>
         </div>
@@ -41,6 +49,7 @@ export function ListingCarouselTabs({
         onTabChange={onTabChange}
         counts={counts}
         layoutIdPrefix="listing-section"
+        surface={isLight ? "light" : "dark"}
       />
     </div>
   );

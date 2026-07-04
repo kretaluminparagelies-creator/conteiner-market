@@ -19,6 +19,7 @@ type ListingCarouselTabBarProps = {
   onTabChange: (tab: ListingCarouselTab) => void;
   counts?: Partial<Record<ListingCarouselTab, number>>;
   variant?: "default" | "compact" | "nav";
+  surface?: "dark" | "light";
   layoutIdPrefix?: string;
   className?: string;
 };
@@ -28,6 +29,7 @@ export function ListingCarouselTabBar({
   onTabChange,
   counts,
   variant = "default",
+  surface = "dark",
   layoutIdPrefix = "listing-carousel",
   className,
 }: ListingCarouselTabBarProps) {
@@ -35,6 +37,7 @@ export function ListingCarouselTabBar({
   const reduceMotion = useReducedMotion();
   const isNav = variant === "nav";
   const isCompact = variant === "compact" || isNav;
+  const isLight = surface === "light" && !isNav;
 
   const labels: Record<ListingCarouselTab, string> = {
     offers: t.listings.tabs.offers,
@@ -52,7 +55,11 @@ export function ListingCarouselTabBar({
           ? "mx-auto w-max max-w-[calc(100vw-10.5rem)] rounded-lg border border-cm-border/80 bg-cm-card/40 p-1 sm:max-w-[calc(100vw-12rem)]"
           : "",
         isCompact && !isNav ? "mx-auto w-full max-w-3xl" : !isNav ? "mx-auto max-w-3xl" : "",
-        !isNav ? "rounded-xl border border-cm-border bg-cm-card/55 p-0.5 backdrop-blur-sm sm:p-1" : "",
+        !isNav
+          ? isLight
+            ? "rounded-xl border border-cm-light-border bg-cm-light-surf p-0.5 shadow-[0_4px_24px_rgba(14,24,40,0.06)] sm:p-1"
+            : "rounded-xl border border-cm-border bg-cm-card/55 p-0.5 backdrop-blur-sm sm:p-1"
+          : "",
         className,
       ]
         .filter(Boolean)
@@ -100,7 +107,8 @@ export function ListingCarouselTabBar({
                   : isCompact
                     ? "font-display text-[10px] font-semibold sm:text-[11px]"
                     : "font-display text-[11px] font-semibold sm:text-[13px]",
-                "text-cm-sub transition-colors duration-200",
+                "transition-colors duration-200",
+                isLight ? "text-cm-ink-sub" : "text-cm-sub",
               ].join(" ")}
             >
               {isActive ? (
@@ -141,7 +149,9 @@ export function ListingCarouselTabBar({
                     "relative shrink-0 transition-colors duration-200",
                     isActive
                       ? ""
-                      : "text-cm-sub group-hover:text-[var(--tab-accent)]",
+                      : isLight
+                        ? "text-cm-ink-muted group-hover:text-[var(--tab-accent)]"
+                        : "text-cm-sub group-hover:text-[var(--tab-accent)]",
                     isCompact
                       ? "h-3 w-3 sm:h-3.5 sm:w-3.5"
                       : "h-3.5 w-3.5 sm:h-4 sm:w-4",
@@ -155,9 +165,11 @@ export function ListingCarouselTabBar({
                 className={[
                   "relative transition-colors duration-200",
                   isNav ? "whitespace-nowrap" : "block w-full",
-                  isActive
-                    ? "text-[var(--tab-accent)]"
-                    : "text-cm-sub group-hover:text-[var(--tab-accent)]",
+                    isActive
+                      ? "text-[var(--tab-accent)]"
+                      : isLight
+                        ? "text-cm-ink-muted group-hover:text-[var(--tab-accent)]"
+                        : "text-cm-sub group-hover:text-[var(--tab-accent)]",
                 ].join(" ")}
               >
                 {labels[tab]}
@@ -170,7 +182,7 @@ export function ListingCarouselTabBar({
                     isCompact
                       ? "hidden h-4 min-w-4 px-1 text-[8px] sm:inline-flex sm:h-4 sm:min-w-4 sm:text-[9px]"
                       : "h-5 min-w-5 px-1.5 text-[9px] sm:text-[10px]",
-                    isActive ? "text-cm-bg" : "bg-cm-steel/60 text-cm-sub",
+                    isActive ? "text-white" : isLight ? "bg-cm-light-elevated text-cm-ink-muted" : "bg-cm-steel/60 text-cm-sub",
                   ].join(" ")}
                   style={isActive ? { backgroundColor: theme.accent } : undefined}
                 >

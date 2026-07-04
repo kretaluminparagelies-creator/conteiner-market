@@ -15,6 +15,14 @@
   --cm-carousel-visual: #6888a4;
   --cm-carousel-panel: #344d65;
   --cm-carousel-photo: #7896b0;
+  /* Light sections (home below hero — option C) */
+  --cm-light-bg: #f4f7fb;
+  --cm-light-surf: #ffffff;
+  --cm-light-elevated: #eef2f7;
+  --cm-ink: #0e1828;
+  --cm-ink-sub: #3d5570;
+  --cm-ink-muted: #6b8299;
+  --cm-light-border: #d4dee8;
 }
 
 @theme inline {
@@ -32,6 +40,13 @@
   --color-cm-carousel-visual: var(--cm-carousel-visual);
   --color-cm-carousel-panel: var(--cm-carousel-panel);
   --color-cm-carousel-photo: var(--cm-carousel-photo);
+  --color-cm-light-bg: var(--cm-light-bg);
+  --color-cm-light-surf: var(--cm-light-surf);
+  --color-cm-light-elevated: var(--cm-light-elevated);
+  --color-cm-ink: var(--cm-ink);
+  --color-cm-ink-sub: var(--cm-ink-sub);
+  --color-cm-ink-muted: var(--cm-ink-muted);
+  --color-cm-light-border: var(--cm-light-border);
   --font-sans: var(--font-inter);
   --font-display: var(--font-space-grotesk);
   --font-mono: var(--font-jetbrains-mono);

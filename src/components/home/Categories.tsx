@@ -17,7 +17,7 @@ export function Categories() {
   const { ref, visible } = useInView<HTMLElement>();
 
   return (
-    <section ref={ref} className="bg-cm-surf px-[6%] py-24">
+    <section ref={ref} className="bg-cm-light-surf px-[6%] py-24">
       <div className="mx-auto max-w-6xl">
         <p
           className="mb-4 font-mono text-[10px] tracking-[0.25em] text-cm-accent uppercase"
@@ -26,7 +26,7 @@ export function Categories() {
           {t.categories.eyebrow}
         </p>
         <h2
-          className="mb-14 font-display text-[clamp(1.625rem,4vw,2.875rem)] font-bold"
+          className="mb-14 font-display text-[clamp(1.625rem,4vw,2.875rem)] font-bold text-cm-ink"
           style={fadeUpStyle(visible, 0.1)}
         >
           {t.categories.title}

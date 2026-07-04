@@ -33,23 +33,19 @@ export function ListingsPreview() {
   return (
     <section
       id="prosfores"
-      className="relative scroll-mt-[60px] overflow-hidden bg-cm-bg px-[6%] pt-4 pb-16 md:pt-5 md:pb-20"
+      className="relative scroll-mt-[60px] overflow-hidden bg-cm-light-bg px-[6%] pt-4 pb-16 md:pt-5 md:pb-20"
     >
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,#ffffff10_0%,transparent_42%)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_10%,#e0703010_0%,transparent_45%)]"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_60%,#4ab0e818_0%,transparent_48%)]"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[linear-gradient(#243d5814_1px,transparent_1px),linear-gradient(90deg,#243d5814_1px,transparent_1px)] bg-size-[48px_48px]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_70%,#4ab0e812_0%,transparent_50%)]"
       />
 
       <div className="relative z-10 mx-auto max-w-6xl">
-        <ListingsCarouselBrowse listings={listings} showSectionHeader />
+        <ListingsCarouselBrowse listings={listings} showSectionHeader tone="light" />
       </div>
     </section>
   );

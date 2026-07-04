@@ -77,10 +77,10 @@ type ContainerHeroVisualProps = {
 };
 
 export function ContainerHeroVisual({ className, plan }: ContainerHeroVisualProps) {
-  const isDesktop = useIsDesktop();
+  const isDesktop = useIsDesktop(768);
   const reducedMotion = usePrefersReducedMotion();
   const usePlanA = plan === "2d" ? false : USE_PLAN_A_3D && isDesktop && !reducedMotion;
-  const [doorsOpen, setDoorsOpen] = useState(true);
+  const [doorsOpen, setDoorsOpen] = useState(false);
   const [clientReady, setClientReady] = useState(false);
   const [webglFailed, setWebglFailed] = useState(false);
   const closeTimerRef = useRef<number | null>(null);
@@ -120,7 +120,9 @@ export function ContainerHeroVisual({ className, plan }: ContainerHeroVisualProp
   return (
     <div
       className={[
-        "hero-visual-3d relative overflow-hidden rounded-xl border border-cm-border bg-cm-bg",
+        "hero-visual-3d relative overflow-hidden rounded-xl border border-cm-accent/25",
+        "bg-linear-to-br from-[#1a3050] via-[#152438] to-[#0e1828]",
+        "shadow-[0_8px_32px_rgba(0,0,0,0.35)] ring-1 ring-white/5",
         "h-[220px] w-full cursor-pointer lg:h-[420px]",
         className,
       ]
@@ -136,7 +138,7 @@ export function ContainerHeroVisual({ className, plan }: ContainerHeroVisualProp
     >
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_50%_60%,#e070301a_0%,transparent_65%)]"
+        className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_50%_45%,#e0703040_0%,transparent_58%)]"
       />
       <div className="relative z-10 h-full w-full">{useGlb ? GlbScene : CodeScene}</div>
     </div>

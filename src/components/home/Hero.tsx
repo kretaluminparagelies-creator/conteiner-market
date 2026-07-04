@@ -40,6 +40,10 @@ export function Hero() {
         aria-hidden="true"
         className="animate-glow-pulse-slow pointer-events-none absolute top-[50%] right-[5%] h-[400px] w-[400px] bg-[radial-gradient(circle,#4080c815_0%,transparent_65%)]"
       />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-40 bg-linear-to-b from-transparent via-cm-bg/40 to-cm-light-bg"
+      />
 
       <div className="absolute inset-x-0 top-0 z-10 overflow-hidden border-y border-cm-border bg-cm-bg/80 py-1.5">
         <div

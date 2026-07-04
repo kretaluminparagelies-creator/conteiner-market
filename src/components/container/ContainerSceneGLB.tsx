@@ -50,7 +50,7 @@ export function ContainerSceneGLB({ doorsOpen = false, onContextLost }: Containe
   return (
     <Canvas
       dpr={[1, 1.35]}
-      frameloop="demand"
+      frameloop={doorsOpen ? "demand" : "always"}
       gl={{
         antialias: true,
         alpha: false,

@@ -20,15 +20,15 @@ export function Stats() {
   return (
     <div
       ref={ref}
-      className="grid grid-cols-2 border-y border-cm-border bg-cm-card md:grid-cols-4"
+      className="grid grid-cols-2 border-y border-cm-light-border bg-cm-light-surf md:grid-cols-4"
     >
       {statDefinitions.map((stat, index) => (
         <div
           key={stat.key}
           className={[
             "px-5 py-11 text-center",
-            index < statDefinitions.length - 1 ? "border-cm-border md:border-r" : "",
-            index % 2 === 0 ? "border-r md:border-r" : "",
+            index < statDefinitions.length - 1 ? "border-cm-light-border md:border-r" : "",
+            index % 2 === 0 ? "border-r border-cm-light-border md:border-r" : "",
             index < 2 ? "border-b md:border-b-0" : "",
           ].join(" ")}
           style={fadeUpStyle(visible, index * 0.1)}
@@ -36,7 +36,7 @@ export function Stats() {
           <div className="font-display text-[46px] leading-none font-bold text-cm-accent">
             <CountUp end={stat.end} suffix={stat.suffix} run={visible} />
           </div>
-          <div className="mt-1.5 text-[13px] text-cm-sub">{t.stats[stat.key]}</div>
+          <div className="mt-1.5 text-[13px] text-cm-ink-sub">{t.stats[stat.key]}</div>
         </div>
       ))}
     </div>
