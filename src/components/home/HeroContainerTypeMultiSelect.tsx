@@ -129,16 +129,26 @@ export function HeroContainerTypeMultiSelect({
     };
 
     const handleResize = () => updatePanelPosition();
-    const handleScroll = () => setOpen(false);
+    const handleScroll = (event: Event) => {
+      const target = event.target as Node;
+      if (panelRef.current?.contains(target)) return;
+      if ((target as Element).closest?.("[data-container-type-info]")) return;
+      setOpen(false);
+    };
+    const isMobileLayoutNow = window.matchMedia("(max-width: 767px)").matches;
 
     window.addEventListener("mousedown", handlePointerDown);
     window.addEventListener("resize", handleResize);
-    window.addEventListener("scroll", handleScroll, true);
+    if (!isMobileLayoutNow) {
+      window.addEventListener("scroll", handleScroll, true);
+    }
 
     return () => {
       window.removeEventListener("mousedown", handlePointerDown);
       window.removeEventListener("resize", handleResize);
-      window.removeEventListener("scroll", handleScroll, true);
+      if (!isMobileLayoutNow) {
+        window.removeEventListener("scroll", handleScroll, true);
+      }
     };
   }, [open]);
 
@@ -234,8 +244,10 @@ export function HeroContainerTypeMultiSelect({
               <div
                 className={cn(
                   "p-2.5",
-                  isMobileLayout && "max-h-[calc(min(70dvh,32rem)-2.75rem)] overflow-y-auto overscroll-contain",
+                  isMobileLayout &&
+                    "max-h-[calc(min(70dvh,32rem)-2.75rem)] touch-pan-y overflow-y-auto overscroll-contain",
                 )}
+                onTouchMove={(event) => event.stopPropagation()}
               >
                 {containerTypeGroups.map((group) => (
                   <div key={group.label.el} className="mb-2 last:mb-0">
