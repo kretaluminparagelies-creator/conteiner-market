@@ -64,15 +64,15 @@ export function ListingCarouselTabBar({
         isCompact && !isNav ? "mx-auto w-full max-w-3xl" : !isNav ? "mx-auto max-w-3xl" : "",
         !isNav
           ? isLight
-            ? "rounded-2xl border border-cm-light-border-strong bg-white/96 p-0.5 shadow-cm-light-lg backdrop-blur-md sm:p-1"
-            : "rounded-xl border border-cm-border bg-cm-card/55 p-0.5 backdrop-blur-sm sm:p-1"
+            ? "rounded-2xl border border-cm-light-border-strong bg-white/96 p-0.5 shadow-cm-light-lg backdrop-blur-md max-md:rounded-xl max-md:shadow-cm-light-xs sm:p-1"
+            : "rounded-xl border border-cm-border bg-cm-card/55 p-0.5 backdrop-blur-sm max-md:rounded-xl sm:p-1"
           : "",
         className,
       ]
         .filter(Boolean)
         .join(" ")}
       style={{
-        boxShadow: isCompact ? undefined : `0 0 40px -12px ${activeTheme.glow}`,
+        boxShadow: isCompact || !isLight ? undefined : `0 0 40px -12px ${activeTheme.glow}`,
       }}
     >
       <div
@@ -119,33 +119,46 @@ export function ListingCarouselTabBar({
               ].join(" ")}
             >
               {isActive ? (
-                <motion.span
-                  layoutId={`${layoutIdPrefix}-tab-indicator`}
-                  className={[
-                    "absolute inset-0 border",
-                    isNav ? "rounded-[6px]" : "rounded-[6px] sm:rounded-[8px]",
-                  ].join(" ")}
-                  style={{
-                    backgroundColor: isLight ? `${theme.accent}28` : `${theme.accent}18`,
-                    borderColor: isLight ? `${theme.accent}88` : `${theme.accent}55`,
-                    boxShadow:
-                      isCompact && !isNav
-                        ? undefined
-                        : isLight
-                          ? `0 4px 18px -2px ${theme.glow}`
-                          : `0 0 20px -4px ${theme.glow}`,
-                  }}
-                  transition={
-                    reduceMotion
-                      ? { duration: 0.01 }
-                      : { type: "spring", stiffness: 420, damping: 34 }
-                  }
-                />
+                <>
+                  <span
+                    aria-hidden="true"
+                    className={[
+                      "absolute inset-0 border md:hidden",
+                      isNav ? "rounded-[6px]" : "rounded-[6px]",
+                    ].join(" ")}
+                    style={{
+                      backgroundColor: isLight ? `${theme.accent}28` : `${theme.accent}18`,
+                      borderColor: isLight ? `${theme.accent}88` : `${theme.accent}55`,
+                    }}
+                  />
+                  <motion.span
+                    layoutId={`${layoutIdPrefix}-tab-indicator`}
+                    className={[
+                      "absolute inset-0 hidden border md:block",
+                      isNav ? "rounded-[6px]" : "rounded-[6px] sm:rounded-[8px]",
+                    ].join(" ")}
+                    style={{
+                      backgroundColor: isLight ? `${theme.accent}28` : `${theme.accent}18`,
+                      borderColor: isLight ? `${theme.accent}88` : `${theme.accent}55`,
+                      boxShadow:
+                        isCompact && !isNav
+                          ? undefined
+                          : isLight
+                            ? `0 4px 18px -2px ${theme.glow}`
+                            : `0 0 20px -4px ${theme.glow}`,
+                    }}
+                    transition={
+                      reduceMotion
+                        ? { duration: 0.01 }
+                        : { type: "spring", stiffness: 420, damping: 34 }
+                    }
+                  />
+                </>
               ) : (
                 <span
                   aria-hidden="true"
                   className={[
-                    "absolute inset-0 border opacity-0 transition-opacity duration-200 group-hover:opacity-100",
+                    "absolute inset-0 hidden border opacity-0 transition-opacity duration-200 group-hover:opacity-100 md:block",
                     isNav ? "rounded-[6px]" : "rounded-[6px] sm:rounded-[8px]",
                   ].join(" ")}
                   style={{

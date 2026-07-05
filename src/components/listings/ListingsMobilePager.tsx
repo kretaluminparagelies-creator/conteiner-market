@@ -1,6 +1,6 @@
 /**
  * @file ListingsMobilePager.tsx
- * @description Mobile listings — compact frame, one card, prev/next (no vertical flood)
+ * @description Mobile listings — one card, prev/next (no vertical flood)
  * @author Katsoulakis
  * @copyright 2026 Katsoulakis. All rights reserved.
  */
@@ -43,7 +43,7 @@ function CompactListingCard({
       type="button"
       onClick={onClick}
       className={cn(
-        "mx-12 block w-[calc(100%-6rem)] overflow-hidden rounded-lg border text-left shadow-sm active:scale-[0.995]",
+        "mx-12 block w-[calc(100%-6rem)] overflow-hidden rounded-xl border text-left shadow-cm-light-sm",
         isLight ? "border-cm-light-border-strong bg-white" : "border-cm-border bg-cm-card",
       )}
     >
@@ -127,7 +127,6 @@ export function ListingsMobilePager({
   onListingClick,
   surface = "dark",
 }: ListingsMobilePagerProps) {
-  const isLight = surface === "light";
   const [index, setIndex] = useState(0);
   const touchStartX = useRef<number | null>(null);
 
@@ -148,50 +147,43 @@ export function ListingsMobilePager({
   const item = listings[index]!;
 
   return (
-    <div className="md:hidden">
-      <div
-        className={cn(
-          "relative overflow-hidden rounded-xl border py-5",
-          isLight
-            ? "border-cm-light-border-strong bg-white/92 shadow-cm-light-xs"
-            : "border-cm-border bg-cm-card/80",
-        )}
-        onTouchStart={(event) => {
-          touchStartX.current = event.touches[0]?.clientX ?? null;
-        }}
-        onTouchEnd={(event) => {
-          if (touchStartX.current === null || listings.length < 2) return;
-          const endX = event.changedTouches[0]?.clientX;
-          if (endX === undefined) return;
-          const delta = endX - touchStartX.current;
-          if (delta > 48) goPrev();
-          else if (delta < -48) goNext();
-          touchStartX.current = null;
-        }}
-      >
-        {listings.length > 1 ? (
-          <>
-            <CarouselNavButton
-              onClick={goPrev}
-              ariaLabel="Previous listing"
-              surface={surface}
-              className="absolute top-1/2 left-2 z-10 h-9 w-9 -translate-y-1/2"
-            >
-              <ChevronLeft className="h-4 w-4" strokeWidth={2.25} />
-            </CarouselNavButton>
-            <CarouselNavButton
-              onClick={goNext}
-              ariaLabel="Next listing"
-              surface={surface}
-              className="absolute top-1/2 right-2 z-10 h-9 w-9 -translate-y-1/2"
-            >
-              <ChevronRight className="h-4 w-4" strokeWidth={2.25} />
-            </CarouselNavButton>
-          </>
-        ) : null}
+    <div
+      className="relative md:hidden"
+      onTouchStart={(event) => {
+        touchStartX.current = event.touches[0]?.clientX ?? null;
+      }}
+      onTouchEnd={(event) => {
+        if (touchStartX.current === null || listings.length < 2) return;
+        const endX = event.changedTouches[0]?.clientX;
+        if (endX === undefined) return;
+        const delta = endX - touchStartX.current;
+        if (delta > 48) goPrev();
+        else if (delta < -48) goNext();
+        touchStartX.current = null;
+      }}
+    >
+      {listings.length > 1 ? (
+        <>
+          <CarouselNavButton
+            onClick={goPrev}
+            ariaLabel="Previous listing"
+            surface={surface}
+            className="absolute top-1/2 left-0 z-10 h-9 w-9 -translate-y-1/2"
+          >
+            <ChevronLeft className="h-4 w-4" strokeWidth={2.25} />
+          </CarouselNavButton>
+          <CarouselNavButton
+            onClick={goNext}
+            ariaLabel="Next listing"
+            surface={surface}
+            className="absolute top-1/2 right-0 z-10 h-9 w-9 -translate-y-1/2"
+          >
+            <ChevronRight className="h-4 w-4" strokeWidth={2.25} />
+          </CarouselNavButton>
+        </>
+      ) : null}
 
-        <CompactListingCard item={item} surface={surface} onClick={() => onListingClick(item)} />
-      </div>
+      <CompactListingCard item={item} surface={surface} onClick={() => onListingClick(item)} />
 
       {listings.length > 1 ? (
         <p className="mt-2 text-center font-mono text-[10px] tracking-wide text-cm-ink-muted uppercase">

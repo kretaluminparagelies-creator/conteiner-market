@@ -80,10 +80,8 @@ export function HighlightAccordionMobile({
           <article
             key={key}
             className={cn(
-              "overflow-hidden rounded-2xl border bg-white shadow-cm-light-sm transition-[border-color,box-shadow] duration-200",
-              isOpen
-                ? "border-cm-accent/45 shadow-[0_12px_32px_-14px_rgba(224,112,48,0.25)]"
-                : "border-white/80",
+              "overflow-hidden rounded-2xl border bg-white shadow-cm-light-sm",
+              isOpen ? "border-cm-accent/45" : "border-white/80",
             )}
           >
             <div
@@ -123,7 +121,7 @@ export function HighlightAccordionMobile({
               {canOpen ? (
                 <ChevronDown
                   className={cn(
-                    "mt-1 h-5 w-5 shrink-0 text-cm-ink-muted transition-transform duration-200",
+                    "mt-1 h-5 w-5 shrink-0 text-cm-ink-muted",
                     isOpen && "rotate-180 text-cm-accent",
                   )}
                   aria-hidden
