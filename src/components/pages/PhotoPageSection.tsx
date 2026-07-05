@@ -41,7 +41,9 @@ export function PhotoPageSection({
     <section
       className={[
         "relative isolate px-[6%]",
-        fitScreen ? "h-full overflow-visible pb-2" : "overflow-hidden",
+        fitScreen
+          ? "h-full overflow-visible pb-2 max-md:h-auto max-md:min-h-0 max-md:pb-8"
+          : "overflow-hidden",
         !fitScreen && fillViewport
           ? "min-h-[calc(100dvh-60px)] pt-5 pb-10 sm:pt-6 sm:pb-12 md:pt-7 md:pb-14"
           : !fitScreen

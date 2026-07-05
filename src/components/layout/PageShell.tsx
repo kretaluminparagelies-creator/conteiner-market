@@ -22,9 +22,11 @@ type PageShellProps = {
   tone?: "dark" | "light";
   /** Single-screen page — compact footer, main locked to viewport below nav */
   hideFooter?: boolean;
+  /** On mobile, allow page scroll instead of locking to one viewport (contact form) */
+  mobileScroll?: boolean;
 };
 
-export function PageShell({ children, homeListings, tone, hideFooter }: PageShellProps) {
+export function PageShell({ children, homeListings, tone, hideFooter, mobileScroll }: PageShellProps) {
   const isLight = tone === "light" || Boolean(homeListings);
 
   return (
@@ -43,11 +45,26 @@ export function PageShell({ children, homeListings, tone, hideFooter }: PageShel
           <main
             className={
               hideFooter
-                ? "box-border flex h-dvh flex-col overflow-hidden pt-[60px]"
+                ? [
+                    "box-border flex flex-col pt-[60px]",
+                    mobileScroll
+                      ? "max-md:min-h-dvh md:h-dvh md:overflow-hidden"
+                      : "h-dvh overflow-hidden",
+                  ].join(" ")
                 : "flex flex-1 flex-col pt-[60px]"
             }
           >
-            {hideFooter ? <div className="min-h-0 flex-1">{children}</div> : children}
+            {hideFooter ? (
+              <div
+                className={
+                  mobileScroll ? "min-h-0 flex-1 max-md:flex-none max-md:min-h-0" : "min-h-0 flex-1"
+                }
+              >
+                {children}
+              </div>
+            ) : (
+              children
+            )}
             {hideFooter ? (
               <Suspense fallback={null}>
                 <Footer compact />

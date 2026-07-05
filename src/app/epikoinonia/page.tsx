@@ -23,7 +23,7 @@ export default async function EpikoinoniaPage() {
   const homeListings = await fetchPublicListings();
 
   return (
-    <PageShell tone="light" homeListings={homeListings} hideFooter>
+    <PageShell tone="light" homeListings={homeListings} hideFooter mobileScroll>
       <Suspense fallback={null}>
         <ContactPageContent />
       </Suspense>

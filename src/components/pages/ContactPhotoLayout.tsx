@@ -53,7 +53,7 @@ export function ContactPhotoLayout({
       fillViewport
       fitScreen
     >
-      <div className="relative flex h-full min-h-0 flex-col justify-start pt-[4.25rem] sm:pt-20">
+      <div className="relative flex h-full min-h-0 flex-col justify-start pt-[4.25rem] pb-6 sm:pt-20 max-md:h-auto max-md:min-h-0 max-md:pb-10">
         <SellFlowBackLink
           href={backHref}
           label={backLabel}

@@ -160,7 +160,7 @@ export function ContactLeadForm({
           <textarea
             id="contact-message"
             name="message"
-            rows={compact ? 2 : 4}
+            rows={compact ? 3 : 4}
             required
             className={compactInputClass}
           />
