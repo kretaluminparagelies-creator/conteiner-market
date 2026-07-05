@@ -13,6 +13,7 @@ import {
   getCrmListingsSourceLabel,
   isCrmWriteEnabled,
 } from "@/lib/crm/connection";
+import { isLeadEmailNotifyConfigured, getLeadNotifyEmail } from "@/lib/email/env";
 import { isCrmAuthEnabled } from "@/lib/crm/auth";
 import { getCrmSessionEmail } from "@/lib/supabase/server-auth";
 
@@ -21,6 +22,8 @@ export default async function AdminSettingsPage() {
   const writeEnabled = isCrmWriteEnabled();
   const authEnabled = isCrmAuthEnabled();
   const adminEmail = await getCrmSessionEmail();
+  const emailNotifyEnabled = isLeadEmailNotifyConfigured();
+  const leadNotifyEmail = getLeadNotifyEmail();
 
   return (
     <CrmShellPage title="Ρυθμίσεις" description="Σύνδεση backend, λογαριασμός και ασφάλεια.">
@@ -32,9 +35,19 @@ export default async function AdminSettingsPage() {
               <dt className="text-cm-sub">Κατάσταση</dt>
               <dd className="font-mono text-xs uppercase">
                 {status === "connected" ? (
-                  <span className="text-emerald-400">Supabase</span>
+                  <span className="text-emerald-700">Supabase</span>
                 ) : (
-                  <span className="text-amber-300">Preview (JSON + demo)</span>
+                  <span className="text-amber-800">Preview (JSON + demo)</span>
+                )}
+              </dd>
+            </div>
+            <div className="flex justify-between gap-4 border-b border-cm-border/50 pb-3">
+              <dt className="text-cm-sub">Email νέου lead</dt>
+              <dd className="font-mono text-xs">
+                {emailNotifyEnabled ? (
+                  <span className="text-emerald-700">Resend → {leadNotifyEmail}</span>
+                ) : (
+                  <span className="text-amber-800">RESEND_API_KEY λείπει</span>
                 )}
               </dd>
             </div>
@@ -42,9 +55,9 @@ export default async function AdminSettingsPage() {
               <dt className="text-cm-sub">CRM εγγραφές</dt>
               <dd className="font-mono text-xs">
                 {writeEnabled ? (
-                  <span className="text-emerald-400">Ενεργές</span>
+                  <span className="text-emerald-700">Ενεργές</span>
                 ) : (
-                  <span className="text-amber-300">Απαιτείται service role</span>
+                  <span className="text-amber-800">Απαιτείται service role</span>
                 )}
               </dd>
             </div>
@@ -62,7 +75,7 @@ export default async function AdminSettingsPage() {
         {authEnabled ? (
           <section className="rounded-xl border border-cm-border bg-cm-card/50 p-6">
             <h2 className="font-display text-base font-semibold">Λογαριασμός</h2>
-            <p className="mt-2 text-sm text-cm-sub">
+            <p className="mt-2 text-sm text-cm-ink-sub">
               Συνδεδεμένος ως <span className="font-mono text-cm-text">{adminEmail ?? "—"}</span>
             </p>
             <div className="mt-6">
@@ -75,7 +88,7 @@ export default async function AdminSettingsPage() {
         ) : null}
 
         {authEnabled ? (
-          <section className="rounded-xl border border-dashed border-cm-border p-6 text-sm text-cm-sub">
+          <section className="rounded-xl border border-dashed border-cm-border p-6 text-sm text-cm-ink-sub">
             <h2 className="font-display text-base font-semibold text-cm-text">Νέος διαχειριστής</h2>
             <ol className="mt-3 list-decimal space-y-2 pl-5 leading-relaxed">
               <li>Supabase → Authentication → Users → Add user</li>
@@ -100,7 +113,7 @@ export default async function AdminSettingsPage() {
 
         <section className="rounded-xl border border-cm-border bg-cm-card/50 p-6">
           <h2 className="font-display text-base font-semibold">Φωτογραφίες listings</h2>
-          <p className="mt-3 text-sm leading-relaxed text-cm-sub">
+          <p className="mt-3 text-sm leading-relaxed text-cm-ink-sub">
             Ανέβασμα από τη φόρμα (CRM → Καταχωρίσεις → Νέα/Επεξεργασία). Οι φωτογραφίες
             συμπιέζονται αυτόματα (WebP, max 1400px) και αποθηκεύονται στο Supabase Storage bucket{" "}
             <code className="text-cm-text">listing-images</code>. Τρέξε migration{" "}

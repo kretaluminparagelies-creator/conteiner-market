@@ -46,6 +46,7 @@ export const mockLeads: Lead[] = [
     message: "Χώρος αποθήκευσης 2 containers για εποχιακό stock.",
     source: "space",
     status: "won",
+    adminNotes: "Κλειστό — 2 containers χώρος, παράδοση εβδομάδα 28/6.",
   },
 ];
 

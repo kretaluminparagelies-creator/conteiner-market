@@ -34,7 +34,7 @@ export function CrmPageHeader({ title, description }: CrmPageHeaderProps) {
         </Link>
       ) : null}
       <h1 className="font-display text-2xl font-bold">{title}</h1>
-      {description ? <p className="mt-1 text-sm text-cm-sub">{description}</p> : null}
+      {description ? <p className="mt-1 text-sm text-cm-ink-sub">{description}</p> : null}
       <p className="mt-2 font-mono text-[10px] text-cm-muted lg:hidden">{appVersionLabel}</p>
     </>
   );

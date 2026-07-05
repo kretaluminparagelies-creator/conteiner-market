@@ -37,7 +37,7 @@ export function CrmNav({ adminEmail = null }: { adminEmail?: string | null }) {
       <div className="border-b border-cm-border px-5 py-5">
         <Link href="/admin" className="font-display text-lg font-bold tracking-tight">
           <span className="text-cm-accent">CRM</span>
-          <span className="ml-1 font-light text-cm-sub">Container Market</span>
+          <span className="ml-1 text-cm-ink-sub">Container Market</span>
         </Link>
         <p className="mt-1 font-mono text-[10px] tracking-[0.15em] text-cm-muted uppercase">
           Logiworkpass P.C.
@@ -57,7 +57,7 @@ export function CrmNav({ adminEmail = null }: { adminEmail?: string | null }) {
                   "flex items-center gap-3 rounded-lg px-3 py-2.5 font-display text-sm transition-colors",
                   active
                     ? "bg-cm-accent/15 text-cm-accent"
-                    : "text-cm-sub hover:bg-cm-surf/80 hover:text-cm-text",
+                    : "text-cm-ink-sub hover:bg-cm-light-bg hover:text-cm-ink",
                 ].join(" ")}
               >
                 <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />

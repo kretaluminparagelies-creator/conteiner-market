@@ -22,7 +22,13 @@ export type CreateLeadInput = {
   listingSlug?: string;
 };
 
-const leadListColumns = "id, name, email, source, status, message, created_at";
+export type LeadListingOption = {
+  slug: string;
+  label: string;
+};
+
+const leadListColumns =
+  "id, name, email, phone, source, status, message, listing_slug, created_at";
 
 function leadRowToLead(row: LeadRow): Lead {
   return {
@@ -35,6 +41,7 @@ function leadRowToLead(row: LeadRow): Lead {
     source: row.source,
     status: row.status,
     listingSlug: row.listing_slug ?? undefined,
+    adminNotes: row.admin_notes?.trim() ? row.admin_notes : undefined,
   };
 }
 
@@ -142,6 +149,82 @@ export async function updateLeadStatus(id: string, status: LeadStatus): Promise<
   }
 
   return leadRowToLead(data as LeadRow);
+}
+
+export async function updateLeadAdminNotes(id: string, adminNotes: string): Promise<Lead> {
+  if (!isSupabaseAdminConfigured()) {
+    throw new Error("Lead updates require Supabase service role.");
+  }
+
+  const { data, error } = await getSupabaseAdminClient()
+    .from("leads")
+    .update({ admin_notes: adminNotes.trim(), updated_at: new Date().toISOString() })
+    .eq("id", id)
+    .select("*")
+    .single();
+
+  if (error) {
+    throw new Error(`Supabase lead notes update failed: ${error.message}`);
+  }
+
+  return leadRowToLead(data as LeadRow);
+}
+
+export async function updateLeadListingSlug(id: string, listingSlug: string | null): Promise<Lead> {
+  if (!isSupabaseAdminConfigured()) {
+    throw new Error("Lead updates require Supabase service role.");
+  }
+
+  const slug = listingSlug?.trim() || null;
+
+  if (slug) {
+    const { data: listing, error: listingError } = await getSupabaseAdminClient()
+      .from("listings")
+      .select("slug")
+      .eq("slug", slug)
+      .maybeSingle();
+
+    if (listingError) {
+      throw new Error(`Listing lookup failed: ${listingError.message}`);
+    }
+    if (!listing) {
+      throw new Error("Η καταχώριση δεν βρέθηκε.");
+    }
+  }
+
+  const { data, error } = await getSupabaseAdminClient()
+    .from("leads")
+    .update({ listing_slug: slug, updated_at: new Date().toISOString() })
+    .eq("id", id)
+    .select("*")
+    .single();
+
+  if (error) {
+    throw new Error(`Supabase lead listing update failed: ${error.message}`);
+  }
+
+  return leadRowToLead(data as LeadRow);
+}
+
+export async function readLeadListingOptions(): Promise<LeadListingOption[]> {
+  const { readAdminListings, readAdminHistoryListings } = await import(
+    "@/lib/repositories/listing-store"
+  );
+
+  const [active, history] = await Promise.all([readAdminListings(), readAdminHistoryListings()]);
+
+  return [...active, ...history]
+    .sort((a, b) => a.type.localeCompare(b.type, "el"))
+    .map((listing) => ({
+      slug: listing.slug,
+      label: [
+        listing.type,
+        listing.containerNumber ? `· ${listing.containerNumber}` : null,
+        listing.active ? "(ενεργό)" : "(αρχείο)",
+      ]
+        .filter(Boolean)
+        .join(" "),
+    }));
 }
 
 export async function createLead(input: CreateLeadInput): Promise<Lead> {

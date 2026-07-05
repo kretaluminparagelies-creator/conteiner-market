@@ -7,10 +7,13 @@
 
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { CrmLeadListingSelect } from "@/components/crm/CrmLeadListingSelect";
+import { CrmLeadNotesForm } from "@/components/crm/CrmLeadNotesForm";
 import { CrmLeadStatusSelect } from "@/components/crm/CrmLeadStatusSelect";
 import { CrmShellPage } from "@/components/crm/CrmShellPage";
+import { getCrmConnectionStatus } from "@/lib/crm/connection";
 import { leadSourceLabels } from "@/lib/crm/lead-labels";
-import { readLeadById } from "@/lib/crm/lead-store";
+import { readLeadById, readLeadListingOptions } from "@/lib/crm/lead-store";
 
 type LeadDetailPageProps = {
   params: Promise<{ id: string }>;
@@ -28,9 +31,11 @@ function formatDate(iso: string): string {
 
 export default async function AdminLeadDetailPage({ params }: LeadDetailPageProps) {
   const { id } = await params;
-  const lead = await readLeadById(id);
+  const [lead, listingOptions] = await Promise.all([readLeadById(id), readLeadListingOptions()]);
 
   if (!lead) notFound();
+
+  const canEdit = getCrmConnectionStatus() === "connected";
 
   return (
     <CrmShellPage title={lead.name} description={`Αίτημα από ${leadSourceLabels[lead.source]}`}>
@@ -67,7 +72,7 @@ export default async function AdminLeadDetailPage({ params }: LeadDetailPageProp
             </div>
             {lead.listingSlug ? (
               <div className="flex justify-between gap-4 border-b border-cm-border/50 pb-3">
-                <dt className="text-cm-sub">Listing</dt>
+                <dt className="text-cm-sub">Listing (σύνδεση)</dt>
                 <dd>
                   <Link
                     href={`/listings/${lead.listingSlug}`}
@@ -84,10 +89,23 @@ export default async function AdminLeadDetailPage({ params }: LeadDetailPageProp
 
         <section className="rounded-xl border border-cm-border bg-cm-card/50 p-6">
           <h2 className="font-display text-base font-semibold">Μήνυμα</h2>
-          <p className="mt-4 whitespace-pre-wrap text-sm leading-relaxed text-cm-sub">
+          <p className="mt-4 whitespace-pre-wrap text-sm leading-relaxed text-cm-ink">
             {lead.message}
           </p>
         </section>
+
+        <CrmLeadListingSelect
+          leadId={lead.id}
+          listingSlug={lead.listingSlug}
+          options={listingOptions}
+          canEdit={canEdit}
+        />
+
+        <CrmLeadNotesForm
+          leadId={lead.id}
+          initialNotes={lead.adminNotes ?? ""}
+          canEdit={canEdit}
+        />
       </div>
     </CrmShellPage>
   );

@@ -25,6 +25,7 @@ export type LeadNotificationInput = {
   source: LeadSource;
   listingSlug?: string;
   interest?: string;
+  leadId?: string;
 };
 
 const interestLabels: Record<string, string> = {
@@ -52,7 +53,9 @@ export async function sendLeadNotification(input: LeadNotificationInput): Promis
   const apiKey = getResendApiKey()!;
   const to = getLeadNotifyEmail();
   const from = getEmailFrom();
-  const adminUrl = `${site.url.replace(/\/$/, "")}/admin/leads`;
+  const adminUrl = input.leadId
+    ? `${site.url.replace(/\/$/, "")}/admin/leads/${input.leadId}`
+    : `${site.url.replace(/\/$/, "")}/admin/leads`;
   const sourceLabel = leadSourceLabels[input.source];
 
   const lines = [
@@ -74,7 +77,7 @@ export async function sendLeadNotification(input: LeadNotificationInput): Promis
       ? `<p><strong>Καταχώριση:</strong> <a href="${escapeHtml(`${site.url}/listings/${input.listingSlug}`)}">${escapeHtml(input.listingSlug)}</a></p>`
       : "",
     `<p><strong>Μήνυμα:</strong></p><p>${escapeHtml(input.message).replace(/\n/g, "<br />")}</p>`,
-    `<p><a href="${escapeHtml(adminUrl)}">Άνοιγμα CRM → Αιτήματα</a></p>`,
+    `<p><a href="${escapeHtml(adminUrl)}">${input.leadId ? "Άνοιγμα αιτήματος στο CRM" : "Άνοιγμα CRM → Αιτήματα"}</a></p>`,
   );
 
   const response = await fetch("https://api.resend.com/emails", {

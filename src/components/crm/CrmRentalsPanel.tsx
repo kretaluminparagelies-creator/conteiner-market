@@ -33,12 +33,12 @@ const selectClass =
   "rounded-lg border border-cm-border bg-cm-bg px-3 py-2 text-sm text-cm-text outline-none focus:border-cm-accent";
 
 const iconActionClass =
-  "inline-flex h-8 w-8 items-center justify-center rounded-md border border-cm-border/80 bg-cm-surf/40 text-cm-sub transition-colors hover:border-cm-accent/40 hover:bg-cm-surf hover:text-cm-accent";
+  "inline-flex h-8 w-8 items-center justify-center rounded-md border border-cm-border bg-white text-cm-ink-muted transition-colors hover:border-cm-accent/40 hover:bg-cm-accent/5 hover:text-cm-accent";
 
 const statusBadgeClass: Record<RentalContractStatus, string> = {
-  active: "text-emerald-400",
-  expiring: "text-amber-300",
-  expired: "text-red-300",
+  active: "font-semibold text-emerald-700",
+  expiring: "font-semibold text-amber-700",
+  expired: "font-semibold text-red-700",
 };
 
 export function CrmRentalsPanel({ rentals }: CrmRentalsPanelProps) {
@@ -91,14 +91,14 @@ export function CrmRentalsPanel({ rentals }: CrmRentalsPanelProps) {
           <p className="font-display text-2xl font-bold">{stats.total}</p>
         </div>
         <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 px-4 py-3">
-          <p className="font-mono text-[10px] tracking-wide text-amber-200/80 uppercase">
+          <p className="font-mono text-[10px] font-semibold tracking-wide text-amber-800/90 uppercase">
             Λήγουν ≤30 ημ.
           </p>
-          <p className="font-display text-2xl font-bold text-amber-200">{stats.expiring}</p>
+          <p className="font-display text-2xl font-bold text-amber-800">{stats.expiring}</p>
         </div>
         <div className="rounded-xl border border-red-500/30 bg-red-500/5 px-4 py-3">
-          <p className="font-mono text-[10px] tracking-wide text-red-200/80 uppercase">Έληξαν</p>
-          <p className="font-display text-2xl font-bold text-red-200">{stats.expired}</p>
+          <p className="font-mono text-[10px] tracking-wide text-red-700/80 uppercase">Έληξαν</p>
+          <p className="font-display text-2xl font-bold text-red-700">{stats.expired}</p>
         </div>
       </div>
 

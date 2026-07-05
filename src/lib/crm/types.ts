@@ -19,6 +19,7 @@ export type Lead = {
   source: LeadSource;
   status: LeadStatus;
   listingSlug?: string;
+  adminNotes?: string;
 };
 
 export type CrmConnectionStatus = "preview" | "connected";

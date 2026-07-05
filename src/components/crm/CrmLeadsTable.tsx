@@ -18,7 +18,7 @@ type CrmLeadsTableProps = {
 export function CrmLeadsTable({ leads }: CrmLeadsTableProps) {
   if (leads.length === 0) {
     return (
-      <div className="rounded-xl border border-cm-border bg-cm-card/40 p-8 text-center text-cm-sub">
+      <div className="rounded-xl border border-cm-border bg-cm-card/40 p-8 text-center text-cm-ink-sub">
         Δεν υπάρχουν αιτήματα ακόμα.
       </div>
     );
@@ -33,6 +33,7 @@ export function CrmLeadsTable({ leads }: CrmLeadsTableProps) {
               <th className="px-4 py-3">Ημερομηνία</th>
               <th className="px-4 py-3">Όνομα</th>
               <th className="px-4 py-3">Πηγή</th>
+              <th className="px-4 py-3">Listing</th>
               <th className="px-4 py-3">Κατάσταση</th>
               <th className="px-4 py-3">Μήνυμα</th>
               <th className="px-4 py-3" />
@@ -49,6 +50,15 @@ export function CrmLeadsTable({ leads }: CrmLeadsTableProps) {
                   <div className="text-xs text-cm-muted">{lead.email}</div>
                 </td>
                 <td className="px-4 py-3 text-cm-sub">{leadSourceLabels[lead.source]}</td>
+                <td className="px-4 py-3 font-mono text-[11px] text-cm-accent">
+                  {lead.listingSlug ? (
+                    <Link href={`/admin/listings/${lead.listingSlug}/edit`} className="hover:underline">
+                      {lead.listingSlug}
+                    </Link>
+                  ) : (
+                    <span className="text-cm-ink-muted">—</span>
+                  )}
+                </td>
                 <td className="px-4 py-3">
                   <CrmLeadStatusSelect leadId={lead.id} status={lead.status} />
                 </td>

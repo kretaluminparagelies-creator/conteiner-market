@@ -24,9 +24,9 @@ export const leadSourceLabels: Record<LeadSource, string> = {
 };
 
 export const leadStatusStyles: Record<LeadStatus, string> = {
-  new: "bg-cm-accent/20 text-cm-accent",
-  contacted: "bg-cm-rent/20 text-cm-rent",
-  quoted: "bg-amber-500/20 text-amber-200",
-  won: "bg-emerald-500/20 text-emerald-300",
-  lost: "bg-cm-muted/30 text-cm-sub",
+  new: "bg-orange-100 text-orange-800",
+  contacted: "bg-sky-100 text-sky-800",
+  quoted: "bg-amber-100 text-amber-900",
+  won: "bg-emerald-100 text-emerald-800",
+  lost: "bg-slate-100 text-slate-700",
 };

@@ -69,6 +69,7 @@ export type LeadRow = {
   source: "contact" | "buyback" | "rent" | "space" | "listing";
   status: "new" | "contacted" | "quoted" | "won" | "lost";
   listing_slug: string | null;
+  admin_notes: string | null;
   created_at: string;
   updated_at: string;
 };

@@ -43,7 +43,7 @@ const selectClass =
   "rounded-lg border border-cm-border bg-cm-bg px-3 py-2 text-sm text-cm-text outline-none focus:border-cm-accent";
 
 const iconActionClass =
-  "inline-flex h-8 w-8 items-center justify-center rounded-md border border-cm-border/80 bg-cm-surf/40 text-cm-sub transition-colors hover:border-cm-accent/40 hover:bg-cm-surf hover:text-cm-accent";
+  "inline-flex h-8 w-8 items-center justify-center rounded-md border border-cm-border bg-white text-cm-ink-muted transition-colors hover:border-cm-accent/40 hover:bg-cm-accent/5 hover:text-cm-accent";
 
 export function CrmHistoryPanel({ listings }: CrmHistoryPanelProps) {
   const [filters, setFilters] = useState<HistoryFilters>(defaultFilters);

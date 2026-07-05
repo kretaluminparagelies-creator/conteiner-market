@@ -9,7 +9,12 @@
 
 import { revalidatePath } from "next/cache";
 import { requireCrmSession } from "@/lib/crm/auth";
-import { createLead, updateLeadStatus } from "@/lib/crm/lead-store";
+import {
+  createLead,
+  updateLeadAdminNotes,
+  updateLeadListingSlug,
+  updateLeadStatus,
+} from "@/lib/crm/lead-store";
 import { resolveLeadSourceFromForm } from "@/lib/crm/resolve-lead-source";
 import type { LeadStatus } from "@/lib/crm/types";
 import { sendLeadNotification } from "@/lib/email/send-lead-notification";
@@ -19,6 +24,21 @@ export async function updateLeadStatusAction(leadId: string, status: LeadStatus)
   await updateLeadStatus(leadId, status);
   revalidatePath("/admin/leads");
   revalidatePath("/admin");
+  revalidatePath(`/admin/leads/${leadId}`);
+}
+
+export async function updateLeadAdminNotesAction(leadId: string, adminNotes: string) {
+  await requireCrmSession();
+  await updateLeadAdminNotes(leadId, adminNotes);
+  revalidatePath("/admin/leads");
+  revalidatePath(`/admin/leads/${leadId}`);
+}
+
+export async function updateLeadListingSlugAction(leadId: string, listingSlug: string) {
+  await requireCrmSession();
+  const slug = listingSlug.trim();
+  await updateLeadListingSlug(leadId, slug || null);
+  revalidatePath("/admin/leads");
   revalidatePath(`/admin/leads/${leadId}`);
 }
 
@@ -48,10 +68,10 @@ export async function submitContactLeadAction(formData: FormData) {
       source,
       listingSlug,
     };
-    await createLead(leadInput);
+    const lead = await createLead(leadInput);
 
     try {
-      await sendLeadNotification({ ...leadInput, interest });
+      await sendLeadNotification({ ...leadInput, interest, leadId: lead.id });
     } catch (notifyError) {
       console.error("[submitContactLeadAction] email notify failed:", notifyError);
     }

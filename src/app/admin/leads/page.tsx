@@ -5,19 +5,24 @@
  * @copyright 2026 Katsoulakis. All rights reserved.
  */
 
-import { CrmLeadsTable } from "@/components/crm/CrmLeadsTable";
+import { CrmLeadsPanel } from "@/components/crm/CrmLeadsPanel";
 import { CrmShellPage } from "@/components/crm/CrmShellPage";
 import { readLeads } from "@/lib/crm/lead-store";
 
-export default async function AdminLeadsPage() {
+type AdminLeadsPageProps = {
+  searchParams: Promise<{ status?: string }>;
+};
+
+export default async function AdminLeadsPage({ searchParams }: AdminLeadsPageProps) {
+  const { status } = await searchParams;
   const leads = await readLeads();
 
   return (
     <CrmShellPage
       title="Αιτήματα"
-      description="Επικοινωνίες, πωλήσεις, ενοικιάσεις — από Supabase ή demo."
+      description="Επικοινωνίες, πωλήσεις, ενοικιάσεις — φίλτρα, αναζήτηση, export."
     >
-      <CrmLeadsTable leads={leads} />
+      <CrmLeadsPanel leads={leads} initialStatus={status} />
     </CrmShellPage>
   );
 }

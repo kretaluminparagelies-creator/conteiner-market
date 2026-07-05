@@ -32,7 +32,7 @@ export function CrmNavMobile() {
               "shrink-0 rounded-md border px-3 py-1.5 font-display text-xs transition-colors",
               active
                 ? "border-cm-accent/50 bg-cm-accent/15 text-cm-accent"
-                : "border-cm-border text-cm-sub hover:border-cm-accent/30 hover:text-cm-text",
+                : "border-cm-border text-cm-ink-sub hover:border-cm-accent/30 hover:bg-cm-light-bg hover:text-cm-ink",
             ].join(" ")}
           >
             {item.label}

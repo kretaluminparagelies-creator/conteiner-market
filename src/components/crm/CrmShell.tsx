@@ -22,7 +22,7 @@ type CrmShellProps = {
 export function CrmShell({ children, title, description, adminEmail = null }: CrmShellProps) {
   return (
     <Providers>
-      <div className="flex min-h-screen bg-cm-bg text-cm-text">
+      <div className="crm-light flex min-h-screen bg-cm-bg text-cm-text">
         <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 border-r border-cm-border bg-cm-card/95 backdrop-blur-sm lg:block">
           <CrmNav adminEmail={adminEmail} />
         </aside>
