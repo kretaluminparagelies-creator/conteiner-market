@@ -20,6 +20,7 @@ export type ListingRow = {
   id: string;
   slug: string;
   type: string;
+  container_number: string | null;
   condition: string;
   condition_en: string | null;
   price: number;
@@ -36,6 +37,17 @@ export type ListingRow = {
   description: string;
   description_en: string | null;
   active: boolean;
+  archived_at: string | null;
+  archive_reason: "sold" | "rented" | "withdrawn" | null;
+  rental_location: "depot" | "customer" | null;
+  rental_customer_name: string | null;
+  rental_customer_phone: string | null;
+  rental_customer_email: string | null;
+  rental_customer_company: string | null;
+  rental_customer_address: string | null;
+  rental_customer_notes: string | null;
+  rental_starts_at: string | null;
+  rental_ends_at: string | null;
   created_at: string;
   updated_at: string;
 };

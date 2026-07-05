@@ -6,15 +6,15 @@
  */
 
 import { CrmListingForm } from "@/components/crm/CrmListingForm";
-import { CrmShell } from "@/components/crm/CrmShell";
+import { CrmShellPage } from "@/components/crm/CrmShellPage";
 
 export default function AdminNewListingPage() {
   return (
-    <CrmShell
+    <CrmShellPage
       title="Νέα καταχώριση"
       description="Πρόσθεσε κοντέινερ στο catalog — αποθηκεύεται στο Supabase."
     >
       <CrmListingForm mode="create" />
-    </CrmShell>
+    </CrmShellPage>
   );
 }

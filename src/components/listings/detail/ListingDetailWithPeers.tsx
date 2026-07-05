@@ -44,13 +44,12 @@ function CategoryContext({
   categoryTab: ListingCarouselTab;
   surface?: "dark" | "light";
 }) {
-  const { t } = useLocale();
   const isLight = surface === "light";
   const theme = listingCarouselTabThemes[categoryTab];
   const Icon = theme.icon;
 
   return (
-    <div className={`${SIDE_HEADER_CLASS} space-y-2 text-left`}>
+    <div className={`${SIDE_HEADER_CLASS} text-left`}>
       <span
         className={[
           "inline-flex max-w-full items-center gap-2 rounded-full border-2 px-3 py-1.5 font-mono text-[10px] font-bold tracking-[0.08em] uppercase backdrop-blur-sm",
@@ -65,7 +64,9 @@ function CategoryContext({
         }}
       >
         <Icon className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-        <span className="truncate">{categoryLabel}</span>
+        <span className="truncate normal-case">
+          {categoryLabel} · {listingType}
+        </span>
         <span
           className="inline-flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full px-1.5 text-[9px] font-bold text-white"
           style={{ backgroundColor: theme.accent }}
@@ -73,18 +74,6 @@ function CategoryContext({
           {categoryCount}
         </span>
       </span>
-      <p
-        className={[
-          "font-display text-xs leading-snug font-semibold",
-          isLight
-            ? "rounded-lg border border-white/80 bg-white/95 px-2.5 py-1.5 text-cm-ink shadow-cm-light-xs backdrop-blur-sm"
-            : "text-cm-text",
-        ].join(" ")}
-      >
-        {t.listings.detailActiveIn
-          .replace("{type}", listingType)
-          .replace("{category}", categoryLabel)}
-      </p>
     </div>
   );
 }
@@ -155,7 +144,7 @@ export function ListingDetailWithPeers({
     <div
       className={
         hasPeers
-          ? "w-full md:grid md:grid-cols-[1fr_auto_1fr] md:items-stretch md:gap-4 lg:gap-6"
+          ? "w-full md:grid md:grid-cols-[minmax(0,1fr)_minmax(0,64rem)_minmax(0,1fr)] md:items-stretch md:gap-4 lg:gap-6"
           : "w-full"
       }
     >

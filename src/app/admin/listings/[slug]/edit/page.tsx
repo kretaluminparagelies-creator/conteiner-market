@@ -7,7 +7,8 @@
 
 import { notFound } from "next/navigation";
 import { CrmListingForm } from "@/components/crm/CrmListingForm";
-import { CrmShell } from "@/components/crm/CrmShell";
+import { CrmShellPage } from "@/components/crm/CrmShellPage";
+import { formatCrmDate } from "@/lib/crm/format-crm-date";
 import { listingToFormInput } from "@/lib/crm/listing-form";
 import { readAdminListingBySlug } from "@/lib/repositories/listing-store";
 
@@ -22,8 +23,16 @@ export default async function AdminEditListingPage({ params }: EditListingPagePr
   if (!listing) notFound();
 
   return (
-    <CrmShell title="Επεξεργασία καταχώρισης" description={listing.type}>
+    <CrmShellPage title="Επεξεργασία καταχώρισης" description={listing.type}>
+      {listing.createdAt ? (
+        <p className="mb-6 font-mono text-xs text-cm-muted">
+          Καταχώρηση: {formatCrmDate(listing.createdAt)}
+          {listing.updatedAt && listing.updatedAt !== listing.createdAt
+            ? ` · Τελευταία αλλαγή: ${formatCrmDate(listing.updatedAt)}`
+            : null}
+        </p>
+      ) : null}
       <CrmListingForm mode="edit" slug={slug} initial={listingToFormInput(listing)} />
-    </CrmShell>
+    </CrmShellPage>
   );
 }

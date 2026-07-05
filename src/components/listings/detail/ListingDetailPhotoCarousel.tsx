@@ -90,7 +90,7 @@ function ListingDetailPhotoCarouselView({
   return (
     <div
       className={[
-        "relative flex w-full flex-col items-center overflow-visible rounded-lg p-2 md:p-3",
+        "relative flex w-full flex-col items-center overflow-hidden rounded-lg p-2 md:p-3",
         isLight ? "bg-cm-light-elevated/80" : "bg-cm-carousel-photo/25",
       ].join(" ")}
       style={
@@ -118,7 +118,7 @@ function ListingDetailPhotoCarouselView({
       </CarouselNavButton>
 
       <div
-        className="carousel-perspective relative flex w-full items-center justify-center"
+        className="carousel-perspective relative flex w-full items-center justify-center overflow-hidden"
         style={{ height: isMobile ? config.stageHeightMobile : config.stageHeightDesktop }}
       >
         {displayImages.map((image, index) => {

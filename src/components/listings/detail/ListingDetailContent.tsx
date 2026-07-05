@@ -26,7 +26,7 @@ export function ListingDetailContent({ listing, surface = "dark" }: ListingDetai
   return (
     <div
       className={[
-        "overflow-hidden rounded-xl border shadow-cm-light-lg",
+        "w-full overflow-hidden rounded-xl border shadow-cm-light-lg",
         isLight ? "glass-category border-white/80 bg-white/94" : "border-cm-border bg-cm-card",
       ].join(" ")}
     >
@@ -47,7 +47,7 @@ export function ListingDetailContent({ listing, surface = "dark" }: ListingDetai
           />
         ) : null}
 
-        <div className="relative z-[1] flex flex-wrap items-start justify-between gap-2">
+        <div className="relative z-[1] grid grid-cols-[minmax(0,1fr)_auto] items-start gap-2">
           <div className="min-w-0">
             <div className="mb-1.5 flex flex-wrap gap-1.5">
               <span
@@ -71,7 +71,7 @@ export function ListingDetailContent({ listing, surface = "dark" }: ListingDetai
             </div>
             <h2
               className={[
-                "font-display text-lg font-bold leading-tight md:text-xl",
+                "line-clamp-2 break-words font-display text-lg font-bold leading-tight md:text-xl",
                 isLight ? "text-cm-ink" : "text-cm-text",
               ].join(" ")}
             >

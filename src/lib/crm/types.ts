@@ -27,5 +27,5 @@ export type CrmNavItem = {
   href: string;
   label: string;
   labelEn: string;
-  icon: "dashboard" | "listings" | "leads" | "settings";
+  icon: "dashboard" | "listings" | "history" | "rentals" | "leads" | "settings";
 };

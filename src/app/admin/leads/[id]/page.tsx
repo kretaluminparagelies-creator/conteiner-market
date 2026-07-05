@@ -8,7 +8,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CrmLeadStatusSelect } from "@/components/crm/CrmLeadStatusSelect";
-import { CrmShell } from "@/components/crm/CrmShell";
+import { CrmShellPage } from "@/components/crm/CrmShellPage";
 import { leadSourceLabels } from "@/lib/crm/lead-labels";
 import { readLeadById } from "@/lib/crm/lead-store";
 
@@ -33,12 +33,8 @@ export default async function AdminLeadDetailPage({ params }: LeadDetailPageProp
   if (!lead) notFound();
 
   return (
-    <CrmShell title={lead.name} description={`Αίτημα από ${leadSourceLabels[lead.source]}`}>
+    <CrmShellPage title={lead.name} description={`Αίτημα από ${leadSourceLabels[lead.source]}`}>
       <div className="max-w-2xl space-y-6">
-        <Link href="/admin/leads" className="font-mono text-xs text-cm-accent hover:underline">
-          ← Πίσω στα αιτήματα
-        </Link>
-
         <section className="rounded-xl border border-cm-border bg-cm-card/50 p-6">
           <dl className="space-y-4 text-sm">
             <div className="flex justify-between gap-4 border-b border-cm-border/50 pb-3">
@@ -93,6 +89,6 @@ export default async function AdminLeadDetailPage({ params }: LeadDetailPageProp
           </p>
         </section>
       </div>
-    </CrmShell>
+    </CrmShellPage>
   );
 }

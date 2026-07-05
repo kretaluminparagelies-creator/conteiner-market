@@ -9,18 +9,29 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
+import { CheckCircle2, EyeOff, RotateCcw } from "lucide-react";
 import { CrmListingImages } from "@/components/crm/CrmListingImages";
+import {
+  CrmRentalContractFields,
+  formToRentalHandover,
+} from "@/components/crm/CrmRentalContractFields";
 import {
   containerTypeOptions,
   emptyListingForm,
   type ListingFormInput,
 } from "@/lib/crm/listing-form";
 import {
+  emptyRentalHandover,
+  validateRentalHandover,
+} from "@/lib/crm/rental-contract";
+import {
   createListingAction,
   deleteListingAction,
+  setListingActiveAction,
   updateListingAction,
 } from "@/lib/crm/actions/listing-actions";
 import type { ListingType } from "@/lib/types/listing";
+import type { RentalHandoverInput } from "@/lib/crm/rental-contract";
 
 type CrmListingFormProps = {
   mode: "create" | "edit";
@@ -36,6 +47,9 @@ const labelClass = "mb-1.5 block font-mono text-[10px] tracking-[0.14em] text-cm
 export function CrmListingForm({ mode, initial, slug }: CrmListingFormProps) {
   const router = useRouter();
   const [form, setForm] = useState<ListingFormInput>(initial ?? emptyListingForm);
+  const [rentalHandover, setRentalHandover] = useState<RentalHandoverInput>(() =>
+    initial ? formToRentalHandover(initial) : emptyRentalHandover(),
+  );
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
@@ -77,6 +91,14 @@ export function CrmListingForm({ mode, initial, slug }: CrmListingFormProps) {
       return;
     }
 
+    if (!form.active && form.listingType === "rent") {
+      const contractError = validateRentalHandover(formToRentalHandover(form));
+      if (contractError) {
+        setError(contractError);
+        return;
+      }
+    }
+
     startTransition(async () => {
       try {
         if (mode === "create") {
@@ -96,6 +118,108 @@ export function CrmListingForm({ mode, initial, slug }: CrmListingFormProps) {
         <div className="rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">
           {error}
         </div>
+      ) : null}
+
+      {mode === "edit" && slug ? (
+        <section className="rounded-xl border border-cm-border bg-cm-card/40 p-5">
+          <h2 className="font-display text-base font-semibold">Διαθεσιμότητα στο site</h2>
+          {form.active ? (
+            <>
+              <p className="mt-2 text-sm text-cm-sub">
+                Η καταχώριση εμφανίζεται δημόσια. Όταν{" "}
+                {form.listingType === "rent" ? "ενοικιαστεί" : "πωληθεί"}, σημείωσέ το για να
+                εξαφανιστεί από το site.
+              </p>
+              {form.listingType === "rent" ? (
+                <CrmRentalContractFields
+                  value={rentalHandover}
+                  onChange={setRentalHandover}
+                  inputClass={inputClass}
+                  labelClass={labelClass}
+                />
+              ) : null}
+              <button
+                type="button"
+                disabled={pending}
+                onClick={() => {
+                  if (form.listingType === "rent") {
+                    const contractError = validateRentalHandover(rentalHandover);
+                    if (contractError) {
+                      setError(contractError);
+                      return;
+                    }
+                  }
+                  const label =
+                    form.listingType === "rent"
+                      ? `Σημείωση ως ενοικιασμένο (${rentalHandover.customerName}) και απόκρυψη από το site;`
+                      : "Σημείωση ως πωλημένο και απόκρυψη από το site;";
+                  if (!window.confirm(`${label} Συνέχεια;`)) return;
+                  startTransition(async () => {
+                    try {
+                      await setListingActiveAction(
+                        slug,
+                        false,
+                        form.listingType === "rent" ? "rented" : "sold",
+                        form.listingType === "rent" ? rentalHandover : undefined,
+                      );
+                    } catch (err) {
+                      setError(err instanceof Error ? err.message : "Αποτυχία ενημέρωσης.");
+                    }
+                  });
+                }}
+                className="mt-4 inline-flex items-center gap-2 rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-2.5 font-display text-sm font-semibold text-amber-200 transition-colors hover:bg-amber-500/20 disabled:opacity-50"
+              >
+                <EyeOff className="h-4 w-4" aria-hidden="true" />
+                {form.listingType === "rent" ? "Ενοικιάστηκε" : "Πωλήθηκε"}
+              </button>
+            </>
+          ) : (
+            <>
+              <p className="mt-2 flex items-center gap-2 text-sm text-cm-sub">
+                <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-400" aria-hidden="true" />
+                Ανενεργό — δεν εμφανίζεται στο site (πωλήθηκε / ενοικιάστηκε / αποσύρθηκε).
+              </p>
+              {!form.active && form.listingType === "rent" ? (
+                <CrmRentalContractFields
+                  value={formToRentalHandover(form)}
+                  onChange={(handover) =>
+                    setForm((current) => ({
+                      ...current,
+                      rentalLocation: handover.rentalLocation,
+                      rentalCustomerName: handover.customerName,
+                      rentalCustomerPhone: handover.customerPhone,
+                      rentalCustomerEmail: handover.customerEmail,
+                      rentalCustomerCompany: handover.customerCompany,
+                      rentalCustomerAddress: handover.customerAddress,
+                      rentalCustomerNotes: handover.customerNotes,
+                      rentalStartsAt: handover.startsAt,
+                      rentalEndsAt: handover.endsAt,
+                    }))
+                  }
+                  inputClass={inputClass}
+                  labelClass={labelClass}
+                />
+              ) : null}
+              <button
+                type="button"
+                disabled={pending}
+                onClick={() => {
+                  startTransition(async () => {
+                    try {
+                      await setListingActiveAction(slug, true);
+                    } catch (err) {
+                      setError(err instanceof Error ? err.message : "Αποτυχία ενημέρωσης.");
+                    }
+                  });
+                }}
+                className="mt-4 inline-flex items-center gap-2 rounded-lg border border-cm-border px-4 py-2.5 font-display text-sm text-cm-sub transition-colors hover:border-cm-accent hover:text-cm-text disabled:opacity-50"
+              >
+                <RotateCcw className="h-4 w-4" aria-hidden="true" />
+                Επανενεργοποίηση στο site
+              </button>
+            </>
+          )}
+        </section>
       ) : null}
 
       <section className="space-y-4 rounded-xl border border-cm-border bg-cm-card/40 p-5">
@@ -118,6 +242,23 @@ export function CrmListingForm({ mode, initial, slug }: CrmListingFormProps) {
                 </option>
               ))}
             </select>
+          </div>
+
+          <div>
+            <label className={labelClass} htmlFor="containerNumber">
+              Αριθμός κοντέινερ
+            </label>
+            <input
+              id="containerNumber"
+              className={inputClass}
+              value={form.containerNumber}
+              onChange={(e) => setField("containerNumber", e.target.value.toUpperCase())}
+              placeholder="π.χ. ABCD1234567"
+            />
+            <p className="mt-1 text-xs text-cm-muted">
+              Εσωτερικό CRM — δεν εμφανίζεται στο δημόσιο site. Χρήσιμο για να ξέρετε ποιο κοντέινερ
+              δίνετε.
+            </p>
           </div>
 
           <div>
@@ -189,7 +330,7 @@ export function CrmListingForm({ mode, initial, slug }: CrmListingFormProps) {
               onChange={(e) => setField("active", e.target.checked)}
               className="rounded border-cm-border"
             />
-            Ενεργό στο site
+            Ενεργό στο site (εμφανίζεται δημόσια)
           </label>
           <label className="flex items-center gap-2 text-sm text-cm-sub">
             <input

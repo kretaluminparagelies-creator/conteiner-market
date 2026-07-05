@@ -6,7 +6,7 @@
  */
 
 import { CrmPasswordForm } from "@/components/crm/CrmPasswordForm";
-import { CrmShell } from "@/components/crm/CrmShell";
+import { CrmShellPage } from "@/components/crm/CrmShellPage";
 import {
   getCrmConnectionStatus,
   getCrmLeadsSourceLabel,
@@ -23,7 +23,7 @@ export default async function AdminSettingsPage() {
   const adminEmail = await getCrmSessionEmail();
 
   return (
-    <CrmShell title="Ρυθμίσεις" description="Σύνδεση backend, λογαριασμός και ασφάλεια.">
+    <CrmShellPage title="Ρυθμίσεις" description="Σύνδεση backend, λογαριασμός και ασφάλεια.">
       <div className="max-w-2xl space-y-6">
         <section className="rounded-xl border border-cm-border bg-cm-card/50 p-6">
           <h2 className="font-display text-base font-semibold">Backend</h2>
@@ -109,6 +109,6 @@ export default async function AdminSettingsPage() {
           </p>
         </section>
       </div>
-    </CrmShell>
+    </CrmShellPage>
   );
 }

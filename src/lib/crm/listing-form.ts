@@ -5,7 +5,8 @@
  * @copyright 2026 Katsoulakis. All rights reserved.
  */
 
-import type { Listing, ListingType, StockCondition } from "@/lib/types/listing";
+import type { Listing, ListingType, RentalLocation, StockCondition } from "@/lib/types/listing";
+import { isPlaceholderImage } from "@/lib/utils/listing-image";
 import { resolveIsOffer, resolveStockCondition } from "@/lib/utils/listing-carousel-filters";
 
 export const containerTypeOptions = [
@@ -22,6 +23,7 @@ export const containerTypeOptions = [
 
 export type ListingFormInput = {
   type: string;
+  containerNumber: string;
   listingType: ListingType;
   stockCondition: StockCondition;
   isOffer: boolean;
@@ -35,10 +37,21 @@ export type ListingFormInput = {
   image: string;
   images: string[];
   active: boolean;
+  /** Set when archived as rented — depot or customer site */
+  rentalLocation: RentalLocation | "";
+  rentalCustomerName: string;
+  rentalCustomerPhone: string;
+  rentalCustomerEmail: string;
+  rentalCustomerCompany: string;
+  rentalCustomerAddress: string;
+  rentalCustomerNotes: string;
+  rentalStartsAt: string;
+  rentalEndsAt: string;
 };
 
 export const emptyListingForm: ListingFormInput = {
   type: "20ft Dry",
+  containerNumber: "",
   listingType: "sale",
   stockCondition: "new",
   isOffer: false,
@@ -52,13 +65,31 @@ export const emptyListingForm: ListingFormInput = {
   image: "",
   images: [],
   active: true,
+  rentalLocation: "",
+  rentalCustomerName: "",
+  rentalCustomerPhone: "",
+  rentalCustomerEmail: "",
+  rentalCustomerCompany: "",
+  rentalCustomerAddress: "",
+  rentalCustomerNotes: "",
+  rentalStartsAt: "",
+  rentalEndsAt: "",
 };
 
 export function listingToFormInput(listing: Listing): ListingFormInput {
-  const gallery = listing.images?.length ? listing.images : listing.image ? [listing.image] : [];
+  const rawGallery = listing.images?.length
+    ? listing.images
+    : listing.image
+      ? [listing.image]
+      : [];
+  // Hide placeholders in the CRM: their files may not exist and render as broken.
+  const gallery = rawGallery.filter((url) => url && !isPlaceholderImage(url));
+  const cover =
+    listing.image && !isPlaceholderImage(listing.image) ? listing.image : (gallery[0] ?? "");
 
   return {
     type: listing.type,
+    containerNumber: listing.containerNumber ?? "",
     listingType: listing.listingType,
     stockCondition: listing.stockCondition ?? resolveStockCondition(listing),
     isOffer: listing.isOffer ?? resolveIsOffer(listing),
@@ -69,8 +100,17 @@ export function listingToFormInput(listing: Listing): ListingFormInput {
     unitEn: listing.unitEn ?? "",
     description: listing.description,
     descriptionEn: listing.descriptionEn ?? "",
-    image: listing.image,
+    image: cover,
     images: gallery,
     active: listing.active,
+    rentalLocation: listing.rentalLocation ?? "",
+    rentalCustomerName: listing.rentalCustomerName ?? "",
+    rentalCustomerPhone: listing.rentalCustomerPhone ?? "",
+    rentalCustomerEmail: listing.rentalCustomerEmail ?? "",
+    rentalCustomerCompany: listing.rentalCustomerCompany ?? "",
+    rentalCustomerAddress: listing.rentalCustomerAddress ?? "",
+    rentalCustomerNotes: listing.rentalCustomerNotes ?? "",
+    rentalStartsAt: listing.rentalStartsAt ?? "",
+    rentalEndsAt: listing.rentalEndsAt ?? "",
   };
 }

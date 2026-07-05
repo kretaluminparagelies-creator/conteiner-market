@@ -8,16 +8,18 @@
 "use client";
 
 import { CrmLogoutButton } from "@/components/crm/CrmLogoutButton";
-import { useCrmSession } from "@/components/crm/CrmSessionProvider";
-import { ExternalLink, LayoutDashboard, MessageSquare, Package, Settings } from "lucide-react";
+import { ExternalLink, History, KeyRound, LayoutDashboard, MessageSquare, Package, Settings } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { crmNavItems, crmSiteLink } from "@/lib/crm/navigation";
+import { appVersionLabel } from "@/lib/constants/version";
 import type { CrmNavItem } from "@/lib/crm/types";
 
 const iconMap = {
   dashboard: LayoutDashboard,
   listings: Package,
+  history: History,
+  rentals: KeyRound,
   leads: MessageSquare,
   settings: Settings,
 } satisfies Record<CrmNavItem["icon"], typeof LayoutDashboard>;
@@ -27,9 +29,8 @@ function isActive(href: string, pathname: string): boolean {
   return pathname.startsWith(href);
 }
 
-export function CrmNav() {
+export function CrmNav({ adminEmail = null }: { adminEmail?: string | null }) {
   const pathname = usePathname();
-  const { adminEmail } = useCrmSession();
 
   return (
     <nav className="flex h-full flex-col">
@@ -81,6 +82,7 @@ export function CrmNav() {
           <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
           Πίσω στο site
         </Link>
+        <p className="px-3 font-mono text-[10px] text-cm-muted">{appVersionLabel}</p>
       </div>
     </nav>
   );

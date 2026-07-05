@@ -21,6 +21,18 @@ export const crmNavItems: CrmNavItem[] = [
     icon: "listings",
   },
   {
+    href: "/admin/history",
+    label: "Ιστορικό",
+    labelEn: "History",
+    icon: "history",
+  },
+  {
+    href: "/admin/rentals",
+    label: "Ενοικιασμένα",
+    labelEn: "Rentals",
+    icon: "rentals",
+  },
+  {
     href: "/admin/leads",
     label: "Αιτήματα",
     labelEn: "Leads",

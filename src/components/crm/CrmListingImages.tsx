@@ -9,8 +9,9 @@
 
 import { ImagePlus, Star, Trash2, Upload } from "lucide-react";
 import Image from "next/image";
-import { useRef, useState, useTransition } from "react";
-import { uploadListingImageAction } from "@/lib/crm/actions/upload-actions";
+import { useRef, useState } from "react";
+import { prepareListingImage } from "@/lib/crm/compress-image-browser";
+import { isPlaceholderImage } from "@/lib/utils/listing-image";
 
 const inputClass =
   "w-full rounded-lg border border-cm-border bg-cm-bg px-3 py-2.5 text-sm text-cm-text outline-none transition-colors focus:border-cm-accent";
@@ -33,7 +34,7 @@ export function CrmListingImages({
   const fileRef = useRef<HTMLInputElement>(null);
   const [urlInput, setUrlInput] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [pending, startTransition] = useTransition();
+  const [pending, setPending] = useState(false);
 
   const gallery = images.length > 0 ? images : image ? [image] : [];
 
@@ -42,25 +43,37 @@ export function CrmListingImages({
     if (!trimmed || gallery.includes(trimmed)) return;
     const next = [...gallery, trimmed];
     onGalleryChange(next);
-    if (!image) onImageChange(trimmed);
+    if (!image || isPlaceholderImage(image)) onImageChange(trimmed);
   };
 
   const handleUpload = (file: File) => {
     setError(null);
-    const formData = new FormData();
-    formData.set("file", file);
+    setPending(true);
 
-    startTransition(async () => {
-      const result = await uploadListingImageAction(formData);
-      if (result.error) {
-        setError(result.error);
-        return;
+    void (async () => {
+      try {
+        const prepared = await prepareListingImage(file);
+        const response = await fetch("/api/admin/upload-listing-image", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(prepared),
+        });
+        const result = (await response.json()) as { url?: string; error?: string };
+
+        if (!response.ok || result.error) {
+          setError(result.error ?? "Αποτυχία ανεβάσματος.");
+          return;
+        }
+        if (result.url) {
+          addUrl(result.url);
+          setUrlInput("");
+        }
+      } catch {
+        setError("Αποτυχία ανεβάσματος. Δοκίμασε ξανά.");
+      } finally {
+        setPending(false);
       }
-      if (result.url) {
-        addUrl(result.url);
-        setUrlInput("");
-      }
-    });
+    })();
   };
 
   const setAsCover = (url: string) => onImageChange(url);
@@ -83,7 +96,8 @@ export function CrmListingImages({
         </div>
       ) : null}
 
-      <div className="flex flex-wrap gap-3">
+      <div>
+        <p className={labelClass}>1) Ανέβασμα από τον υπολογιστή</p>
         <input
           ref={fileRef}
           type="file"
@@ -102,31 +116,39 @@ export function CrmListingImages({
           className="inline-flex items-center gap-2 rounded-lg border border-cm-border px-4 py-2.5 text-sm text-cm-sub transition-colors hover:border-cm-accent hover:text-cm-text disabled:opacity-50"
         >
           <Upload className="h-4 w-4" />
-          {pending ? "Συμπίεση & ανέβασμα…" : "Ανέβασμα φωτογραφίας"}
+          {pending ? "Ανέβασμα…" : "Επιλογή φωτογραφίας"}
         </button>
+        <p className="mt-1.5 text-xs text-cm-muted">
+          Διάλεξε αρχείο (JPEG/PNG/WebP/GIF, έως 12MB). Ανεβαίνει αυτόματα — δεν χρειάζεται
+          τίποτα άλλο.
+        </p>
       </div>
 
-      <p className="text-xs text-cm-muted">
-        Αυτόματη συμπίεση σε WebP (έως 1400px) — κατάλληλο για site χωρίς βαριές εικόνες.
-      </p>
-
-      <div className="flex gap-2">
-        <input
-          className={inputClass}
-          value={urlInput}
-          onChange={(e) => setUrlInput(e.target.value)}
-          placeholder="https://… ή /images/containers/…"
-        />
-        <button
-          type="button"
-          onClick={() => {
-            addUrl(urlInput);
-            setUrlInput("");
-          }}
-          className="shrink-0 rounded-lg border border-cm-border px-4 py-2.5 text-sm text-cm-sub hover:text-cm-text"
-        >
-          <ImagePlus className="h-4 w-4" />
-        </button>
+      <div>
+        <p className={labelClass}>ή 2) Πρόσθεσε σύνδεσμο (URL)</p>
+        <div className="flex gap-2">
+          <input
+            className={inputClass}
+            value={urlInput}
+            onChange={(e) => setUrlInput(e.target.value)}
+            placeholder="https://… ή /images/containers/…"
+          />
+          <button
+            type="button"
+            onClick={() => {
+              addUrl(urlInput);
+              setUrlInput("");
+            }}
+            className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-cm-border px-4 py-2.5 text-sm text-cm-sub hover:text-cm-text"
+          >
+            <ImagePlus className="h-4 w-4" />
+            Προσθήκη
+          </button>
+        </div>
+        <p className="mt-1.5 text-xs text-cm-muted">
+          Μόνο αν έχεις ήδη link φωτογραφίας. Για δικές σου φωτό χρησιμοποίησε το «Ανέβασμα» πιο
+          πάνω.
+        </p>
       </div>
 
       <div>

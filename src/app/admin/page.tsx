@@ -8,7 +8,7 @@
 import { Suspense } from "react";
 import { AdminRecentLeadsSection } from "@/components/crm/AdminRecentLeadsSection";
 import { CrmLeadsTableSkeleton } from "@/components/crm/CrmLeadsTableSkeleton";
-import { CrmShell } from "@/components/crm/CrmShell";
+import { CrmShellPage } from "@/components/crm/CrmShellPage";
 import { CrmStatCard } from "@/components/crm/CrmStatCard";
 import { readAdminDashboardCounts } from "@/lib/crm/admin-dashboard";
 
@@ -16,7 +16,7 @@ export default async function AdminDashboardPage() {
   const counts = await readAdminDashboardCounts();
 
   return (
-    <CrmShell title="Πίνακας ελέγχου" description="Επισκόπηση καταχωρίσεων και αιτημάτων.">
+    <CrmShellPage title="Πίνακας ελέγχου" description="Επισκόπηση καταχωρίσεων και αιτημάτων.">
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <CrmStatCard label="Ενεργά στο site" value={counts.activeListings} accent="orange" />
         <CrmStatCard
@@ -45,6 +45,6 @@ export default async function AdminDashboardPage() {
           <AdminRecentLeadsSection />
         </Suspense>
       </section>
-    </CrmShell>
+    </CrmShellPage>
   );
 }

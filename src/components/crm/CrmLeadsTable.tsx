@@ -9,20 +9,11 @@ import Link from "next/link";
 import { CrmLeadStatusSelect } from "@/components/crm/CrmLeadStatusSelect";
 import { leadSourceLabels } from "@/lib/crm/lead-labels";
 import type { Lead } from "@/lib/crm/types";
+import { formatCrmDate } from "@/lib/crm/format-crm-date";
 
 type CrmLeadsTableProps = {
   leads: Lead[];
 };
-
-function formatDate(iso: string): string {
-  return new Intl.DateTimeFormat("el-GR", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(new Date(iso));
-}
 
 export function CrmLeadsTable({ leads }: CrmLeadsTableProps) {
   if (leads.length === 0) {
@@ -51,7 +42,7 @@ export function CrmLeadsTable({ leads }: CrmLeadsTableProps) {
             {leads.map((lead) => (
               <tr key={lead.id} className="hover:bg-cm-surf/30">
                 <td className="px-4 py-3 font-mono text-xs text-cm-sub whitespace-nowrap">
-                  {formatDate(lead.createdAt)}
+                  {formatCrmDate(lead.createdAt)}
                 </td>
                 <td className="px-4 py-3">
                   <div className="font-medium text-cm-text">{lead.name}</div>

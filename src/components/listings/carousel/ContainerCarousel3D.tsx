@@ -61,7 +61,7 @@ export function ContainerCarousel3D({
 
   return (
     <div
-      className="relative flex w-full flex-col items-center overflow-visible px-1 md:px-4"
+      className="relative flex w-full flex-col items-center overflow-hidden px-1 md:px-4"
       style={
         {
           "--cm-carousel-nav-inset": `${listingCarousel.navInsetDesktop}px`,

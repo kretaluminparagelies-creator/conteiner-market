@@ -72,10 +72,7 @@ function ListingDetailModalContent({
 
   return (
     <motion.div
-      className={[
-        "fixed inset-0 z-[500] grid place-items-center overflow-y-auto",
-        hasPeers ? "px-2 py-6 sm:px-3" : "p-4 sm:p-6",
-      ].join(" ")}
+      className="fixed inset-0 z-[500] overflow-x-hidden overflow-y-auto"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -104,20 +101,21 @@ function ListingDetailModalContent({
         )}
       </button>
 
-      <motion.div
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="listing-detail-title"
-        className={[
-          "relative z-10 my-auto w-full translate-y-4 overflow-visible sm:translate-y-7",
-          hasPeers ? "max-w-none" : "max-w-5xl",
-        ].join(" ")}
-        initial={reduceMotion ? false : { opacity: 0, scale: 0.97 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={reduceMotion ? undefined : { opacity: 0, scale: 0.97 }}
-        transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-        onClick={(event) => event.stopPropagation()}
-      >
+      <div className="flex min-h-full items-center justify-center p-4 sm:p-6">
+        <motion.div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="listing-detail-title"
+          className={[
+            "relative z-10 w-full overflow-hidden",
+            hasPeers ? "max-w-[calc(100vw-2rem)] sm:max-w-[calc(100vw-3rem)]" : "max-w-5xl",
+          ].join(" ")}
+          initial={reduceMotion ? false : { opacity: 0, scale: 0.97 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={reduceMotion ? undefined : { opacity: 0, scale: 0.97 }}
+          transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+          onClick={(event) => event.stopPropagation()}
+        >
         <div id="listing-detail-title" className="sr-only">
           {activeListing.type}
         </div>
@@ -131,6 +129,7 @@ function ListingDetailModalContent({
           surface={surface}
         />
       </motion.div>
+      </div>
     </motion.div>
   );
 }
