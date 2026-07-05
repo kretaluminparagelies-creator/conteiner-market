@@ -8,10 +8,11 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
-import { forwardRef, useEffect, type Ref } from "react";
+import { forwardRef, type Ref } from "react";
 import { createPortal } from "react-dom";
 import { SiteButton } from "@/components/ui/site-button";
 import { useIsClient } from "@/lib/hooks/useIsClient";
+import { useScrollLock } from "@/lib/hooks/useScrollLock";
 import { useLocale } from "@/lib/i18n/locale-context";
 
 export type HighlightDetailContent = {
@@ -102,33 +103,28 @@ function HighlightDetailMobileSheet({
 }) {
   const { t } = useLocale();
   const isClient = useIsClient();
-
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, []);
+  useScrollLock(true);
 
   if (!isClient) return null;
 
   return createPortal(
-    <>
+    <div className="fixed inset-0 z-[190] touch-none overflow-hidden overscroll-none">
       <button
         type="button"
         aria-label={t.listings.detailClose}
-        className="fixed inset-0 z-[190] bg-black/30"
+        className="absolute inset-0 bg-black/30"
         onClick={onDismiss}
       />
       <div
         ref={sheetRef}
+        id="highlight-mobile-sheet"
         role="dialog"
         aria-modal="true"
-        className="fixed inset-x-0 bottom-0 z-[191] max-h-[min(85dvh,720px)] w-full overflow-y-auto overscroll-contain touch-pan-y"
+        className="absolute inset-x-0 bottom-0 z-[1] max-h-[min(85dvh,720px)] w-full touch-pan-y overflow-y-auto overscroll-contain"
       >
         <HighlightDetailBody detail={detail} topBarClass={topBarClass} quickMotion />
       </div>
-    </>,
+    </div>,
     document.body,
   );
 }
