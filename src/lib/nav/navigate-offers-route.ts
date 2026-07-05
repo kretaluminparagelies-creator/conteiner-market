@@ -107,12 +107,24 @@ export function parseListingTabFromSearch(search: string): ListingCarouselTab | 
   return parseHomeCarouselSearch(search).tab ?? null;
 }
 
+function isMobileOffersLayout(): boolean {
+  return window.matchMedia("(max-width: 767px)").matches;
+}
+
 export function scrollToOffersCarousel(
   section: HTMLElement,
   params?: ListingCarouselTab | HomeCarouselSearchParams,
 ): void {
   const options: HomeCarouselSearchParams =
     typeof params === "string" ? { tab: params } : (params ?? {});
+
+  if (isMobileOffersLayout()) {
+    const mobileCarousel = section.querySelector<HTMLElement>("[data-offers-carousel-mobile]");
+    const target = mobileCarousel ?? section;
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.history.replaceState(null, "", buildHomeCarouselUrl(options));
+    return;
+  }
 
   const carousel = section.querySelector<HTMLElement>("[data-offers-carousel]");
   const target = carousel ?? section;
