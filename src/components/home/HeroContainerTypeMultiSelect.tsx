@@ -7,7 +7,7 @@
 
 "use client";
 
-import { Check, ChevronDownIcon, Package } from "lucide-react";
+import { Check, ChevronDownIcon, Package, X } from "lucide-react";
 import { useEffect, useId, useLayoutEffect, useRef, useState, type RefObject } from "react";
 import { createPortal } from "react-dom";
 import { ContainerTypeInfoButton } from "@/components/home/ContainerTypeInfoButton";
@@ -86,11 +86,10 @@ export function HeroContainerTypeMultiSelect({
 
     if (mobileLayout) {
       const width = window.innerWidth - margin * 2;
-      let top = rect.bottom + 8;
-      if (top + panelHeight > viewportBottom) {
-        top = Math.max(margin, viewportBottom - panelHeight);
-      }
-      setPanelStyle({ top, left: margin, width });
+      const panelHeight = panelRef.current?.offsetHeight ?? Math.min(window.innerHeight * 0.7, 512);
+      const left = (window.innerWidth - width) / 2;
+      const top = Math.max(margin, (window.innerHeight - panelHeight) / 2);
+      setPanelStyle({ top, left, width });
       return;
     }
 
@@ -167,6 +166,11 @@ export function HeroContainerTypeMultiSelect({
 
   const selectAllTypes = () => onChange([]);
 
+  const closePanel = () => {
+    setActiveInfoId(null);
+    setOpen(false);
+  };
+
   return (
     <div className="space-y-1.5">
       <Label id={`${listboxId}-label`} className={labelClass}>
@@ -199,47 +203,65 @@ export function HeroContainerTypeMultiSelect({
 
       {mounted && open
         ? createPortal(
-            <div
-              ref={panelRef}
-              id={listboxId}
-              role="listbox"
-              aria-labelledby={`${listboxId}-label`}
-              aria-multiselectable="true"
-              style={{ top: panelStyle.top, left: panelStyle.left, width: panelStyle.width }}
-              className={cn(
-                "fixed z-[250] overflow-hidden rounded-xl border border-cm-light-border-strong",
-                "bg-white shadow-cm-light-lg",
-                isMobileLayout && "max-h-[min(70dvh,32rem)]",
-              )}
-            >
-              <div className="flex items-center justify-between border-b border-cm-light-border-strong px-3 py-2">
-                <p className="font-mono text-[9px] font-bold tracking-[0.16em] text-cm-ink-muted uppercase">
-                  {t.heroSearch.containerTypePick}
-                </p>
-                <div className="flex items-center gap-3">
-                  {isMobileLayout ? (
-                    <button
-                      type="button"
-                      onClick={selectAllTypes}
-                      className={cn(
-                        "font-display text-xs font-semibold hover:underline",
-                        selectedIds.length === 0 ? "text-cm-ink" : "text-cm-accent",
-                      )}
-                    >
-                      {t.heroSearch.containerTypeAll}
-                    </button>
-                  ) : null}
-                  {selectedIds.length > 0 ? (
-                    <button
-                      type="button"
-                      onClick={selectAllTypes}
-                      className="font-display text-xs font-semibold text-cm-accent hover:underline"
-                    >
-                      {t.heroSearch.clearSelection}
-                    </button>
-                  ) : null}
+            <>
+              {isMobileLayout ? (
+                <div
+                  className="fixed inset-0 z-[240] bg-cm-ink/20 backdrop-blur-[1px] md:hidden"
+                  aria-hidden="true"
+                  onClick={closePanel}
+                />
+              ) : null}
+              <div
+                ref={panelRef}
+                id={listboxId}
+                role="listbox"
+                aria-labelledby={`${listboxId}-label`}
+                aria-multiselectable="true"
+                style={{ top: panelStyle.top, left: panelStyle.left, width: panelStyle.width }}
+                className={cn(
+                  "fixed z-[250] overflow-hidden rounded-xl border border-cm-light-border-strong",
+                  "bg-white shadow-cm-light-lg",
+                  isMobileLayout && "max-h-[min(70dvh,32rem)]",
+                )}
+              >
+                <div className="flex items-center justify-between gap-2 border-b border-cm-light-border-strong px-3 py-2">
+                  <p className="font-mono text-[9px] font-bold tracking-[0.16em] text-cm-ink-muted uppercase">
+                    {t.heroSearch.containerTypePick}
+                  </p>
+                  <div className="flex shrink-0 items-center gap-2">
+                    {isMobileLayout ? (
+                      <button
+                        type="button"
+                        onClick={selectAllTypes}
+                        className={cn(
+                          "font-display text-xs font-semibold hover:underline",
+                          selectedIds.length === 0 ? "text-cm-ink" : "text-cm-accent",
+                        )}
+                      >
+                        {t.heroSearch.containerTypeAll}
+                      </button>
+                    ) : null}
+                    {!isMobileLayout && selectedIds.length > 0 ? (
+                      <button
+                        type="button"
+                        onClick={selectAllTypes}
+                        className="font-display text-xs font-semibold text-cm-accent hover:underline"
+                      >
+                        {t.heroSearch.clearSelection}
+                      </button>
+                    ) : null}
+                    {isMobileLayout ? (
+                      <button
+                        type="button"
+                        onClick={closePanel}
+                        aria-label={t.listings.detailClose}
+                        className="inline-flex size-8 items-center justify-center rounded-lg border border-cm-light-border-strong bg-white text-cm-ink-sub transition-colors hover:border-cm-accent/35 hover:text-cm-accent"
+                      >
+                        <X className="size-4" strokeWidth={2.25} aria-hidden="true" />
+                      </button>
+                    ) : null}
+                  </div>
                 </div>
-              </div>
 
               <div
                 className={cn(
@@ -307,7 +329,8 @@ export function HeroContainerTypeMultiSelect({
                   </div>
                 ))}
               </div>
-            </div>,
+            </div>
+            </>,
             document.body,
           )
         : null}
