@@ -9,8 +9,8 @@
 
 import { AnimatePresence, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
+import { HighlightAccordionMobile } from "@/components/home/HighlightAccordionMobile";
 import { HighlightCardButton } from "@/components/home/HighlightCardButton";
-import { HighlightCardsMobile } from "@/components/home/HighlightCardsMobile";
 import {
   HighlightDetailPanel,
   type HighlightDetailContent,
@@ -125,7 +125,7 @@ export function Stats({ embedded = false, visible: visibleProp }: StatsProps) {
 
   const grid = (
     <>
-      <HighlightCardsMobile
+      <HighlightAccordionMobile
         items={t.stats.items}
         detailsMap={detailsMap}
         activeKey={activeKey}
@@ -159,18 +159,18 @@ export function Stats({ embedded = false, visible: visibleProp }: StatsProps) {
         })}
       </div>
 
-      <AnimatePresence mode={quickMotion ? "sync" : "wait"}>
-        {activeKey && activeDetail ? (
-          <HighlightDetailPanel
-            key={activeKey}
-            ref={detailPanelRef}
-            detail={activeDetail}
-            topBarClass={highlightThemes[activeKey].topBar}
-            quickMotion={quickMotion}
-            onDismiss={quickMotion ? () => setActiveKey(null) : undefined}
-          />
-        ) : null}
-      </AnimatePresence>
+      <div className="hidden md:block">
+        <AnimatePresence mode="wait">
+          {activeKey && activeDetail ? (
+            <HighlightDetailPanel
+              key={activeKey}
+              ref={detailPanelRef}
+              detail={activeDetail}
+              topBarClass={highlightThemes[activeKey].topBar}
+            />
+          ) : null}
+        </AnimatePresence>
+      </div>
     </>
   );
 
