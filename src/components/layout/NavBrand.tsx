@@ -10,27 +10,31 @@ import Link from "next/link";
 type NavBrandProps = {
   /** Nav bar background — light (home) or dark (inner pages) */
   surface?: "light" | "dark";
+  className?: string;
 };
 
-export function NavBrand({ surface = "dark" }: NavBrandProps) {
+export function NavBrand({ surface = "dark", className }: NavBrandProps) {
   const onLightNav = surface === "light";
 
   return (
     <Link
       href="/"
       className={[
-        "nav-brand-live nav-brand-chip group",
+        "nav-brand-live nav-brand-chip group max-sm:px-2 max-sm:py-1.5",
         onLightNav ? "nav-brand-chip--elevated" : "nav-brand-chip--on-dark-nav",
-      ].join(" ")}
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
     >
-      <span className="relative font-display text-[17px] font-bold tracking-[0.08em]">
+      <span className="relative font-display text-[15px] font-bold tracking-[0.06em] sm:text-[17px] sm:tracking-[0.08em]">
         <span className="animate-nav-brand-red-glow text-cm-brand-red">CONTAINER</span>
         <span className="font-light text-white/78">MARKET</span>
       </span>
 
       <span
         className={[
-          "relative ml-2 rounded-full border border-white/18 px-2 py-0.5",
+          "relative ml-1.5 hidden rounded-full border border-white/18 px-2 py-0.5 sm:ml-2 sm:inline-flex",
           "font-mono text-[10px] tracking-[0.2em] text-white/62",
           "bg-white/8",
         ].join(" ")}

@@ -75,12 +75,16 @@ export function NavMobileMenu({ isHome }: NavMobileMenuProps) {
         className="flex w-[min(100vw-1.5rem,340px)] flex-col border-cm-light-border-strong bg-white p-0 shadow-cm-light-lg"
       >
         <SheetHeader className="border-b border-cm-light-border bg-linear-to-b from-cm-light-bg to-white px-5 py-5 text-left">
-          <div className="nav-brand-chip nav-brand-chip--elevated inline-flex w-fit items-center px-2.5 py-1.5">
+          <Link
+            href="/"
+            onClick={() => setOpen(false)}
+            className="nav-brand-chip nav-brand-chip--elevated inline-flex w-fit items-center px-2.5 py-1.5"
+          >
             <SheetTitle className="font-display text-[15px] font-bold">
               <span className="text-cm-brand-red">CONTAINER</span>
               <span className="font-light text-white/78">MARKET</span>
             </SheetTitle>
-          </div>
+          </Link>
           <SheetDescription className="mt-2 font-mono text-[10px] tracking-[0.2em] text-cm-ink-muted uppercase">
             {t.nav.ariaLabel}
           </SheetDescription>

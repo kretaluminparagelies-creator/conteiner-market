@@ -33,19 +33,20 @@ export function Nav() {
     <nav
       aria-label={t.nav.ariaLabel}
       className={[
-        "fixed inset-x-0 top-0 z-[200] grid h-[60px] grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 px-[4%] backdrop-blur-xl sm:gap-3 sm:px-[6%]",
+        "fixed inset-x-0 top-0 z-[200] flex h-[60px] items-center justify-between gap-3 px-[4%] backdrop-blur-xl sm:px-[6%]",
+        "md:grid md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:justify-normal md:gap-3",
         isLightNav
           ? "border-b border-cm-light-border-strong bg-white/92 shadow-cm-light-sm"
           : "border-b border-cm-border bg-cm-bg/92 backdrop-blur-[14px]",
       ].join(" ")}
     >
-      <div className="flex min-w-0 items-center gap-2 justify-self-start">
+      <div className="flex min-w-0 items-center gap-2.5 sm:gap-3 md:justify-self-start">
         <NavMobileMenu isHome={isLightNav} />
-        <NavBrand surface={isLightNav ? "light" : "dark"} />
+        <NavBrand surface={isLightNav ? "light" : "dark"} className="hidden md:inline-flex" />
       </div>
 
       {showHomeNavTabs ? (
-        <div className="max-w-full justify-self-center overflow-x-auto px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="hidden max-w-full justify-self-center overflow-x-auto px-1 [scrollbar-width:none] md:block [&::-webkit-scrollbar]:hidden">
           <NavListingTabs />
         </div>
       ) : (

@@ -26,20 +26,22 @@ export type HighlightDetailContent = {
 type HighlightDetailPanelProps = {
   detail: HighlightDetailContent;
   topBarClass: string;
+  quickMotion?: boolean;
 };
 
 export const HighlightDetailPanel = forwardRef<HTMLDivElement, HighlightDetailPanelProps>(
-  function HighlightDetailPanel({ detail, topBarClass }, ref) {
+  function HighlightDetailPanel({ detail, topBarClass, quickMotion = false }, ref) {
   const reduceMotion = useReducedMotion();
+  const fast = quickMotion || reduceMotion;
 
   return (
     <motion.div
       ref={ref}
-      initial={reduceMotion ? false : { opacity: 0, y: 16, height: 0 }}
+      initial={fast ? false : { opacity: 0, y: 16, height: 0 }}
       animate={{ opacity: 1, y: 0, height: "auto" }}
-      exit={reduceMotion ? undefined : { opacity: 0, y: 10, height: 0 }}
+      exit={fast ? undefined : { opacity: 0, y: 10, height: 0 }}
       transition={
-        reduceMotion
+        fast
           ? { duration: 0.01 }
           : { type: "spring", stiffness: 140, damping: 24, mass: 0.9 }
       }
