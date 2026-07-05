@@ -49,7 +49,7 @@ function CompactListingCard({
     >
       <div
         className={cn(
-          "relative h-48 overflow-hidden",
+          "relative h-60 overflow-hidden",
           isLight ? "bg-cm-light-elevated" : "bg-cm-carousel-photo",
         )}
       >
@@ -65,7 +65,7 @@ function CompactListingCard({
           />
         ) : (
           <div className="flex h-full items-center justify-center">
-            <ContainerSVG tinted={isRent} className="h-20 w-auto opacity-90" />
+            <ContainerSVG tinted={isRent} className="h-24 w-auto opacity-90" />
           </div>
         )}
         <div className="absolute inset-0 bg-linear-to-t from-[#0e1828]/80 via-transparent to-transparent" />
@@ -84,7 +84,7 @@ function CompactListingCard({
             {isRent ? t.listings.rent : t.listings.sale}
           </span>
         </div>
-        <div className="absolute inset-x-0 bottom-0 px-3 pb-2.5">
+        <div className="absolute inset-x-0 bottom-0 px-3.5 pb-3.5">
           <h3 className="line-clamp-2 font-display text-lg font-bold leading-snug text-white drop-shadow-sm">
             {item.title}
           </h3>
@@ -92,7 +92,7 @@ function CompactListingCard({
         </div>
       </div>
 
-      <div className="flex items-center justify-between gap-2 px-3.5 py-3">
+      <div className="flex min-h-[4.25rem] flex-col justify-center gap-2 px-3.5 py-4">
         <div className="flex items-baseline gap-1">
           <span
             className={cn(
@@ -110,12 +110,12 @@ function CompactListingCard({
         </div>
         <span
           className={cn(
-            "inline-flex max-w-[50%] items-center gap-1 text-[11px]",
+            "inline-flex items-center gap-1 text-[11px]",
             isLight ? "text-cm-ink-muted" : "text-cm-muted",
           )}
         >
           <MapPin className="h-3 w-3 shrink-0" aria-hidden />
-          <span className="truncate">{item.location}</span>
+          <span className="line-clamp-1">{item.location}</span>
         </span>
       </div>
     </button>
@@ -151,7 +151,7 @@ export function ListingsMobilePager({
     <div className="md:hidden">
       <div
         className={cn(
-          "relative overflow-hidden rounded-xl border py-4",
+          "relative overflow-hidden rounded-xl border py-5",
           isLight
             ? "border-cm-light-border-strong bg-white/92 shadow-cm-light-xs"
             : "border-cm-border bg-cm-card/80",
