@@ -14,13 +14,23 @@ import { ContainerTypeInfoButton } from "@/components/home/ContainerTypeInfoButt
 import { Label } from "@/components/ui/label";
 import { containerTypeGroups, getContainerTypeById } from "@/lib/constants/container-types";
 import { useIsClient } from "@/lib/hooks/useIsClient";
+import { useIsMobileLayout } from "@/lib/hooks/useIsMobileLayout";
 import { useLocale } from "@/lib/i18n/locale-context";
 import { cn } from "@/lib/utils";
 
 const PANEL_WIDTH = 540;
+const MOBILE_PANEL_MARGIN = 12;
 /** Panel left edge starts this many px to the right of the trigger's right edge */
 const PANEL_OFFSET_RIGHT = 28;
 const GAP_BELOW = 28;
+
+const allContainerTypeIds = containerTypeGroups.flatMap((group) => group.ids);
+
+type PanelStyle = {
+  top: number;
+  left: number;
+  width: number;
+};
 
 type HeroContainerTypeMultiSelectProps = {
   selectedIds: string[];
@@ -40,12 +50,17 @@ export function HeroContainerTypeMultiSelect({
 }: HeroContainerTypeMultiSelectProps) {
   const { t, locale } = useLocale();
   const mounted = useIsClient();
+  const isMobileLayout = useIsMobileLayout();
   const listboxId = useId();
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   const [activeInfoId, setActiveInfoId] = useState<string | null>(null);
-  const [panelStyle, setPanelStyle] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
+  const [panelStyle, setPanelStyle] = useState<PanelStyle>({
+    top: 0,
+    left: 0,
+    width: PANEL_WIDTH,
+  });
 
   const triggerLabel =
     selectedIds.length === 0
@@ -65,8 +80,19 @@ export function HeroContainerTypeMultiSelect({
     const rect = trigger.getBoundingClientRect();
     const anchorRect = panelAnchorRef?.current?.getBoundingClientRect() ?? rect;
     const panelHeight = panelRef.current?.offsetHeight ?? 420;
-    const margin = 12;
+    const margin = MOBILE_PANEL_MARGIN;
     const viewportBottom = window.innerHeight - margin;
+    const mobileLayout = window.matchMedia("(max-width: 767px)").matches;
+
+    if (mobileLayout) {
+      const width = window.innerWidth - margin * 2;
+      let top = rect.bottom + 8;
+      if (top + panelHeight > viewportBottom) {
+        top = Math.max(margin, viewportBottom - panelHeight);
+      }
+      setPanelStyle({ top, left: margin, width });
+      return;
+    }
 
     // Always below the anchor (form bottom when provided) — never flip above.
     let top = anchorRect.bottom + GAP_BELOW;
@@ -81,7 +107,7 @@ export function HeroContainerTypeMultiSelect({
     }
     left = Math.max(margin, left);
 
-    setPanelStyle({ top, left });
+    setPanelStyle({ top, left, width: PANEL_WIDTH });
   };
 
   useLayoutEffect(() => {
@@ -117,12 +143,19 @@ export function HeroContainerTypeMultiSelect({
   }, [open]);
 
   const toggleId = (id: string) => {
-    onChange(
-      selectedIds.includes(id) ? selectedIds.filter((entry) => entry !== id) : [...selectedIds, id],
-    );
+    const next = selectedIds.includes(id)
+      ? selectedIds.filter((entry) => entry !== id)
+      : [...selectedIds, id];
+
+    if (next.length >= allContainerTypeIds.length) {
+      onChange([]);
+      return;
+    }
+
+    onChange(next);
   };
 
-  const clearAll = () => onChange([]);
+  const selectAllTypes = () => onChange([]);
 
   return (
     <div className="space-y-1.5">
@@ -162,34 +195,54 @@ export function HeroContainerTypeMultiSelect({
               role="listbox"
               aria-labelledby={`${listboxId}-label`}
               aria-multiselectable="true"
-              style={{ top: panelStyle.top, left: panelStyle.left, width: PANEL_WIDTH }}
+              style={{ top: panelStyle.top, left: panelStyle.left, width: panelStyle.width }}
               className={cn(
                 "fixed z-[250] overflow-hidden rounded-xl border border-cm-light-border-strong",
                 "bg-white shadow-cm-light-lg",
+                isMobileLayout && "max-h-[min(70dvh,32rem)]",
               )}
             >
               <div className="flex items-center justify-between border-b border-cm-light-border-strong px-3 py-2">
                 <p className="font-mono text-[9px] font-bold tracking-[0.16em] text-cm-ink-muted uppercase">
                   {t.heroSearch.containerTypePick}
                 </p>
-                {selectedIds.length > 0 ? (
-                  <button
-                    type="button"
-                    onClick={clearAll}
-                    className="font-display text-xs font-semibold text-cm-accent hover:underline"
-                  >
-                    {t.heroSearch.clearSelection}
-                  </button>
-                ) : null}
+                <div className="flex items-center gap-3">
+                  {isMobileLayout ? (
+                    <button
+                      type="button"
+                      onClick={selectAllTypes}
+                      className={cn(
+                        "font-display text-xs font-semibold hover:underline",
+                        selectedIds.length === 0 ? "text-cm-ink" : "text-cm-accent",
+                      )}
+                    >
+                      {t.heroSearch.containerTypeAll}
+                    </button>
+                  ) : null}
+                  {selectedIds.length > 0 ? (
+                    <button
+                      type="button"
+                      onClick={selectAllTypes}
+                      className="font-display text-xs font-semibold text-cm-accent hover:underline"
+                    >
+                      {t.heroSearch.clearSelection}
+                    </button>
+                  ) : null}
+                </div>
               </div>
 
-              <div className="p-2.5">
+              <div
+                className={cn(
+                  "p-2.5",
+                  isMobileLayout && "max-h-[calc(min(70dvh,32rem)-2.75rem)] overflow-y-auto overscroll-contain",
+                )}
+              >
                 {containerTypeGroups.map((group) => (
                   <div key={group.label.el} className="mb-2 last:mb-0">
                     <p className="px-1.5 py-1 font-mono text-[9px] tracking-[0.16em] text-cm-ink-muted uppercase">
                       {locale === "en" ? group.label.en : group.label.el}
                     </p>
-                    <ul className="grid grid-cols-2 gap-x-1.5 gap-y-0.5">
+                    <ul className={cn("grid gap-x-1.5 gap-y-0.5", isMobileLayout ? "grid-cols-1" : "grid-cols-2")}>
                       {group.ids.map((id) => {
                         const spec = getContainerTypeById(id);
                         if (!spec) return null;
