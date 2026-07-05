@@ -24,7 +24,10 @@ export function Hero() {
   }, []);
 
   return (
-    <section className="relative isolate flex min-h-[calc(100vh-60px)] flex-col justify-center overflow-hidden px-[7%] pb-8">
+    <section
+      id="home-hero"
+      className="relative isolate flex min-h-[calc(100vh-60px)] flex-col justify-center overflow-hidden px-[7%] pb-8"
+    >
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0">
         <Image
           src={heroBackgroundImage}

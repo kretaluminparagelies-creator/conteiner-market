@@ -42,9 +42,12 @@ export const homePhotoOverlayPrimaryClass = "bg-linear-to-b from-white/38 via-wh
 export const homePhotoOverlayFadeClass =
   "bg-linear-to-t from-cm-light-bg/50 via-transparent to-white/6";
 
-export const statDefinitions = [
-  { end: 500, suffix: "+", key: "containers" as const },
-  { end: 280, suffix: "+", key: "clients" as const },
-  { end: 12, suffix: "", key: "years" as const },
-  { end: 32, suffix: "", key: "hubs" as const },
-];
+export const highlightItemKeys = [
+  "conversions",
+  "prices",
+  "variety",
+  "certification",
+  "delivery",
+] as const;
+
+export type HighlightItemKey = (typeof highlightItemKeys)[number];

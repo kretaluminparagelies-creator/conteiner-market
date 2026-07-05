@@ -18,7 +18,7 @@ export const metadata = createPageMetadata({
 
 export default function OroiPage() {
   return (
-    <PageShell>
+    <PageShell tone="light" hideFooter>
       <LegalPageContent kind="terms" />
     </PageShell>
   );

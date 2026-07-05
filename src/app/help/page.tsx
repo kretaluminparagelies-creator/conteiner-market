@@ -36,7 +36,7 @@ const faqSchema = {
 
 export default function HelpPage() {
   return (
-    <PageShell>
+    <PageShell tone="light" hideFooter>
       <JsonLd data={faqSchema} />
       <HelpPageContent />
     </PageShell>

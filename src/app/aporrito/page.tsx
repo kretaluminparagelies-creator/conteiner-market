@@ -18,7 +18,7 @@ export const metadata = createPageMetadata({
 
 export default function AporritoPage() {
   return (
-    <PageShell>
+    <PageShell tone="light" hideFooter>
       <LegalPageContent kind="privacy" />
     </PageShell>
   );

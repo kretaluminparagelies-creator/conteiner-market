@@ -7,6 +7,7 @@
 
 "use client";
 
+import { InfoPhotoLayout } from "@/components/pages/InfoPhotoLayout";
 import { LegalDocument } from "@/components/pages/LegalDocument";
 import { getLegalBundle, getLegalSections, type LegalDocumentKind } from "@/lib/content/legal";
 import { useLocale } from "@/lib/i18n/locale-context";
@@ -22,14 +23,16 @@ export function LegalPageContent({ kind }: LegalPageContentProps) {
   const meta = getLegalBundle(locale).legalMeta;
 
   return (
-    <LegalDocument
-      siteName={meta.siteName}
-      title={labels.title}
-      intro={labels.intro}
-      sections={sections}
-      lastUpdated={meta.lastUpdated}
-      lastUpdatedLabel={t.common.lastUpdated}
-      companyName={meta.companyName}
-    />
+    <InfoPhotoLayout backLabel={t.pages.contact.backToHome}>
+      <LegalDocument
+        siteName={meta.siteName}
+        title={labels.title}
+        intro={labels.intro}
+        sections={sections}
+        lastUpdated={meta.lastUpdated}
+        lastUpdatedLabel={t.common.lastUpdated}
+        companyName={meta.companyName}
+      />
+    </InfoPhotoLayout>
   );
 }

@@ -76,10 +76,115 @@ export const en: Messages = {
     ],
   },
   stats: {
-    containers: "Containers",
-    clients: "Clients",
-    years: "Years of experience",
-    hubs: "Ports & warehouses",
+    items: {
+      conversions: {
+        title: "Certified conversions",
+        detail: "High-quality functional solutions tailored to every application",
+      },
+      prices: {
+        title: "Direct from us",
+        detail: "No middlemen. Better pricing and immediate service.",
+      },
+      variety: {
+        title: "Large availability",
+        detail: "Hundreds of options in new and used containers.",
+      },
+      certification: {
+        title: "Guaranteed quality",
+        detail: "Every container is delivered after rigorous technical inspection.",
+      },
+      delivery: {
+        title: "Fast delivery",
+        detail: "Immediate dispatch from our available stock nationwide across Greece.",
+      },
+    },
+    details: {
+      conversions: {
+        number: "01",
+        title: "Certified conversions",
+        subtitle: "We build the container exactly the way you need it",
+        intro:
+          "We deliver professional container conversions for every use — from simple modifications to complete custom builds.",
+        bulletsIntro: "Our work can include:",
+        bullets: [
+          "Door and window installation",
+          "Security roller shutters",
+          "Insulation and lining",
+          "Electrical installation",
+          "Lighting and ventilation",
+          "Shelving and storage systems",
+          "Painting and special builds",
+        ],
+        outro: "Every conversion is carried out with a focus on quality, safety, and functionality.",
+      },
+      prices: {
+        number: "02",
+        title: "The lowest prices",
+        subtitle: "Excellent value for money",
+        intro:
+          "We supply containers directly from our company, with no unnecessary middlemen.",
+        bulletsIntro: "That means we can offer:",
+        bullets: [
+          "Competitive pricing",
+          "Consistent availability",
+          "Transparent quotes with no hidden fees",
+          "Proposals tailored to each customer's needs",
+        ],
+        outro: "Our goal is for you to get the right container at the best possible value.",
+      },
+      variety: {
+        number: "03",
+        title: "Wide selection",
+        subtitle: "A container for every need",
+        intro: "We offer a large range of containers for purchase or rent.",
+        bulletsIntro: "You can choose from:",
+        bullets: [
+          "New containers",
+          "Used containers",
+          "Dry containers",
+          "High cube",
+          "Reefer",
+          "Open top",
+          "Flat rack",
+          "Side opener",
+          "Tank containers",
+        ],
+        outro:
+          "Different sizes and solutions for transport, storage, or professional use.",
+      },
+      certification: {
+        number: "04",
+        title: "Certified quality",
+        subtitle: "Every container is inspected before delivery",
+        intro:
+          "Before every sale or rental, a technical inspection ensures the container meets high quality standards.",
+        bulletsIntro: "The inspection covers:",
+        bullets: [
+          "Structural condition",
+          "Weather-tightness",
+          "Doors and locking mechanisms",
+          "Floor",
+          "Overall functionality",
+        ],
+        outro: "Our goal is for every customer to receive a reliable and safe container.",
+      },
+      delivery: {
+        number: "05",
+        title: "Immediate delivery",
+        subtitle: "Fast service across Greece",
+        intro:
+          "We maintain available stock so most orders are fulfilled without long delays.",
+        bulletsIntro: "We offer:",
+        bullets: [
+          "Immediate availability of selected containers",
+          "Transport arranged to your site",
+          "Delivery throughout Greece",
+          "Ongoing updates on your order progress",
+        ],
+        outro:
+          "Our team ensures your container arrives quickly and safely at its destination.",
+      },
+    },
   },
   listings: {
     eyebrow: "Available",
