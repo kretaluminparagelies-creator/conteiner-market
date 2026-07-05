@@ -8,11 +8,10 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronRight, KeyRound, LayoutGrid, Mail, Menu, ShoppingBag, Tag } from "lucide-react";
+import { ChevronRight, Mail, Menu, Tag } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useState, type ComponentType, type CSSProperties } from "react";
 import { LanguageToggle } from "@/components/layout/LanguageToggle";
-import { NavContactButton } from "@/components/layout/NavContactButton";
 import { Button } from "@/components/ui/Button";
 import {
   Sheet,
@@ -35,6 +34,7 @@ type NavItem = {
   href: string;
   label: string;
   icon: ComponentType<{ className?: string }>;
+  matchPath?: (pathname: string) => boolean;
 };
 
 export function NavMobileMenu({ isHome }: NavMobileMenuProps) {
@@ -43,11 +43,13 @@ export function NavMobileMenu({ isHome }: NavMobileMenuProps) {
   const [open, setOpen] = useState(false);
 
   const mainNav: NavItem[] = [
-    { href: "/agora", label: t.nav.buy, icon: ShoppingBag },
     { href: "/polisi", label: t.nav.sell, icon: Tag },
-    { href: "/enoikiasi", label: t.nav.rent, icon: KeyRound },
-    { href: "/listings", label: t.nav.listings, icon: LayoutGrid },
-    { href: "/epikoinonia?intent=inquiry", label: t.nav.contact, icon: Mail },
+    {
+      href: "/epikoinonia?intent=inquiry",
+      label: t.nav.contact,
+      icon: Mail,
+      matchPath: (path) => path.startsWith("/epikoinonia"),
+    },
   ];
 
   return (
@@ -92,7 +94,7 @@ export function NavMobileMenu({ isHome }: NavMobileMenuProps) {
 
         <nav aria-label={t.nav.ariaLabel} className="flex flex-1 flex-col gap-1 px-3 py-3">
           {mainNav.map((item) => {
-            const isActive = pathname === item.href;
+            const isActive = item.matchPath ? item.matchPath(pathname) : pathname === item.href;
             const theme = getNavLinkTheme(item.href);
             const Icon = item.icon;
 
@@ -145,9 +147,8 @@ export function NavMobileMenu({ isHome }: NavMobileMenuProps) {
 
         <Separator className="bg-cm-light-border" />
 
-        <div className="mt-auto flex flex-col gap-3 px-5 py-5">
+        <div className="mt-auto px-5 py-5">
           <LanguageToggle />
-          <NavContactButton isHome={isHome} className="h-10 w-full justify-center text-sm" />
         </div>
       </SheetContent>
     </Sheet>
