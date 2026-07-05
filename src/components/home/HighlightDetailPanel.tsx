@@ -47,7 +47,12 @@ export const HighlightDetailPanel = forwardRef<HTMLDivElement, HighlightDetailPa
       }
       className="scroll-mt-[calc(60px+0.75rem)] overflow-hidden"
     >
-      <div className="glass-category relative mt-4 overflow-hidden rounded-2xl border border-white/80 p-5 shadow-cm-light-lg md:p-7">
+      <div
+        className={[
+          "glass-category relative mt-4 overflow-hidden rounded-2xl border border-white/80 p-5 shadow-cm-light-lg md:p-7",
+          quickMotion ? "max-md:bg-white/96 max-md:shadow-cm-light-md max-md:[backdrop-filter:none] max-md:[-webkit-backdrop-filter:none]" : "",
+        ].join(" ")}
+      >
         <div
           aria-hidden="true"
           className={["absolute inset-x-0 top-0 h-1 bg-linear-to-r opacity-90", topBarClass].join(" ")}

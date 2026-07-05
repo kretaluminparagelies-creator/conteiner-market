@@ -18,12 +18,8 @@ import {
 import { highlightIcons, highlightThemes } from "@/components/home/highlight-config";
 import { highlightItemKeys, type HighlightItemKey } from "@/lib/constants/home";
 import { useLocale } from "@/lib/i18n/locale-context";
+import { useIsMobileLayout } from "@/lib/hooks/useIsMobileLayout";
 import { useInView } from "@/lib/hooks/useInView";
-
-function isMobileViewport() {
-  if (typeof window === "undefined") return false;
-  return window.matchMedia("(max-width: 767px)").matches;
-}
 
 /** Vertical offset from viewport center when a detail panel opens. */
 const autoScrollBelowCenterPx = -92;
@@ -54,17 +50,10 @@ export function Stats({ embedded = false, visible: visibleProp }: StatsProps) {
   const reduceMotion = useReducedMotion();
   const { ref, visible: ownVisible } = useInView<HTMLDivElement>({ threshold: 0.12 });
   const visible = visibleProp ?? ownVisible;
+  const isMobileLayout = useIsMobileLayout();
+  const quickMotion = isMobileLayout;
   const [activeKey, setActiveKey] = useState<HighlightItemKey | null>(null);
   const detailPanelRef = useRef<HTMLDivElement>(null);
-  const [quickMotion, setQuickMotion] = useState(false);
-
-  useEffect(() => {
-    const media = window.matchMedia("(max-width: 767px)");
-    const update = () => setQuickMotion(media.matches);
-    update();
-    media.addEventListener("change", update);
-    return () => media.removeEventListener("change", update);
-  }, []);
 
   const detailsMap = t.stats.details as Partial<Record<HighlightItemKey, HighlightDetailContent>>;
   const activeDetail = activeKey ? getHighlightDetail(detailsMap, activeKey) : null;
@@ -76,21 +65,26 @@ export function Stats({ embedded = false, visible: visibleProp }: StatsProps) {
     let armed = false;
     let armTimer: number | undefined;
     let scrollTimer: number | undefined;
+    let scrollRaf: number | undefined;
 
     const armDismiss = () => {
       openScrollY = window.scrollY;
       armed = true;
     };
 
-    scrollTimer = window.setTimeout(() => {
+    const runScroll = () => {
       const panel = detailPanelRef.current;
       if (panel) {
-        const mobile = isMobileViewport();
-        scrollHighlightPanelIntoView(panel, mobile || reduceMotion ? "auto" : "smooth");
+        scrollHighlightPanelIntoView(panel, quickMotion || reduceMotion ? "auto" : "smooth");
       }
-      const mobile = isMobileViewport();
-      armTimer = window.setTimeout(armDismiss, mobile || reduceMotion ? 120 : 700);
-    }, quickMotion ? 60 : 320);
+      armTimer = window.setTimeout(armDismiss, quickMotion || reduceMotion ? 120 : 700);
+    };
+
+    if (quickMotion) {
+      scrollRaf = requestAnimationFrame(runScroll);
+    } else {
+      scrollTimer = window.setTimeout(runScroll, 320);
+    }
 
     const dismiss = () => setActiveKey(null);
 
@@ -114,6 +108,7 @@ export function Stats({ embedded = false, visible: visibleProp }: StatsProps) {
     window.addEventListener("scroll", onScroll, { passive: true });
 
     return () => {
+      if (scrollRaf !== undefined) cancelAnimationFrame(scrollRaf);
       if (armTimer !== undefined) clearTimeout(armTimer);
       if (scrollTimer !== undefined) clearTimeout(scrollTimer);
       window.removeEventListener("scroll", onScroll);
@@ -130,44 +125,43 @@ export function Stats({ embedded = false, visible: visibleProp }: StatsProps) {
 
   const grid = (
     <>
-      <HighlightCardsMobile
-        items={t.stats.items}
-        detailsMap={detailsMap}
-        activeKey={activeKey}
-        onCardClick={handleCardClick}
-        visible={visible}
-        reduceMotion={reduceMotion ?? false}
-        embedded={embedded}
-        hasDetail={hasDetail}
-      />
+      {isMobileLayout ? (
+        <HighlightCardsMobile
+          items={t.stats.items}
+          detailsMap={detailsMap}
+          activeKey={activeKey}
+          onCardClick={handleCardClick}
+          hasDetail={hasDetail}
+        />
+      ) : (
+        <div className="grid grid-cols-6 gap-2.5 lg:gap-3">
+          {highlightItemKeys.map((key, index) => {
+            const item = t.stats.items[key];
+            const Icon = highlightIcons[key];
+            const theme = highlightThemes[key];
 
-      <div className="hidden md:grid md:grid-cols-6 md:gap-2.5 lg:gap-3">
-        {highlightItemKeys.map((key, index) => {
-          const item = t.stats.items[key];
-          const Icon = highlightIcons[key];
-          const theme = highlightThemes[key];
+            return (
+              <HighlightCardButton
+                key={key}
+                index={index}
+                title={item.title}
+                detail={item.detail}
+                theme={theme}
+                Icon={Icon}
+                isActive={activeKey === key}
+                hasDetail={hasDetail(key)}
+                visible={visible}
+                reduceMotion={reduceMotion ?? false}
+                embedded={embedded}
+                variant="desktop"
+                onClick={() => handleCardClick(key)}
+              />
+            );
+          })}
+        </div>
+      )}
 
-          return (
-            <HighlightCardButton
-              key={key}
-              index={index}
-              title={item.title}
-              detail={item.detail}
-              theme={theme}
-              Icon={Icon}
-              isActive={activeKey === key}
-              hasDetail={hasDetail(key)}
-              visible={visible}
-              reduceMotion={reduceMotion ?? false}
-              embedded={embedded}
-              variant="desktop"
-              onClick={() => handleCardClick(key)}
-            />
-          );
-        })}
-      </div>
-
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode={quickMotion ? "sync" : "wait"}>
         {activeKey && activeDetail ? (
           <HighlightDetailPanel
             key={activeKey}
