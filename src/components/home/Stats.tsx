@@ -59,7 +59,7 @@ export function Stats({ embedded = false, visible: visibleProp }: StatsProps) {
   const activeDetail = activeKey ? getHighlightDetail(detailsMap, activeKey) : null;
 
   useEffect(() => {
-    if (!activeKey) return;
+    if (!activeKey || quickMotion) return;
 
     let openScrollY = window.scrollY;
     let armed = false;
@@ -167,6 +167,7 @@ export function Stats({ embedded = false, visible: visibleProp }: StatsProps) {
             detail={activeDetail}
             topBarClass={highlightThemes[activeKey].topBar}
             quickMotion={quickMotion}
+            onDismiss={quickMotion ? () => setActiveKey(null) : undefined}
           />
         ) : null}
       </AnimatePresence>

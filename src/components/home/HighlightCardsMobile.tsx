@@ -32,7 +32,7 @@ export function HighlightCardsMobile({
       <div
         className={[
           "-mx-[6%] flex snap-x snap-mandatory gap-2.5 overflow-x-auto px-[6%] pb-1",
-          "scroll-px-[6%] touch-pan-x overscroll-x-contain",
+          "scroll-px-[6%] touch-pan-x overscroll-x-contain overscroll-y-none",
           "[-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
         ].join(" ")}
       >
