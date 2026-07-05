@@ -82,9 +82,9 @@ export function ListingsPreview() {
   return (
     <section
       id="prosfores"
-      className="relative overflow-hidden px-[6%] pt-8 pb-16 md:pt-10 md:pb-20 scroll-mt-[60px]"
+      className="relative px-[6%] pt-8 pb-16 md:pt-10 md:pb-20 scroll-mt-[60px]"
     >
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
         <Image
           src={carouselBackgroundImage}
           alt=""
