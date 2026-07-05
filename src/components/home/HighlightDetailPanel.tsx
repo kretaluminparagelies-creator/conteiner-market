@@ -9,6 +9,7 @@
 
 import { motion, useReducedMotion } from "motion/react";
 import { forwardRef } from "react";
+import { SiteButton } from "@/components/ui/site-button";
 
 export type HighlightDetailContent = {
   number: string;
@@ -18,6 +19,8 @@ export type HighlightDetailContent = {
   bulletsIntro: string;
   bullets: string[];
   outro: string;
+  ctaLabel?: string;
+  ctaHref?: string;
 };
 
 type HighlightDetailPanelProps = {
@@ -75,6 +78,14 @@ export const HighlightDetailPanel = forwardRef<HTMLDivElement, HighlightDetailPa
           <p className="mt-5 border-t border-cm-light-border-strong/80 pt-4 text-sm leading-[1.75] text-cm-ink-sub md:text-[15px]">
             {detail.outro}
           </p>
+
+          {detail.ctaLabel && detail.ctaHref ? (
+            <div className="mt-6">
+              <SiteButton href={detail.ctaHref} className="px-6 py-3 text-sm">
+                {detail.ctaLabel}
+              </SiteButton>
+            </div>
+          ) : null}
         </div>
       </div>
     </motion.div>

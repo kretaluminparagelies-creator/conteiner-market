@@ -48,6 +48,7 @@ export const highlightItemKeys = [
   "variety",
   "certification",
   "delivery",
+  "monthlyRental",
 ] as const;
 
 export type HighlightItemKey = (typeof highlightItemKeys)[number];

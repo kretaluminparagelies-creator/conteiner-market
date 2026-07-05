@@ -1,6 +1,6 @@
 /**
  * @file Stats.tsx
- * @description Home page value highlights (5 selling points)
+ * @description Home page value highlights (6 selling points)
  * @author Katsoulakis
  * @copyright 2025 Katsoulakis. All rights reserved.
  */
@@ -8,7 +8,7 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { Handshake, Layers, ShieldCheck, Truck, Wrench, type LucideIcon } from "lucide-react";
+import { CalendarRange, Handshake, Layers, ShieldCheck, Truck, Wrench, type LucideIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import {
   HighlightDetailPanel,
@@ -24,6 +24,7 @@ const highlightIcons: Record<HighlightItemKey, LucideIcon> = {
   variety: Layers,
   certification: ShieldCheck,
   delivery: Truck,
+  monthlyRental: CalendarRange,
 };
 
 const highlightThemes: Record<
@@ -64,6 +65,13 @@ const highlightThemes: Record<
       "border-amber-500/35 bg-linear-to-br from-amber-500/18 to-amber-500/6 shadow-[0_8px_20px_-8px_rgba(245,158,11,0.45)]",
     iconColor: "text-amber-600",
     glow: "bg-[radial-gradient(circle_at_50%_0%,rgba(245,158,11,0.13),transparent_68%)]",
+  },
+  monthlyRental: {
+    topBar: "from-teal-600 via-teal-400 to-teal-600/0",
+    iconWrap:
+      "border-teal-500/35 bg-linear-to-br from-teal-500/18 to-teal-500/6 shadow-[0_8px_20px_-8px_rgba(20,184,166,0.45)]",
+    iconColor: "text-teal-600",
+    glow: "bg-[radial-gradient(circle_at_50%_0%,rgba(20,184,166,0.14),transparent_68%)]",
   },
 };
 
@@ -159,7 +167,7 @@ export function Stats({ embedded = false, visible: visibleProp }: StatsProps) {
 
   const grid = (
     <>
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5 lg:gap-3.5">
+      <div className="flex snap-x snap-mandatory gap-2.5 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] md:grid md:grid-cols-6 md:overflow-visible md:gap-2.5 lg:gap-3 [&::-webkit-scrollbar]:hidden">
         {highlightItemKeys.map((key, index) => {
           const item = t.stats.items[key];
           const Icon = highlightIcons[key];
@@ -198,9 +206,9 @@ export function Stats({ embedded = false, visible: visibleProp }: StatsProps) {
                 reduceMotion || !hasDetail ? undefined : { y: -5, transition: { duration: 0.22 } }
               }
               className={[
-                "category-card-shine glass-category group relative flex min-h-[108px] flex-col items-center overflow-hidden text-center",
-                "rounded-2xl border px-3 py-4 shadow-cm-light-md transition-[border-color,box-shadow,ring-color] duration-300",
-                "md:min-h-[116px] md:px-3.5 md:py-4",
+                "category-card-shine glass-category group relative flex min-h-[108px] w-[10.75rem] shrink-0 snap-start flex-col items-center overflow-hidden text-center",
+                "rounded-2xl border px-2.5 py-3.5 shadow-cm-light-md transition-[border-color,box-shadow,ring-color] duration-300",
+                "md:min-h-[112px] md:w-auto md:shrink md:px-2 md:py-3",
                 hasDetail
                   ? "cursor-pointer hover:border-white hover:shadow-[0_16px_40px_-12px_rgba(14,24,40,0.18)]"
                   : "cursor-default border-white/80",
@@ -241,10 +249,10 @@ export function Stats({ embedded = false, visible: visibleProp }: StatsProps) {
                 />
               </span>
 
-              <p className="relative z-[2] mt-2.5 font-display text-[11px] leading-snug font-bold text-cm-ink md:text-xs">
+              <p className="relative z-[2] mt-2.5 line-clamp-3 font-display text-[10px] leading-snug font-bold text-cm-ink md:text-[11px]">
                 {item.title}
               </p>
-              <p className="relative z-[2] mt-1 max-w-[13.5rem] text-[10px] leading-snug text-cm-ink-sub md:max-w-[14rem] md:text-[11px] md:leading-snug">
+              <p className="relative z-[2] mt-1 line-clamp-3 text-[9px] leading-snug text-cm-ink-sub md:text-[10px] md:leading-snug">
                 {item.detail}
               </p>
             </motion.button>
@@ -277,7 +285,7 @@ export function Stats({ embedded = false, visible: visibleProp }: StatsProps) {
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_50%,rgba(224,112,48,0.06),transparent_42%)]"
       />
-      <div className="relative mx-auto max-w-6xl">{grid}</div>
+      <div className="relative mx-auto max-w-7xl">{grid}</div>
     </div>
   );
 }

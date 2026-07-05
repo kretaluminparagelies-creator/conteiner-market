@@ -97,6 +97,11 @@ export const en: Messages = {
         title: "Fast delivery",
         detail: "Immediate dispatch from our available stock nationwide across Greece.",
       },
+      monthlyRental: {
+        title: "Monthly Container & Space Rental",
+        detail:
+          "Ideal for stable storage or professional use. Rent a container and/or outdoor space from 1 month upwards, with flexible renewal.",
+      },
     },
     details: {
       conversions: {
@@ -183,6 +188,25 @@ export const en: Messages = {
         ],
         outro:
           "Our team ensures your container arrives quickly and safely at its destination.",
+      },
+      monthlyRental: {
+        number: "06",
+        title: "Monthly Container & Space Rental",
+        subtitle: "Stable / long-term rental",
+        intro:
+          "This option is for customers who need a reliable space for medium- or long-term use. It suits storage of goods, equipment, or professional needs. Duration is flexible, with a minimum commitment of 1 month and the option to extend without renegotiation.",
+        bulletsIntro: "Key features:",
+        bullets: [
+          "Minimum duration: 1 month",
+          "Container or open yard space",
+          "Fixed monthly rate",
+          "Renewal without interruption",
+          "Suitable for professional use or storage",
+        ],
+        outro:
+          "Clearly distinct from short-term options — ideal when you need stability and a predictable monthly cost.",
+        ctaLabel: "Request a monthly rental quote",
+        ctaHref: "/epikoinonia?intent=inquiry",
       },
     },
   },
