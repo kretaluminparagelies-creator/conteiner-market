@@ -247,6 +247,7 @@ export function HeroContainerTypeMultiSelect({
                   isMobileLayout &&
                     "max-h-[calc(min(70dvh,32rem)-2.75rem)] touch-pan-y overflow-y-auto overscroll-contain",
                 )}
+                onScroll={() => setActiveInfoId(null)}
                 onTouchMove={(event) => event.stopPropagation()}
               >
                 {containerTypeGroups.map((group) => (

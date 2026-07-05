@@ -74,8 +74,19 @@ export function ContainerTypeInfoButton({ spec, open, onOpenChange }: ContainerT
       onOpenChange(false);
     };
 
+    const handleScroll = (event: Event) => {
+      const target = event.target as Node;
+      if (popoverRef.current?.contains(target)) return;
+      onOpenChange(false);
+    };
+
     window.addEventListener("mousedown", handlePointerDown);
-    return () => window.removeEventListener("mousedown", handlePointerDown);
+    window.addEventListener("scroll", handleScroll, true);
+
+    return () => {
+      window.removeEventListener("mousedown", handlePointerDown);
+      window.removeEventListener("scroll", handleScroll, true);
+    };
   }, [open, onOpenChange]);
 
   return (
