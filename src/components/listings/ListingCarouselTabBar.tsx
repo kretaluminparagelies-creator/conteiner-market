@@ -46,6 +46,13 @@ export function ListingCarouselTabBar({
     rent: t.listings.tabs.rent,
   };
 
+  const mobileLabels: Record<ListingCarouselTab, string> = {
+    offers: t.listings.tabs.navOffers,
+    new: t.listings.tabs.navNew,
+    used: t.listings.tabs.navUsed,
+    rent: t.listings.tabs.navRent,
+  };
+
   const activeTheme = listingCarouselTabThemes[activeTab];
 
   return (
@@ -75,7 +82,7 @@ export function ListingCarouselTabBar({
           "relative flex",
           isNav
             ? "w-max justify-center gap-1 sm:gap-1.5"
-            : "snap-x snap-mandatory gap-0.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+            : "snap-x snap-mandatory gap-0.5 overflow-x-auto [scrollbar-width:none] max-md:grid max-md:grid-cols-4 max-md:gap-0 max-md:overflow-visible max-md:snap-none [&::-webkit-scrollbar]:hidden",
         ].join(" ")}
       >
         {listingCarouselTabs.map((tab) => {
@@ -96,17 +103,17 @@ export function ListingCarouselTabBar({
                 "group relative z-10 flex shrink-0 items-center justify-center text-center",
                 isNav
                   ? "px-2 py-1.5 whitespace-nowrap sm:px-2.5 lg:px-3"
-                  : "min-w-max flex-none snap-center justify-center whitespace-nowrap sm:min-w-0 sm:flex-1",
+                  : "min-w-max flex-none snap-center justify-center whitespace-nowrap max-md:min-w-0 max-md:flex-1 sm:min-w-0 sm:flex-1",
                 !isNav && isCompact
                   ? "gap-1 px-1.5 py-1.5 sm:gap-1.5 sm:px-2 sm:py-2"
                   : !isNav
-                    ? "gap-1.5 px-2 py-2 sm:gap-2 sm:px-3 sm:py-2.5"
+                    ? "gap-1.5 px-2 py-2 max-md:gap-0.5 max-md:px-0.5 max-md:py-1.5 sm:gap-2 sm:px-3 sm:py-2.5"
                     : "",
                 isNav
                   ? "font-display text-[10px] leading-snug font-semibold text-cm-ink-sub sm:text-[11px] lg:text-[12px]"
                   : isCompact
                     ? "font-display text-[10px] font-semibold sm:text-[11px]"
-                    : "font-display text-[11px] font-semibold sm:text-[13px]",
+                    : "font-display text-[11px] font-semibold max-md:text-[9px] max-md:leading-tight sm:text-[13px]",
                 "transition-colors duration-200",
                 isLight ? "text-cm-ink-sub" : "text-cm-sub",
               ].join(" ")}
@@ -151,7 +158,7 @@ export function ListingCarouselTabBar({
               {!isNav ? (
                 <Icon
                   className={[
-                    "relative shrink-0 transition-colors duration-200",
+                    "relative shrink-0 transition-colors duration-200 max-md:hidden",
                     isActive
                       ? ""
                       : isLight
@@ -175,13 +182,14 @@ export function ListingCarouselTabBar({
                       : "text-cm-sub group-hover:text-[var(--tab-accent)]",
                 ].join(" ")}
               >
-                {labels[tab]}
+                <span className="md:hidden">{mobileLabels[tab]}</span>
+                <span className="hidden md:inline">{labels[tab]}</span>
               </span>
 
               {!isNav && count !== undefined ? (
                 <span
                   className={[
-                    "relative inline-flex shrink-0 items-center justify-center rounded-full font-mono font-medium",
+                    "relative inline-flex shrink-0 items-center justify-center rounded-full font-mono font-medium max-md:hidden",
                     isCompact
                       ? "hidden h-4 min-w-4 px-1 text-[8px] sm:inline-flex sm:h-4 sm:min-w-4 sm:text-[9px]"
                       : "h-5 min-w-5 px-1.5 text-[9px] sm:text-[10px]",

@@ -49,7 +49,7 @@ function CompactListingCard({
     >
       <div
         className={cn(
-          "relative h-36 overflow-hidden",
+          "relative h-48 overflow-hidden",
           isLight ? "bg-cm-light-elevated" : "bg-cm-carousel-photo",
         )}
       >
@@ -65,7 +65,7 @@ function CompactListingCard({
           />
         ) : (
           <div className="flex h-full items-center justify-center">
-            <ContainerSVG tinted={isRent} className="h-16 w-auto opacity-90" />
+            <ContainerSVG tinted={isRent} className="h-20 w-auto opacity-90" />
           </div>
         )}
         <div className="absolute inset-0 bg-linear-to-t from-[#0e1828]/80 via-transparent to-transparent" />
@@ -85,18 +85,18 @@ function CompactListingCard({
           </span>
         </div>
         <div className="absolute inset-x-0 bottom-0 px-3 pb-2.5">
-          <h3 className="line-clamp-1 font-display text-base font-bold text-white drop-shadow-sm">
+          <h3 className="line-clamp-2 font-display text-lg font-bold leading-snug text-white drop-shadow-sm">
             {item.title}
           </h3>
-          <p className="mt-0.5 line-clamp-1 text-xs text-white/90">{item.condition}</p>
+          <p className="mt-1 line-clamp-1 text-sm text-white/90">{item.condition}</p>
         </div>
       </div>
 
-      <div className="flex items-center justify-between gap-2 px-3 py-2.5">
+      <div className="flex items-center justify-between gap-2 px-3.5 py-3">
         <div className="flex items-baseline gap-1">
           <span
             className={cn(
-              "font-display text-xl font-bold",
+              "font-display text-2xl font-bold",
               isRent ? "text-cm-rent" : "text-cm-accent",
             )}
           >
@@ -151,7 +151,7 @@ export function ListingsMobilePager({
     <div className="md:hidden">
       <div
         className={cn(
-          "relative overflow-hidden rounded-xl border py-3",
+          "relative overflow-hidden rounded-xl border py-4",
           isLight
             ? "border-cm-light-border-strong bg-white/92 shadow-cm-light-xs"
             : "border-cm-border bg-cm-card/80",
