@@ -111,6 +111,26 @@ function isMobileOffersLayout(): boolean {
   return window.matchMedia("(max-width: 767px)").matches;
 }
 
+function scrollMobileOffersCarousel(section: HTMLElement): number {
+  const block =
+    section.querySelector<HTMLElement>("[data-offers-carousel-mobile-block]") ??
+    section.querySelector<HTMLElement>("[data-offers-carousel-mobile]") ??
+    section;
+
+  const rect = block.getBoundingClientRect();
+  const visibleHeight = window.innerHeight - navHeightPx;
+  const blockHeight = rect.height;
+
+  if (blockHeight >= visibleHeight - sectionGapPx * 2) {
+    return Math.max(0, window.scrollY + rect.top - navHeightPx - sectionGapPx);
+  }
+
+  return Math.max(
+    0,
+    window.scrollY + rect.top - navHeightPx - (visibleHeight - blockHeight) / 2,
+  );
+}
+
 export function scrollToOffersCarousel(
   section: HTMLElement,
   params?: ListingCarouselTab | HomeCarouselSearchParams,
@@ -119,9 +139,8 @@ export function scrollToOffersCarousel(
     typeof params === "string" ? { tab: params } : (params ?? {});
 
   if (isMobileOffersLayout()) {
-    const mobileCarousel = section.querySelector<HTMLElement>("[data-offers-carousel-mobile]");
-    const target = mobileCarousel ?? section;
-    target.scrollIntoView({ behavior: "smooth", block: "start" });
+    const top = scrollMobileOffersCarousel(section);
+    window.scrollTo({ top, behavior: "smooth" });
     window.history.replaceState(null, "", buildHomeCarouselUrl(options));
     return;
   }
@@ -149,7 +168,11 @@ export function navigateToCategoryCarousel(
   if (pathname === "/") {
     const section = document.getElementById(offersCarouselSectionId);
     if (section) {
-      scrollToOffersCarousel(section, { tab });
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          scrollToOffersCarousel(section, { tab });
+        });
+      });
       return;
     }
   }

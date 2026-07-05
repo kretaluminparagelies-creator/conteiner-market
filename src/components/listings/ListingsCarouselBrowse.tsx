@@ -171,15 +171,16 @@ export function ListingsCarouselBrowse({
 
   return (
     <>
-      <ListingCarouselTabs
-        activeTab={activeTab}
-        onTabChange={handleTabChange}
-        counts={tabCounts}
-        showSectionHeader={showSectionHeader}
-        tone={tone}
-      />
+      <div data-offers-carousel-mobile-block className="md:contents">
+        <ListingCarouselTabs
+          activeTab={activeTab}
+          onTabChange={handleTabChange}
+          counts={tabCounts}
+          showSectionHeader={showSectionHeader}
+          tone={tone}
+        />
 
-      {hasHeroFilters && showSectionHeader ? (
+        {hasHeroFilters && showSectionHeader ? (
         <div
           className={[
             "mb-3 flex flex-wrap items-center gap-2 rounded-xl border px-3 py-2.5",
@@ -256,6 +257,7 @@ export function ListingsCarouselBrowse({
           </div>
         </>
       )}
+      </div>
 
       <ListingDetailModal
         listing={selectedListing}

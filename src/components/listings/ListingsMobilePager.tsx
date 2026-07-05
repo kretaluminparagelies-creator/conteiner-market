@@ -149,7 +149,7 @@ export function ListingsMobilePager({
   return (
     <div
       data-offers-carousel-mobile
-      className="relative scroll-mt-[60px] md:hidden"
+      className="relative md:hidden"
       onTouchStart={(event) => {
         touchStartX.current = event.touches[0]?.clientX ?? null;
       }}
