@@ -10,6 +10,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { ContainerCarousel3D } from "@/components/listings/carousel/ContainerCarousel3D";
 import { ListingDetailModal } from "@/components/listings/detail/ListingDetailModal";
+import { ListingsMobileList } from "@/components/listings/ListingsMobileList";
 import { ListingCarouselTabs } from "@/components/listings/ListingCarouselTabs";
 import { localizeListing } from "@/lib/data/listings";
 import { useLocale } from "@/lib/i18n/locale-context";
@@ -235,14 +236,24 @@ export function ListingsCarouselBrowse({
           </button>
         </div>
       ) : (
-        <div data-offers-carousel className={showSectionHeader ? "-mt-1.5 md:-mt-2" : undefined}>
-          <ContainerCarousel3D
-            key={activeTab}
+        <>
+          <ListingsMobileList
             listings={carouselItems}
             onListingClick={handleListingClick}
             surface={tone}
           />
-        </div>
+          <div
+            data-offers-carousel
+            className={["hidden md:block", showSectionHeader ? "-mt-1.5 md:-mt-2" : ""].join(" ")}
+          >
+            <ContainerCarousel3D
+              key={activeTab}
+              listings={carouselItems}
+              onListingClick={handleListingClick}
+              surface={tone}
+            />
+          </div>
+        </>
       )}
 
       <ListingDetailModal
