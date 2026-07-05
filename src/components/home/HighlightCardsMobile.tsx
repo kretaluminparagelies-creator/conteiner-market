@@ -28,13 +28,14 @@ export function HighlightCardsMobile({
   hasDetail,
 }: HighlightCardsMobileProps) {
   return (
-    <div
-      className={[
-        "-mx-[6%] flex snap-x snap-mandatory gap-2.5 overflow-x-auto px-[6%] pb-1",
-        "scroll-px-[6%] touch-pan-x overscroll-x-contain",
-        "[-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
-      ].join(" ")}
-    >
+    <div className="md:hidden">
+      <div
+        className={[
+          "-mx-[6%] flex snap-x snap-mandatory gap-2.5 overflow-x-auto px-[6%] pb-1",
+          "scroll-px-[6%] touch-pan-x overscroll-x-contain",
+          "[-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+        ].join(" ")}
+      >
       {highlightItemKeys.map((key, index) => {
         const item = items[key];
         const Icon = highlightIcons[key];
@@ -54,6 +55,7 @@ export function HighlightCardsMobile({
           />
         );
       })}
+      </div>
     </div>
   );
 }

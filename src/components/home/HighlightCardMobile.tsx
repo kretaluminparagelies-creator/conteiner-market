@@ -5,6 +5,8 @@
  * @copyright 2026 Katsoulakis. All rights reserved.
  */
 
+"use client";
+
 import type { LucideIcon } from "lucide-react";
 import type { HighlightTheme } from "@/components/home/highlight-config";
 

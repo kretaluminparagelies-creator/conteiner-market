@@ -125,41 +125,39 @@ export function Stats({ embedded = false, visible: visibleProp }: StatsProps) {
 
   const grid = (
     <>
-      {isMobileLayout ? (
-        <HighlightCardsMobile
-          items={t.stats.items}
-          detailsMap={detailsMap}
-          activeKey={activeKey}
-          onCardClick={handleCardClick}
-          hasDetail={hasDetail}
-        />
-      ) : (
-        <div className="grid grid-cols-6 gap-2.5 lg:gap-3">
-          {highlightItemKeys.map((key, index) => {
-            const item = t.stats.items[key];
-            const Icon = highlightIcons[key];
-            const theme = highlightThemes[key];
+      <HighlightCardsMobile
+        items={t.stats.items}
+        detailsMap={detailsMap}
+        activeKey={activeKey}
+        onCardClick={handleCardClick}
+        hasDetail={hasDetail}
+      />
 
-            return (
-              <HighlightCardButton
-                key={key}
-                index={index}
-                title={item.title}
-                detail={item.detail}
-                theme={theme}
-                Icon={Icon}
-                isActive={activeKey === key}
-                hasDetail={hasDetail(key)}
-                visible={visible}
-                reduceMotion={reduceMotion ?? false}
-                embedded={embedded}
-                variant="desktop"
-                onClick={() => handleCardClick(key)}
-              />
-            );
-          })}
-        </div>
-      )}
+      <div className="hidden md:grid md:grid-cols-6 md:gap-2.5 lg:gap-3">
+        {highlightItemKeys.map((key, index) => {
+          const item = t.stats.items[key];
+          const Icon = highlightIcons[key];
+          const theme = highlightThemes[key];
+
+          return (
+            <HighlightCardButton
+              key={key}
+              index={index}
+              title={item.title}
+              detail={item.detail}
+              theme={theme}
+              Icon={Icon}
+              isActive={activeKey === key}
+              hasDetail={hasDetail(key)}
+              visible={visible}
+              reduceMotion={reduceMotion ?? false}
+              embedded={embedded}
+              variant="desktop"
+              onClick={() => handleCardClick(key)}
+            />
+          );
+        })}
+      </div>
 
       <AnimatePresence mode={quickMotion ? "sync" : "wait"}>
         {activeKey && activeDetail ? (
