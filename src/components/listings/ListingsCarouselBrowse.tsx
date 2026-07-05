@@ -10,7 +10,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { ContainerCarousel3D } from "@/components/listings/carousel/ContainerCarousel3D";
 import { ListingDetailModal } from "@/components/listings/detail/ListingDetailModal";
-import { ListingsMobileList } from "@/components/listings/ListingsMobileList";
+import { ListingsMobilePager } from "@/components/listings/ListingsMobilePager";
 import { ListingCarouselTabs } from "@/components/listings/ListingCarouselTabs";
 import { localizeListing } from "@/lib/data/listings";
 import { useLocale } from "@/lib/i18n/locale-context";
@@ -237,7 +237,8 @@ export function ListingsCarouselBrowse({
         </div>
       ) : (
         <>
-          <ListingsMobileList
+          <ListingsMobilePager
+            key={activeTab}
             listings={carouselItems}
             onListingClick={handleListingClick}
             surface={tone}
