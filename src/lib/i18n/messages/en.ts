@@ -290,11 +290,12 @@ export const en: Messages = {
       {
         question: "How do I see offer details?",
         answer:
-          "In the carousel, click the center card for a modal, or open the full page (/listings/[slug], e.g. /listings/20ft-dry-peiraias) with photos, price, condition, and description — ideal for sharing or AI agents.",
+          "Tap the offer card you are interested in. You will see photos, price, condition, and description. On mobile, use the ‹ › arrows or swipe to browse other offers first.",
       },
       {
         question: "How do I contact you?",
-        answer: "Use «Contact» in the menu or in the offer modal. Email or call us — no middlemen.",
+        answer:
+          "Tap «Contact» in the menu or from the offer details screen. Email or call us — no middlemen.",
       },
       {
         question: "Are the containers yours?",
