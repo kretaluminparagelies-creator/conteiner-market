@@ -8,7 +8,7 @@
 - Production URL: https://containermarket.gr
 - Vercel URL: https://conteiner-market.vercel.app
 - Stack: Next.js 16, React 19, Supabase (listings + CRM leads)
-- Version: 1.0.0
+- Version: 1.6.15
 - AI guide (this file): /llms.txt
 - Short pointer: /ai.txt
 
@@ -16,12 +16,12 @@
 
 | Path | Description |
 |------|-------------|
-| / | Home — hero search, featured listings carousel, categories, stats |
-| /agora | Buy containers (our inventory, sale) |
+| / | Home — hero search, featured listings carousel, category cards, stats |
+| /agora | Buy containers (service page; home category card opens carousel tab `offers`) |
 | /polisi | Sell your container to us (buyback) |
-| /enoikiasi | Rent our containers |
+| /enoikiasi | Rent our containers (service page; home category card opens carousel tab `rent`) |
 | /enoikiasis-xoron | Storage space rental |
-| /listings | Full catalog — sale & rent, 3D carousel, filterable |
+| /listings | Full catalog — tabs, filters, carousel (desktop) / pager (mobile) |
 | /listings/{slug} | Individual listing — Product JSON-LD, photos, price, bilingual |
 | /epikoinonia | Contact form → CRM leads, email, phone, coverage |
 | /help | FAQ (JSON-LD FAQPage) — how to search, buy, rent, contact |
@@ -39,25 +39,48 @@ Blocked (robots):
 ## Language
 
 - Default UI: Greek (el)
-- English: toggle in nav (ΕΛ / EN) — same URLs, no /en/ prefix
+- English: toggle in nav (ΕΛ / EN) on desktop; mobile menu footer on small screens
 - Legal, service pages, FAQ, listings descriptions support both locales
 - Server HTML metadata defaults to Greek; title/description update client-side when EN is selected
 
-## Listings search (filters)
+## Home featured listings (carousel)
 
-Hero search and catalog use query parameters on `/listings`:
+Section id: `prosfores` (home page, below hero).
 
-- `deal` — `sale` (buy) or `rent` (lease). Omit for all types.
-- `size` — container size prefix from listing type, e.g. `20ft`, `40ft`, `45ft`.
+Tabs (query param `tab`):
+- `offers` — special offers (default)
+- `new` — new stock
+- `used` — used stock
+- `rent` — rentals
+
+Optional filters (combine with `tab`):
+- `deal` — `sale` or `rent` (transaction type from hero search)
+- `containerType` — comma-separated ISO catalog ids, e.g. `20dc`, `40hc`, `40dc`, `20-reefer`, `open-top`, `flat-rack`, `double-door`, `side-door`, `40-reefer`, `45hc`, `45-pallet-wide`
 
 Examples:
-- /listings?deal=sale
-- /listings?deal=rent&size=20ft
-- /listings?size=40ft
+- /?tab=offers
+- /?tab=rent
+- /?deal=sale&containerType=20dc,40hc
+- /?tab=rent&deal=rent
+
+Home category cards (ΑΓΟΡΑ / ΕΝΟΙΚΙΑΣΗ) scroll to this section and switch tab (`offers` / `rent`).
+
+Mobile: one listing card with ‹ › arrows or swipe; tap card for details.
+Desktop: 3D carousel; click center card for details.
 
 Do NOT use `/listings?q=` — there is no free-text search parameter.
 
-Home anchor: `/#prosfores` scrolls to the featured carousel on the home page.
+## Catalog page (/listings)
+
+Uses carousel tabs plus optional filters:
+- `tab` — same values as home (`offers`, `new`, `used`, `rent`)
+- `deal` — `sale` or `rent`
+- `size` — leading size token from listing type, e.g. `20ft`, `40ft`, `45ft`
+
+Examples:
+- /listings?deal=sale
+- /listings?deal=rent&size=40ft
+- /listings?tab=offers
 
 ## Listings data
 
@@ -65,15 +88,15 @@ Home anchor: `/#prosfores` scrolls to the featured carousel on the home page.
 - Active listings only on public site (`active = true`)
 - Fields: id, slug, type, condition, price, priceFormatted, unit, location, listingType (sale|rent), stockCondition (new|used), isOffer, images, description
 - Bilingual fields: conditionEn, locationEn, descriptionEn, unitEn
-- Detail page: /listings/{slug} — Product + Offer JSON-LD
-- Example listing: /listings/20ft-dry
+- Detail: tap card on home/catalog, or open /listings/{slug} directly
+- Example listing: /listings/40ft-dry
 - All slugs in /sitemap.xml
 - Images: Supabase Storage bucket `listing-images` or external URLs
 
 ## Services (business model)
 
-1. **Buy (Αγορά)** — customer purchases our containers at /agora and /listings?deal=sale
-2. **Rent (Ενοικίαση)** — customer rents our containers at /enoikiasi and /listings?deal=rent
+1. **Buy (Αγορά)** — purchase our containers via home carousel tab `offers` / filters, or /listings?deal=sale
+2. **Rent (Ενοικίαση)** — rent our containers via tab `rent` or /listings?deal=rent
 3. **Sell to us (Πώληση)** — we buy containers from customers (buyback) at /polisi
 4. **Storage space (Ενοικίαση χώρου)** — at /enoikiasis-xoron
 
@@ -87,10 +110,10 @@ Home anchor: `/#prosfores` scrolls to the featured carousel on the home page.
 
 ## Crawling & structured data
 
-- robots.txt: /robots.txt — allows public routes + /llms.txt + /ai.txt; disallows /admin/
+- robots.txt: /robots.txt — public routes + /llms.txt + /ai.txt; disallows /admin/
 - sitemap: /sitemap.xml — all public routes + every active listing slug
 - JSON-LD:
-  - Home: Organization + LocalBusiness + WebSite + SearchAction
+  - Home: Organization + LocalBusiness + WebSite + SearchAction (/listings?deal=&size=)
   - /listings: ItemList of Products (each with url)
   - /listings/{slug}: Product + Offer per listing
   - /help: FAQPage
@@ -99,28 +122,28 @@ Home anchor: `/#prosfores` scrolls to the featured carousel on the home page.
 
 1. Read this file (/llms.txt) for routes and filters
 2. Fetch /sitemap.xml for complete URL list
-3. For inventory: GET /listings or filter by deal/size; for one item: GET /listings/{slug}
-4. Example listing URL: /listings/20ft-dry
+3. For inventory: GET /listings or home /?tab=…; for one item: GET /listings/{slug}
+4. Example listing URL: /listings/40ft-dry
 5. For user questions: /help FAQ first, then /epikoinonia for contact
 6. Prefer Greek for Greek users unless English is requested
 
 ## CRM (admin — not public)
 
 - /admin/login — Supabase Auth (email/password)
-- /admin — dashboard, listings CRUD, leads, settings, photo upload
+- /admin — dashboard, listings CRUD, leads, rentals, history, settings
 - Not indexed; blocked in robots.txt
 
-## Still pending / optional
+## Awaiting business details (not code)
 
-- Custom domain containermarket.gr DNS → Vercel (if not live yet)
-- Final phone number on /epikoinonia
-- Tax ID (ΑΦΜ) on legal pages
-- Public REST/MCP API for third-party integrations
+- Final phone number on /epikoinonia (placeholder today)
+- Tax ID (ΑΦΜ) on legal pages when provided
 
 ## For developers
 
 - Conventions: AGENTS.md
 - i18n: `src/lib/i18n/messages/` (el.ts, en.ts)
-- Listings filters: `src/lib/utils/listing-filters.ts`
+- Home carousel nav: `src/lib/nav/navigate-offers-route.ts`
+- Listings filters: `src/lib/utils/listing-filters.ts`, `src/lib/utils/listing-carousel-filters.ts`
+- Container type ids: `src/lib/constants/container-types.ts`
 - Legal content: `src/lib/content/legal-el.ts`, `legal-en.ts`
 - SEO: `src/lib/seo/metadata.ts`, `src/app/sitemap.ts`, `src/app/robots.ts`

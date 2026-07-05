@@ -22,7 +22,22 @@ const aiAgents = [
 ];
 
 export default function robots(): MetadataRoute.Robots {
-  const publicAllow = ["/", "/llms.txt", "/ai.txt", "/listings", "/help", "/epikoinonia"];
+  const publicAllow = [
+    "/",
+    "/llms.txt",
+    "/ai.txt",
+    "/listings",
+    "/agora",
+    "/polisi",
+    "/enoikiasi",
+    "/enoikiasis-xoron",
+    "/epikoinonia",
+    "/help",
+    "/oroi",
+    "/aporrito",
+    "/cookies",
+    "/epistrofes",
+  ];
 
   return {
     rules: [
