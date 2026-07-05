@@ -43,7 +43,7 @@ function HighlightDetailBody({
       className={[
         "glass-category relative overflow-hidden rounded-2xl border border-white/80 p-5 shadow-cm-light-lg md:p-7",
         quickMotion
-          ? "rounded-b-none border-b-0 bg-white/98 shadow-cm-light-md [backdrop-filter:none] [-webkit-backdrop-filter:none] md:rounded-2xl md:border-b md:shadow-cm-light-lg"
+          ? "w-full rounded-none rounded-t-2xl border-x-0 border-b-0 bg-white/98 px-[6%] pt-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] shadow-cm-light-md [backdrop-filter:none] [-webkit-backdrop-filter:none] md:rounded-2xl md:border md:border-white/80 md:p-7 md:shadow-cm-light-lg"
           : "",
       ].join(" ")}
     >
@@ -81,7 +81,7 @@ function HighlightDetailBody({
         </p>
 
         {detail.ctaLabel && detail.ctaHref ? (
-          <div className="mt-6 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
+          <div className="mt-6">
             <SiteButton href={detail.ctaHref} className="px-6 py-3 text-sm">
               {detail.ctaLabel}
             </SiteButton>
@@ -124,7 +124,7 @@ function HighlightDetailMobileSheet({
         ref={sheetRef}
         role="dialog"
         aria-modal="true"
-        className="fixed inset-x-0 bottom-0 z-[191] max-h-[min(85dvh,720px)] overflow-y-auto overscroll-contain px-[6%] pb-[max(0.75rem,env(safe-area-inset-bottom))] touch-pan-y"
+        className="fixed inset-x-0 bottom-0 z-[191] max-h-[min(85dvh,720px)] w-full overflow-y-auto overscroll-contain touch-pan-y"
       >
         <HighlightDetailBody detail={detail} topBarClass={topBarClass} quickMotion />
       </div>

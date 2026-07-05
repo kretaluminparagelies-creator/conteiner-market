@@ -10,7 +10,10 @@
 import type { LucideIcon } from "lucide-react";
 import type { HighlightTheme } from "@/components/home/highlight-config";
 
+import type { HighlightItemKey } from "@/lib/constants/home";
+
 type HighlightCardMobileProps = {
+  itemKey: HighlightItemKey;
   index: number;
   title: string;
   detail: string;
@@ -22,6 +25,7 @@ type HighlightCardMobileProps = {
 };
 
 export function HighlightCardMobile({
+  itemKey,
   index,
   title,
   detail,
@@ -36,6 +40,7 @@ export function HighlightCardMobile({
   return (
     <button
       type="button"
+      data-highlight-key={itemKey}
       disabled={!hasDetail}
       aria-expanded={isActive}
       onClick={onClick}

@@ -7,6 +7,7 @@
 
 "use client";
 
+import { useEffect, useRef } from "react";
 import { HighlightCardMobile } from "@/components/home/HighlightCardMobile";
 import type { HighlightDetailContent } from "@/components/home/HighlightDetailPanel";
 import { highlightIcons, highlightThemes } from "@/components/home/highlight-config";
@@ -27,9 +28,20 @@ export function HighlightCardsMobile({
   onCardClick,
   hasDetail,
 }: HighlightCardsMobileProps) {
+  const scrollerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!activeKey || !scrollerRef.current) return;
+    const card = scrollerRef.current.querySelector(`[data-highlight-key="${activeKey}"]`);
+    if (card instanceof HTMLElement) {
+      card.scrollIntoView({ inline: "center", block: "nearest", behavior: "auto" });
+    }
+  }, [activeKey]);
+
   return (
     <div className="md:hidden">
       <div
+        ref={scrollerRef}
         className={[
           "-mx-[6%] flex snap-x snap-mandatory gap-2.5 overflow-x-auto px-[6%] pb-1",
           "scroll-px-[6%] touch-pan-x overscroll-x-contain overscroll-y-none",
@@ -44,6 +56,7 @@ export function HighlightCardsMobile({
         return (
           <HighlightCardMobile
             key={key}
+            itemKey={key}
             index={index}
             title={item.title}
             detail={item.detail}
