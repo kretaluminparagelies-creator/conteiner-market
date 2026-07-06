@@ -85,6 +85,8 @@ export function HeroSearchBar({ className }: { className?: string }) {
       onSubmit={handleSubmit}
       className={[
         "glass-light flex h-full flex-col justify-center gap-4 rounded-2xl p-5 md:p-6",
+        "max-md:gap-3.5 max-md:rounded-xl max-md:border-cm-accent/35 max-md:p-4",
+        "max-md:shadow-[0_16px_48px_rgba(23,37,56,0.14),0_0_0_1px_rgba(232,107,43,0.14)]",
         className,
       ]
         .filter(Boolean)
@@ -92,7 +94,7 @@ export function HeroSearchBar({ className }: { className?: string }) {
     >
       <div className="flex items-center gap-2">
         <span className="h-4 w-1 rounded-full bg-cm-accent shadow-cm-accent" />
-        <h2 className="font-display text-base font-bold tracking-[0.02em] text-cm-ink">
+        <h2 className="font-display text-base font-bold tracking-[0.02em] text-cm-ink max-md:text-lg">
           {t.heroSearch.title}
         </h2>
       </div>
@@ -136,6 +138,7 @@ export function HeroSearchBar({ className }: { className?: string }) {
           "mt-1 inline-flex items-center justify-center gap-2 rounded-lg bg-cm-accent",
           "px-5 py-3 font-display text-sm font-semibold text-white transition-all duration-200",
           "shadow-cm-accent hover:bg-[#f08848] hover:-translate-y-0.5 active:translate-y-0",
+          "max-md:w-full max-md:py-3.5 max-md:text-base max-md:font-bold",
         ].join(" ")}
       >
         <Search className="h-4 w-4" strokeWidth={2.2} />

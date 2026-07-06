@@ -11,7 +11,7 @@ import { HeroSearchBar } from "@/components/home/HeroSearchBar";
 
 export function HeroVisualRow() {
   return (
-    <div id="hero-visual" className="w-full max-w-md sm:max-w-lg">
+    <div id="hero-visual" className="w-full max-md:max-w-none md:max-w-md lg:max-w-lg">
       <HeroSearchBar />
     </div>
   );

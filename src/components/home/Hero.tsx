@@ -26,7 +26,7 @@ export function Hero() {
   return (
     <section
       id="home-hero"
-      className="relative isolate flex min-h-[calc(100vh-60px)] flex-col justify-center overflow-hidden px-[7%] pb-8"
+      className="relative isolate flex min-h-[calc(100vh-60px)] flex-col justify-center overflow-hidden px-[7%] pb-8 max-md:min-h-[calc(100svh-60px)] max-md:px-[5%] max-md:pb-6"
     >
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0">
         <Image
@@ -35,18 +35,18 @@ export function Hero() {
           fill
           priority
           sizes="100vw"
-          className="object-cover object-[58%_center] lg:object-[65%_center]"
+          className="object-cover max-md:object-[52%_28%] md:object-[58%_center] lg:object-[65%_center]"
         />
       </div>
 
-      {/* Scrim μόνο αριστερά — δεξιά η φωτό καθαρή */}
+      {/* Scrim μόνο αριστερά — δεξιά η φωτό καθαρή (mobile: κάθετο overlay για ανάγνωση) */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-y-0 left-0 z-[1] w-full max-w-[min(100%,720px)] bg-linear-to-r from-white/58 via-white/26 to-transparent"
+        className="pointer-events-none absolute inset-y-0 left-0 z-[1] w-full max-w-[min(100%,720px)] bg-linear-to-r from-white/58 via-white/26 to-transparent max-md:inset-0 max-md:max-w-none max-md:bg-linear-to-b max-md:from-white/80 max-md:via-white/52 max-md:to-white/22"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-20 bg-linear-to-t from-cm-light-bg/65 via-cm-light-bg/12 to-transparent md:h-24"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-20 bg-linear-to-t from-cm-light-bg/65 via-cm-light-bg/12 to-transparent max-md:h-36 md:h-24"
       />
 
       <div className="absolute inset-x-0 top-0 z-20 overflow-hidden border-b border-cm-light-border-strong bg-white/96 py-2 shadow-cm-light-sm backdrop-blur-lg">
@@ -65,10 +65,10 @@ export function Hero() {
         </div>
       </div>
 
-      <div className="relative z-10 mt-10 flex flex-col gap-8 lg:gap-10">
+      <div className="relative z-10 mt-10 flex flex-col gap-8 max-md:gap-4 lg:gap-10">
         <div className="max-w-4xl">
           <p
-            className="mb-5 inline-flex w-fit items-center rounded-full border border-cm-accent/40 bg-white/92 px-3.5 py-1.5 font-mono text-[11px] font-bold tracking-[0.18em] text-cm-accent uppercase shadow-cm-light-sm"
+            className="mb-5 inline-flex w-fit items-center rounded-full border border-cm-accent/40 bg-white/92 px-3.5 py-1.5 font-mono text-[11px] font-bold tracking-[0.18em] text-cm-accent uppercase shadow-cm-light-sm max-md:hidden"
             style={{
               opacity: ready ? 1 : 0,
               transition: "opacity 0.5s 0.1s",
@@ -77,8 +77,8 @@ export function Hero() {
             {t.hero.eyebrow}
           </p>
 
-          <h1 className="font-display text-[clamp(1.625rem,3.2vw,2.5rem)] leading-none font-extrabold [text-shadow:0_1px_0_#fff,0_2px_14px_rgba(255,255,255,0.98),0_0_1px_rgba(23,37,56,0.2)]">
-            <span className="inline-flex flex-nowrap items-baseline gap-x-[0.35em]">
+          <h1 className="font-display text-[clamp(1.625rem,3.2vw,2.5rem)] leading-none font-extrabold [text-shadow:0_1px_0_#fff,0_2px_14px_rgba(255,255,255,0.98),0_0_1px_rgba(23,37,56,0.2)] max-md:text-[1.5rem] max-md:leading-[1.05]">
+            <span className="inline-flex flex-nowrap items-baseline gap-x-[0.35em] max-md:flex-wrap max-md:gap-y-0.5">
               {t.hero.words.map((word, index) => (
                 <span key={word} className="inline-flex shrink-0 items-baseline gap-x-[0.35em]">
                   <span
@@ -98,7 +98,7 @@ export function Hero() {
           </h1>
 
           <p
-            className="mt-4 max-w-2xl text-[clamp(1rem,1.9vw,1.3125rem)] font-semibold leading-snug text-cm-ink [text-shadow:0_1px_0_#fff,0_2px_14px_rgba(255,255,255,0.98)]"
+            className="mt-4 max-w-2xl text-[clamp(1rem,1.9vw,1.3125rem)] font-semibold leading-snug text-cm-ink [text-shadow:0_1px_0_#fff,0_2px_14px_rgba(255,255,255,0.98)] max-md:hidden"
             style={{
               opacity: ready ? 1 : 0,
               transform: ready ? "none" : "translateY(20px)",
@@ -112,15 +112,26 @@ export function Hero() {
         </div>
 
         <div
-          className="w-full min-w-0"
+          className="w-full min-w-0 max-md:-mx-0.5"
           style={{
             opacity: ready ? 1 : 0,
             transform: ready ? "none" : "translateY(24px) scale(0.98)",
-            transition: "opacity 0.9s 0.5s, transform 0.9s 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+            transition: "opacity 0.9s 0.35s, transform 0.9s 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
           }}
         >
           <HeroVisualRow />
         </div>
+
+        <p
+          className="max-w-sm font-display text-sm font-semibold leading-snug text-cm-ink/88 max-md:block md:hidden"
+          style={{
+            opacity: ready ? 1 : 0,
+            transform: ready ? "none" : "translateY(12px)",
+            transition: "opacity 0.6s 0.55s, transform 0.6s 0.55s cubic-bezier(0.16, 1, 0.3, 1)",
+          }}
+        >
+          {t.hero.subtitleLine2}
+        </p>
       </div>
 
       <div
