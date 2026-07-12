@@ -14,7 +14,7 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { href: "/depot", label: "Αρχική", icon: Home, exact: true },
+  { href: "/depot", label: "Αρχική", icon: Home },
   { href: "/depot/intake", label: "Νέο", icon: Plus },
   { href: "/depot/dispatch", label: "Προσφορά", icon: Send },
   { href: "/depot/out", label: "Έξω", icon: PackageOpen },
@@ -41,7 +41,8 @@ export function DepotShell({ children, title, subtitle }: DepotShellProps) {
         <nav className="flex flex-1 flex-col gap-1 overflow-y-auto p-1.5 sm:p-3">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const active = item.exact ? pathname === item.href : pathname.startsWith(item.href);
+            const active =
+              item.href === "/depot" ? pathname === item.href : pathname.startsWith(item.href);
 
             return (
               <Link
