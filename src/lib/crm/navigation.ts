@@ -6,8 +6,9 @@
  */
 
 import type { CrmNavItem } from "@/lib/crm/types";
+import { isDepotEnabled } from "@/lib/depot/config";
 
-export const crmNavItems: CrmNavItem[] = [
+const baseCrmNavItems: CrmNavItem[] = [
   {
     href: "/admin",
     label: "Πίνακας",
@@ -45,5 +46,22 @@ export const crmNavItems: CrmNavItem[] = [
     icon: "settings",
   },
 ];
+
+const depotNavItem: CrmNavItem = {
+  href: "/admin/representatives",
+  label: "Αντιπρόσωποι",
+  labelEn: "Representatives",
+  icon: "representatives",
+};
+
+export function getCrmNavItems(): CrmNavItem[] {
+  if (!isDepotEnabled()) return baseCrmNavItems;
+  const items = [...baseCrmNavItems];
+  items.splice(items.length - 1, 0, depotNavItem);
+  return items;
+}
+
+/** @deprecated Use getCrmNavItems() — kept for static imports */
+export const crmNavItems = baseCrmNavItems;
 
 export const crmSiteLink = "/";

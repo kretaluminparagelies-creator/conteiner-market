@@ -5,7 +5,7 @@
  * @copyright 2026 Katsoulakis. All rights reserved.
  */
 
-import Link from "next/link";
+import { BrandHomeLink } from "@/components/layout/BrandHomeLink";
 
 type NavBrandProps = {
   /** Nav bar background — light (home) or dark (inner pages) */
@@ -17,8 +17,8 @@ export function NavBrand({ surface = "dark", className }: NavBrandProps) {
   const onLightNav = surface === "light";
 
   return (
-    <Link
-      href="/"
+    <BrandHomeLink
+      aria-label="Container Market — Αρχική"
       className={[
         "nav-brand-live nav-brand-chip group max-sm:px-2 max-sm:py-1.5",
         onLightNav ? "nav-brand-chip--elevated" : "nav-brand-chip--on-dark-nav",
@@ -41,6 +41,6 @@ export function NavBrand({ surface = "dark", className }: NavBrandProps) {
       >
         GR
       </span>
-    </Link>
+    </BrandHomeLink>
   );
 }

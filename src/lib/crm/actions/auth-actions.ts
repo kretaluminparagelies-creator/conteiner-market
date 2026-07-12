@@ -9,6 +9,7 @@
 
 import { redirect } from "next/navigation";
 import { site } from "@/lib/constants/site";
+import { isSafeDepotRedirect } from "@/lib/depot/auth";
 import { createSupabaseAuthApiClient } from "@/lib/supabase/auth-api";
 import { createSupabaseAuthServerClient } from "@/lib/supabase/server-auth";
 import { isSupabaseReadConfigured } from "@/lib/supabase/env";
@@ -55,7 +56,7 @@ export async function loginAction(formData: FormData) {
     return { error: mapAuthError(message) };
   }
 
-  redirect(next.startsWith("/admin") ? next : "/admin");
+  redirect(isSafeDepotRedirect(next) || next.startsWith("/admin") ? next : "/admin");
 }
 
 export async function requestPasswordResetAction(email: string) {

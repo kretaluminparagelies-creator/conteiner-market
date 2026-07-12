@@ -11,6 +11,7 @@ import Link from "next/link";
 import { ChevronRight, Mail, Menu, Tag } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useState, type ComponentType, type CSSProperties } from "react";
+import { BrandHomeLink } from "@/components/layout/BrandHomeLink";
 import { LanguageToggle } from "@/components/layout/LanguageToggle";
 import { Button } from "@/components/ui/Button";
 import {
@@ -77,16 +78,16 @@ export function NavMobileMenu({ isHome }: NavMobileMenuProps) {
         className="flex w-[min(100vw-1.5rem,340px)] flex-col border-cm-light-border-strong bg-white p-0 shadow-cm-light-lg"
       >
         <SheetHeader className="border-b border-cm-light-border bg-linear-to-b from-cm-light-bg to-white px-5 py-5 text-left">
-          <Link
-            href="/"
-            onClick={() => setOpen(false)}
+          <BrandHomeLink
+            aria-label="Container Market — Αρχική"
+            onNavigate={() => setOpen(false)}
             className="nav-brand-chip nav-brand-chip--elevated inline-flex w-fit items-center px-2.5 py-1.5"
           >
             <SheetTitle className="font-display text-[15px] font-bold">
               <span className="text-cm-brand-red">CONTAINER</span>
               <span className="font-light text-white/78">MARKET</span>
             </SheetTitle>
-          </Link>
+          </BrandHomeLink>
           <SheetDescription className="mt-2 font-mono text-[10px] tracking-[0.2em] text-cm-ink-muted uppercase">
             {t.nav.ariaLabel}
           </SheetDescription>

@@ -42,7 +42,7 @@ export function Nav() {
     >
       <div className="flex min-w-0 items-center gap-2.5 sm:gap-3 md:justify-self-start">
         <NavMobileMenu isHome={isLightNav} />
-        <NavBrand surface={isLightNav ? "light" : "dark"} className="hidden md:inline-flex" />
+        <NavBrand surface={isLightNav ? "light" : "dark"} className="relative z-10 inline-flex" />
       </div>
 
       {showHomeNavTabs ? (

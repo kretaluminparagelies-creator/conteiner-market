@@ -4,7 +4,8 @@
  */
 
 import Link from "next/link";
-import { KeyRound, MessageSquare, Package, PlusCircle } from "lucide-react";
+import { KeyRound, MessageSquare, Package, PlusCircle, Warehouse } from "lucide-react";
+import { isDepotEnabled } from "@/lib/depot/config";
 
 type CrmQuickActionsProps = {
   newLeadsCount: number;
@@ -52,6 +53,13 @@ export function CrmQuickActions({ newLeadsCount, expiringRentalsCount }: CrmQuic
             ) : null}
           </span>
         </Link>
+
+        {isDepotEnabled() ? (
+          <Link href="/depot" className={actionClass}>
+            <Warehouse className="h-5 w-5 shrink-0 text-cm-accent" aria-hidden="true" />
+            <span className="font-display text-sm font-semibold">Depot (αποθήκη)</span>
+          </Link>
+        ) : null}
       </div>
     </section>
   );

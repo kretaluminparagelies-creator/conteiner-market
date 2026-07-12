@@ -7,6 +7,7 @@
 
 "use client";
 
+import { BrandHomeLink } from "@/components/layout/BrandHomeLink";
 import { FooterLink } from "@/components/layout/FooterLink";
 import { useLocale } from "@/lib/i18n/locale-context";
 import { useLightNavSurface } from "@/lib/nav/use-light-nav-surface";
@@ -61,17 +62,23 @@ export function Footer({ compact = false }: FooterProps) {
       ].join(" ")}
     >
       <div className="flex w-full flex-col items-center justify-between gap-4 sm:flex-row">
-        <div className="font-display text-[15px] font-bold">
+        <div className="relative z-10 font-display text-[15px] font-bold">
           {isLightFooter ? (
-            <span className="nav-brand-chip nav-brand-chip--elevated inline-flex items-center px-2.5 py-1.5">
+            <BrandHomeLink
+              aria-label="Container Market — Αρχική"
+              className="nav-brand-chip nav-brand-chip--elevated inline-flex cursor-pointer items-center px-2.5 py-1.5 transition-shadow hover:shadow-[0_6px_22px_rgba(23,37,56,0.28)]"
+            >
               <span className="text-cm-brand-red">CONTAINER</span>
               <span className="font-light text-white/78">MARKET</span>
-            </span>
+            </BrandHomeLink>
           ) : (
-            <>
+            <BrandHomeLink
+              aria-label="Container Market — Αρχική"
+              className="inline-flex cursor-pointer transition-opacity hover:opacity-90"
+            >
               <span className="text-cm-accent">CONTAINER</span>
               <span className="font-light text-cm-sub">MARKET</span>
-            </>
+            </BrandHomeLink>
           )}
         </div>
 

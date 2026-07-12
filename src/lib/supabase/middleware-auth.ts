@@ -60,8 +60,9 @@ export async function updateSupabaseSession(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isPublicAdmin = pathname === "/admin/login" || pathname === "/admin/reset-password";
   const isAdmin = pathname.startsWith("/admin");
+  const isDepot = pathname.startsWith("/depot");
 
-  if (isAdmin && !isPublicAdmin && !user) {
+  if ((isAdmin || isDepot) && !isPublicAdmin && !user) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = "/admin/login";
     loginUrl.searchParams.set("next", pathname);

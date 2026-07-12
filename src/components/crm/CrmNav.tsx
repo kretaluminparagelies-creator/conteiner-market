@@ -8,10 +8,11 @@
 "use client";
 
 import { CrmLogoutButton } from "@/components/crm/CrmLogoutButton";
-import { ExternalLink, History, KeyRound, LayoutDashboard, MessageSquare, Package, Settings } from "lucide-react";
+import { ExternalLink, History, KeyRound, LayoutDashboard, MessageSquare, Package, Settings, Users, Warehouse } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { crmNavItems, crmSiteLink } from "@/lib/crm/navigation";
+import { getCrmNavItems, crmSiteLink } from "@/lib/crm/navigation";
+import { isDepotEnabled } from "@/lib/depot/config";
 import { appVersionLabel } from "@/lib/constants/version";
 import type { CrmNavItem } from "@/lib/crm/types";
 
@@ -21,6 +22,7 @@ const iconMap = {
   history: History,
   rentals: KeyRound,
   leads: MessageSquare,
+  representatives: Users,
   settings: Settings,
 } satisfies Record<CrmNavItem["icon"], typeof LayoutDashboard>;
 
@@ -31,6 +33,7 @@ function isActive(href: string, pathname: string): boolean {
 
 export function CrmNav({ adminEmail = null }: { adminEmail?: string | null }) {
   const pathname = usePathname();
+  const navItems = getCrmNavItems();
 
   return (
     <nav className="flex h-full flex-col">
@@ -45,7 +48,7 @@ export function CrmNav({ adminEmail = null }: { adminEmail?: string | null }) {
       </div>
 
       <ul className="flex-1 space-y-1 px-3 py-4">
-        {crmNavItems.map((item) => {
+        {navItems.map((item) => {
           const Icon = iconMap[item.icon];
           const active = isActive(item.href, pathname);
 
@@ -75,6 +78,15 @@ export function CrmNav({ adminEmail = null }: { adminEmail?: string | null }) {
           </p>
         ) : null}
         {adminEmail ? <CrmLogoutButton /> : null}
+        {isDepotEnabled() ? (
+          <Link
+            href="/depot"
+            className="flex items-center gap-2 rounded-lg px-3 py-2 font-display text-sm text-cm-ink-sub transition-colors hover:bg-cm-light-bg hover:text-cm-accent"
+          >
+            <Warehouse className="h-4 w-4 shrink-0" aria-hidden="true" />
+            Depot (αποθήκη)
+          </Link>
+        ) : null}
         <Link
           href={crmSiteLink}
           className="flex items-center gap-2 font-mono text-[11px] text-cm-muted transition-colors hover:text-cm-accent"
