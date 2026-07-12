@@ -20,6 +20,8 @@ export function DepotHomeStats({ containers, dispatches }: DepotHomeStatsProps) 
   const available = filterAvailableContainers(containers);
   const out = containers.filter((item) => isDepotOut(item.status));
 
+  const offerCount = dispatches.filter((item) => item.dispatchType === "offer").length;
+
   const cards = [
     {
       href: "/depot/dispatch",
@@ -34,9 +36,9 @@ export function DepotHomeStats({ containers, dispatches }: DepotHomeStatsProps) 
       icon: Package,
     },
     {
-      href: "/depot/dispatch",
+      href: "/depot/offers",
       label: "Προσφορές",
-      value: dispatches.length,
+      value: offerCount,
       icon: Send,
     },
   ] as const;

@@ -34,6 +34,7 @@ function revalidateDepot() {
   revalidatePath("/depot/available");
   revalidatePath("/depot/out");
   revalidatePath("/depot/dispatch");
+  revalidatePath("/depot/offers");
 }
 
 export async function intakeDepotContainerAction(formData: FormData) {
@@ -195,6 +196,15 @@ export async function loadDepotDashboardData() {
   ]);
 
   return { containers, representatives, dispatches };
+}
+
+export async function loadDepotOffersHistoryData() {
+  const [containers, dispatches] = await Promise.all([
+    loadDepotContainersCached(),
+    loadDepotDispatchesCached(),
+  ]);
+
+  return { containers, dispatches };
 }
 
 export async function loadDepotHomeData() {

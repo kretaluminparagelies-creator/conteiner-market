@@ -30,6 +30,7 @@ const pageMeta: Record<string, { title: string; subtitle?: string }> = {
     subtitle: "Διάλεξε κοντέινερ — ίδια λίστα με «Τι έχω μέσα»",
   },
   "/depot/out": { title: "Τι είναι έξω", subtitle: "Μη διαθέσιμα στο depo" },
+  "/depot/offers": { title: "Ιστορικό προσφορών", subtitle: "Ποιος έλαβε τι — ανά κοντέινερ" },
   "/depot/representatives": { title: "Αντιπρόσωποι", subtitle: "Διαχείριση από CRM" },
 };
 
