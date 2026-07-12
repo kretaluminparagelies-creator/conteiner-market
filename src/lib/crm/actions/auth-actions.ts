@@ -89,13 +89,18 @@ export async function requestPasswordResetAction(email: string) {
   }
 }
 
-export async function logoutAction() {
+export async function logoutAction(returnTo?: string) {
   if (isSupabaseReadConfigured()) {
     const supabase = await createSupabaseAuthServerClient();
     await supabase.auth.signOut();
   }
 
-  redirect("/admin/login");
+  const loginPath =
+    returnTo && (isSafeDepotRedirect(returnTo) || returnTo.startsWith("/admin"))
+      ? `/admin/login?next=${encodeURIComponent(returnTo)}`
+      : "/admin/login";
+
+  redirect(loginPath);
 }
 
 export async function changePasswordAction(formData: FormData) {

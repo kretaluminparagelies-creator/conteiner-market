@@ -81,15 +81,6 @@ export function CrmNav({ adminEmail = null }: { adminEmail?: string | null }) {
         {adminEmail ? <CrmLogoutButton /> : null}
         {isDepotEnabled() ? (
           <Link
-            href="/admin/depot"
-            className="flex items-center gap-2 rounded-lg px-3 py-2 font-display text-sm text-cm-ink-sub transition-colors hover:bg-cm-light-bg hover:text-cm-accent"
-          >
-            <Warehouse className="h-4 w-4 shrink-0" aria-hidden="true" />
-            Αποθήκη
-          </Link>
-        ) : null}
-        {isDepotEnabled() ? (
-          <Link
             href="/depot"
             className="flex items-center gap-2 rounded-lg px-3 py-2 font-mono text-[11px] text-cm-muted transition-colors hover:text-cm-accent"
           >

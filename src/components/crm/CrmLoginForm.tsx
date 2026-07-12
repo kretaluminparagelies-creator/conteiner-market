@@ -12,7 +12,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { loginAction, requestPasswordResetAction } from "@/lib/crm/actions/auth-actions";
 
 const inputClass =
-  "w-full rounded-lg border border-cm-border bg-cm-bg px-3 py-2.5 text-sm text-cm-text outline-none transition-colors focus:border-cm-accent";
+  "w-full rounded-lg border border-cm-border bg-cm-bg px-3 py-2.5 text-base text-cm-text outline-none transition-colors focus:border-cm-accent";
 
 const labelClass = "mb-1.5 block font-mono text-[10px] tracking-[0.14em] text-cm-muted uppercase";
 
@@ -23,13 +23,10 @@ type CrmLoginFormProps = {
 export function CrmLoginForm({ nextPath }: CrmLoginFormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [fieldsReady, setFieldsReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [pending, startTransition] = useTransition();
-
-  const enableFields = () => setFieldsReady(true);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -61,24 +58,8 @@ export function CrmLoginForm({ nextPath }: CrmLoginFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5" autoComplete="off">
+    <form onSubmit={handleSubmit} className="space-y-5">
       <input type="hidden" name="next" value={nextPath} />
-      <input
-        type="text"
-        name="prevent_autofill"
-        className="hidden"
-        tabIndex={-1}
-        autoComplete="off"
-        aria-hidden
-      />
-      <input
-        type="password"
-        name="prevent_autofill_pw"
-        className="hidden"
-        tabIndex={-1}
-        autoComplete="off"
-        aria-hidden
-      />
 
       {error ? (
         <div className="rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">
@@ -100,13 +81,13 @@ export function CrmLoginForm({ nextPath }: CrmLoginFormProps) {
           id="admin-email"
           name="email"
           type="email"
+          inputMode="email"
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-          readOnly={!fieldsReady}
-          onFocus={enableFields}
-          autoComplete="off"
-          data-1p-ignore
-          data-lpignore="true"
+          autoComplete="email"
           required
           className={inputClass}
         />
@@ -123,11 +104,7 @@ export function CrmLoginForm({ nextPath }: CrmLoginFormProps) {
             type={showPassword ? "text" : "password"}
             value={password}
             onChange={(event) => setPassword(event.target.value)}
-            readOnly={!fieldsReady}
-            onFocus={enableFields}
-            autoComplete="new-password"
-            data-1p-ignore
-            data-lpignore="true"
+            autoComplete="current-password"
             required
             className={`${inputClass} pr-11`}
           />

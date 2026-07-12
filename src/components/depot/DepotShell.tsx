@@ -45,7 +45,7 @@ function DepotLogoutButton() {
     <button
       type="button"
       disabled={pending}
-      onClick={() => startTransition(() => logoutAction())}
+      onClick={() => startTransition(() => logoutAction("/depot"))}
       className="inline-flex items-center gap-1 rounded-lg border border-cm-light-border-strong px-2.5 py-1 font-mono text-[10px] text-cm-ink-muted transition-colors hover:border-red-200 hover:text-red-700 disabled:opacity-50"
     >
       <LogOut className="size-3 shrink-0" aria-hidden="true" />
