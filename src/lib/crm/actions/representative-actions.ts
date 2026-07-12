@@ -10,19 +10,22 @@
 import { revalidatePath } from "next/cache";
 import { notFound } from "next/navigation";
 import { isDepotEnabled } from "@/lib/depot/config";
-import { buildRepresentativeProfile } from "@/lib/depot/representative-profile";
+import {
+  countRepresentativeActiveOut,
+  countRepresentativeDispatches,
+  getDepotRepresentativeById,
+  readCrmRepresentativesPaginated,
+  readRepresentativeDispatchesPaginated,
+  addDepotRepresentative,
+  updateDepotRepresentative,
+} from "@/lib/depot/repository/depot-store";
+import type { DepotRepresentativeProfile } from "@/lib/depot/representative-profile";
 import {
   parseRepresentativeInput,
   parseRepresentativeUpdate,
 } from "@/lib/depot/representative-form";
-import {
-  addDepotRepresentative,
-  getDepotRepresentativeById,
-  listAllDepotRepresentatives,
-  listDepotDispatches,
-  updateDepotRepresentative,
-} from "@/lib/depot/repository/depot-store";
-import { requireCrmSession } from "@/lib/depot/auth";
+import { requireCrmSession } from "@/lib/crm/auth";
+import { parsePageParam } from "@/lib/crm/pagination";
 
 function revalidateRepresentatives(id?: string) {
   revalidatePath("/admin/representatives");
@@ -35,23 +38,35 @@ function ensureDepotEnabled() {
   if (!isDepotEnabled()) notFound();
 }
 
-export async function loadCrmRepresentatives() {
+export async function loadCrmRepresentativesPaginated(page?: string) {
   await requireCrmSession();
   ensureDepotEnabled();
-  return listAllDepotRepresentatives();
+  return readCrmRepresentativesPaginated(parsePageParam(page));
 }
 
-export async function loadCrmRepresentativeProfile(id: string) {
+export async function loadCrmRepresentativeProfile(
+  id: string,
+  page?: string,
+): Promise<DepotRepresentativeProfile | null> {
   await requireCrmSession();
   ensureDepotEnabled();
 
-  const [representative, dispatches] = await Promise.all([
+  const safePage = parsePageParam(page);
+  const [representative, dispatchSlice, totalDispatches, activeOutCount] = await Promise.all([
     getDepotRepresentativeById(id),
-    listDepotDispatches(),
+    readRepresentativeDispatchesPaginated(id, safePage),
+    countRepresentativeDispatches(id),
+    countRepresentativeActiveOut(id),
   ]);
 
   if (!representative) return null;
-  return buildRepresentativeProfile(representative, dispatches);
+
+  return {
+    representative,
+    dispatchSlice,
+    totalDispatches,
+    activeOutCount,
+  };
 }
 
 export async function createRepresentativeAction(formData: FormData) {

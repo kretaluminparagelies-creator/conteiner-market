@@ -13,7 +13,7 @@ import { CrmLeadStatusSelect } from "@/components/crm/CrmLeadStatusSelect";
 import { CrmShellPage } from "@/components/crm/CrmShellPage";
 import { getCrmConnectionStatus } from "@/lib/crm/connection";
 import { leadSourceLabels } from "@/lib/crm/lead-labels";
-import { readLeadById, readLeadListingOptions } from "@/lib/crm/lead-store";
+import { readLeadById, readLeadListingOptionBySlug } from "@/lib/crm/lead-store";
 
 type LeadDetailPageProps = {
   params: Promise<{ id: string }>;
@@ -31,9 +31,12 @@ function formatDate(iso: string): string {
 
 export default async function AdminLeadDetailPage({ params }: LeadDetailPageProps) {
   const { id } = await params;
-  const [lead, listingOptions] = await Promise.all([readLeadById(id), readLeadListingOptions()]);
-
+  const lead = await readLeadById(id);
   if (!lead) notFound();
+
+  const initialOption = lead.listingSlug
+    ? await readLeadListingOptionBySlug(lead.listingSlug)
+    : null;
 
   const canEdit = getCrmConnectionStatus() === "connected";
 
@@ -97,7 +100,7 @@ export default async function AdminLeadDetailPage({ params }: LeadDetailPageProp
         <CrmLeadListingSelect
           leadId={lead.id}
           listingSlug={lead.listingSlug}
-          options={listingOptions}
+          initialOption={initialOption}
           canEdit={canEdit}
         />
 

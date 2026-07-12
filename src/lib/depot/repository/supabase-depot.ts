@@ -8,9 +8,17 @@
 import "server-only";
 
 import { getSupabaseAdminClient } from "@/lib/supabase/server";
-import { statusAfterDispatch } from "@/lib/depot/status";
+import { statusAfterDispatch, depotOutStatuses } from "@/lib/depot/status";
+import {
+  buildPaginatedResult,
+  getPageRange,
+  paginateSlice,
+  parsePageParam,
+  type PaginatedSlice,
+} from "@/lib/crm/pagination";
 import type {
   DepotContainer,
+  DepotContainerUpdate,
   DepotDispatch,
   DepotDispatchInput,
   DepotIntakeInput,
@@ -158,6 +166,140 @@ function mapDispatch(
     container,
     representative,
   };
+}
+
+export type CrmDepotTab = "available" | "out" | "offers";
+
+const depotAvailableStatuses = ["available", "sent_offer"] as const;
+
+export async function countDepotContainersByTabFromSupabase(
+  tab: "available" | "out",
+): Promise<number> {
+  const client = getSupabaseAdminClient();
+  const statuses = tab === "available" ? depotAvailableStatuses : depotOutStatuses;
+  const { count, error } = await client
+    .from("depot_containers")
+    .select("*", { count: "exact", head: true })
+    .in("status", statuses);
+
+  if (error) throw new Error(error.message);
+  return count ?? 0;
+}
+
+export async function countDepotOfferDispatchesFromSupabase(): Promise<number> {
+  const client = getSupabaseAdminClient();
+  const { count, error } = await client
+    .from("depot_dispatches")
+    .select("*", { count: "exact", head: true })
+    .eq("dispatch_type", "offer");
+
+  if (error) throw new Error(error.message);
+  return count ?? 0;
+}
+
+export async function fetchDepotContainersPaginatedFromSupabase(
+  tab: "available" | "out",
+  page = 1,
+): Promise<PaginatedSlice<DepotContainer>> {
+  const client = getSupabaseAdminClient();
+  const { from, to } = getPageRange(page);
+  const statuses = tab === "available" ? depotAvailableStatuses : depotOutStatuses;
+
+  const { data, count, error } = await client
+    .from("depot_containers")
+    .select("*", { count: "exact" })
+    .in("status", statuses)
+    .order(tab === "out" ? "updated_at" : "created_at", { ascending: false })
+    .range(from, to);
+
+  if (error) throw new Error(error.message);
+  const items = (data as DepotContainerRow[]).map(mapContainer);
+  return buildPaginatedResult(items, count ?? 0, page);
+}
+
+export async function fetchDepotOfferDispatchesPaginatedFromSupabase(
+  page = 1,
+): Promise<PaginatedSlice<DepotDispatch>> {
+  const client = getSupabaseAdminClient();
+  const { from, to } = getPageRange(page);
+
+  const { data, count, error } = await client
+    .from("depot_dispatches")
+    .select("*, container:depot_containers(*), representative:depot_representatives(*)", {
+      count: "exact",
+    })
+    .eq("dispatch_type", "offer")
+    .order("created_at", { ascending: false })
+    .range(from, to);
+
+  if (error) throw new Error(error.message);
+  const items = (data as DepotDispatchJoinedRow[]).map(mapJoinedDispatch);
+  return buildPaginatedResult(items, count ?? 0, page);
+}
+
+export async function fetchDepotRepresentativesPaginatedFromSupabase(
+  page = 1,
+): Promise<PaginatedSlice<DepotRepresentative>> {
+  const client = getSupabaseAdminClient();
+  const { from, to } = getPageRange(page);
+
+  const { data, count, error } = await client
+    .from("depot_representatives")
+    .select("*", { count: "exact" })
+    .order("company_name", { ascending: true })
+    .range(from, to);
+
+  if (error) throw new Error(error.message);
+  const items = (data as DepotRepresentativeRow[]).map(mapRepresentative);
+  return buildPaginatedResult(items, count ?? 0, page);
+}
+
+export async function countRepresentativeDispatchesFromSupabase(
+  representativeId: string,
+): Promise<number> {
+  const client = getSupabaseAdminClient();
+  const { count, error } = await client
+    .from("depot_dispatches")
+    .select("*", { count: "exact", head: true })
+    .eq("representative_id", representativeId);
+
+  if (error) throw new Error(error.message);
+  return count ?? 0;
+}
+
+export async function countRepresentativeActiveOutFromSupabase(
+  representativeId: string,
+): Promise<number> {
+  const client = getSupabaseAdminClient();
+  const { count, error } = await client
+    .from("depot_dispatches")
+    .select("container:depot_containers!inner(status)", { count: "exact", head: true })
+    .eq("representative_id", representativeId)
+    .eq("container.status", "with_rep_storage");
+
+  if (error) throw new Error(error.message);
+  return count ?? 0;
+}
+
+export async function fetchRepresentativeDispatchesPaginatedFromSupabase(
+  representativeId: string,
+  page = 1,
+): Promise<PaginatedSlice<DepotDispatch>> {
+  const client = getSupabaseAdminClient();
+  const { from, to } = getPageRange(page);
+
+  const { data, count, error } = await client
+    .from("depot_dispatches")
+    .select("*, container:depot_containers(*), representative:depot_representatives(*)", {
+      count: "exact",
+    })
+    .eq("representative_id", representativeId)
+    .order("created_at", { ascending: false })
+    .range(from, to);
+
+  if (error) throw new Error(error.message);
+  const items = (data as DepotDispatchJoinedRow[]).map(mapJoinedDispatch);
+  return buildPaginatedResult(items, count ?? 0, page);
 }
 
 export async function fetchDepotContainersFromSupabase(): Promise<DepotContainer[]> {
@@ -322,30 +464,100 @@ export async function createDepotDispatchInSupabase(
   return mapDispatch(data as DepotDispatchRow, container, representative);
 }
 
+type DepotDispatchJoinedRow = DepotDispatchRow & {
+  container: DepotContainerRow | DepotContainerRow[] | null;
+  representative: DepotRepresentativeRow | DepotRepresentativeRow[] | null;
+};
+
+function firstJoinedRow<T>(value: T | T[] | null | undefined): T | undefined {
+  if (value == null) return undefined;
+  return Array.isArray(value) ? value[0] : value;
+}
+
+function mapJoinedDispatch(row: DepotDispatchJoinedRow): DepotDispatch {
+  const container = firstJoinedRow(row.container);
+  const representative = firstJoinedRow(row.representative);
+
+  return mapDispatch(
+    row,
+    container ? mapContainer(container) : undefined,
+    representative ? mapRepresentative(representative) : undefined,
+  );
+}
+
+export async function fetchDepotOfferDispatchesFromSupabase(): Promise<DepotDispatch[]> {
+  const client = getSupabaseAdminClient();
+  const { data, error } = await client
+    .from("depot_dispatches")
+    .select("*, container:depot_containers(*), representative:depot_representatives(*)")
+    .eq("dispatch_type", "offer")
+    .order("created_at", { ascending: false });
+
+  if (error) throw new Error(error.message);
+  return (data as DepotDispatchJoinedRow[]).map(mapJoinedDispatch);
+}
+
 export async function fetchDepotDispatchesFromSupabase(): Promise<DepotDispatch[]> {
   const client = getSupabaseAdminClient();
   const { data, error } = await client
     .from("depot_dispatches")
-    .select("*")
+    .select("*, container:depot_containers(*), representative:depot_representatives(*)")
     .order("created_at", { ascending: false });
 
   if (error) throw new Error(error.message);
+  return (data as DepotDispatchJoinedRow[]).map(mapJoinedDispatch);
+}
 
-  const [containers, representatives] = await Promise.all([
-    fetchDepotContainersFromSupabase(),
-    fetchAllDepotRepresentativesFromSupabase(),
-  ]);
+export async function updateDepotContainerInSupabase(
+  id: string,
+  update: DepotContainerUpdate,
+): Promise<DepotContainer> {
+  const client = getSupabaseAdminClient();
+  const payload: Record<string, unknown> = {
+    updated_at: new Date().toISOString(),
+  };
 
-  const containerById = new Map(containers.map((item) => [item.id, item]));
-  const representativeById = new Map(representatives.map((item) => [item.id, item]));
+  if (update.containerNumber !== undefined) {
+    payload.container_number = update.containerNumber.trim().toUpperCase();
+  }
+  if (update.containerType !== undefined) payload.container_type = update.containerType;
+  if (update.grade !== undefined) payload.grade = update.grade;
+  if (update.status !== undefined) payload.status = update.status;
+  if (update.salePrice !== undefined) payload.sale_price = update.salePrice;
+  if (update.rentPrice !== undefined) payload.rent_price = update.rentPrice;
+  if (update.notes !== undefined) payload.notes = update.notes?.trim() || null;
+  if (update.images !== undefined) payload.images = update.images;
 
-  return (data as DepotDispatchRow[]).map((row) =>
-    mapDispatch(
-      row,
-      containerById.get(row.container_id),
-      row.representative_id ? representativeById.get(row.representative_id) : undefined,
-    ),
-  );
+  const { data, error } = await client
+    .from("depot_containers")
+    .update(payload)
+    .eq("id", id)
+    .select("*")
+    .single();
+
+  if (error) throw new Error(error.message);
+  return mapContainer(data as DepotContainerRow);
+}
+
+export async function deleteDepotContainerInSupabase(id: string): Promise<void> {
+  const client = getSupabaseAdminClient();
+  const { error } = await client.from("depot_containers").delete().eq("id", id);
+  if (error) throw new Error(error.message);
+}
+
+export async function fetchDepotContainerByIdFromSupabase(
+  id: string,
+): Promise<DepotContainer | null> {
+  const client = getSupabaseAdminClient();
+  const { data, error } = await client
+    .from("depot_containers")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error) throw new Error(error.message);
+  if (!data) return null;
+  return mapContainer(data as DepotContainerRow);
 }
 
 export async function returnDepotContainerToAvailableInSupabase(id: string): Promise<void> {

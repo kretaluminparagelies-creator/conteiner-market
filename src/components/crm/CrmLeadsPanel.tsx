@@ -5,22 +5,19 @@
 
 "use client";
 
-import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Download } from "lucide-react";
 import { CrmLeadsTable } from "@/components/crm/CrmLeadsTable";
+import { CrmListPaginationBar } from "@/components/crm/CrmListPaginationBar";
 import { leadSourceLabels, leadStatusLabels } from "@/lib/crm/lead-labels";
+import type { PaginatedSlice } from "@/lib/crm/pagination";
+import { setSearchParam } from "@/lib/crm/pagination";
+import { useCrmUrlFilters } from "@/lib/hooks/useCrmUrlFilters";
 import type { Lead, LeadSource, LeadStatus } from "@/lib/crm/types";
 
 type CrmLeadsPanelProps = {
-  leads: Lead[];
-  initialStatus?: string;
-};
-
-type LeadFilters = {
-  status: "" | LeadStatus;
-  source: "" | LeadSource;
-  query: string;
+  result: PaginatedSlice<Lead>;
+  totalAll: number;
 };
 
 const selectClass =
@@ -29,53 +26,18 @@ const selectClass =
 const statuses: LeadStatus[] = ["new", "contacted", "quoted", "won", "lost"];
 const sources: LeadSource[] = ["contact", "buyback", "rent", "space", "listing"];
 
-function resolveInitialStatus(value?: string): "" | LeadStatus {
-  if (value && statuses.includes(value as LeadStatus)) {
-    return value as LeadStatus;
-  }
-  return "";
-}
-
-export function CrmLeadsPanel({ leads, initialStatus }: CrmLeadsPanelProps) {
-  const [filters, setFilters] = useState<LeadFilters>({
-    status: resolveInitialStatus(initialStatus),
-    source: "",
-    query: "",
-  });
-
-  const filtered = useMemo(() => {
-    const q = filters.query.trim().toLowerCase();
-
-    return leads.filter((lead) => {
-      if (filters.status && lead.status !== filters.status) return false;
-      if (filters.source && lead.source !== filters.source) return false;
-      if (!q) return true;
-
-      const haystack = [
-        lead.name,
-        lead.email,
-        lead.phone,
-        lead.message,
-        lead.listingSlug,
-        lead.adminNotes,
-        leadSourceLabels[lead.source],
-        leadStatusLabels[lead.status],
-      ]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase();
-
-      return haystack.includes(q);
-    });
-  }, [leads, filters]);
-
-  const hasFilters = Object.values(filters).some((value) => value !== "");
+export function CrmLeadsPanel({ result, totalAll }: CrmLeadsPanelProps) {
+  const { pathname, searchParams, pushParams } = useCrmUrlFilters();
+  const status = (searchParams.get("status") ?? "") as LeadStatus | "";
+  const source = (searchParams.get("source") ?? "") as LeadSource | "";
+  const query = searchParams.get("q") ?? "";
+  const hasFilters = Boolean(status || source || query);
 
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-cm-ink-sub">
-          {filtered.length} από {leads.length} αιτήματα
+          {result.total} από {totalAll} αιτήματα
         </p>
         <Link
           href="/admin/leads/export"
@@ -92,7 +54,11 @@ export function CrmLeadsPanel({ leads, initialStatus }: CrmLeadsPanelProps) {
           {hasFilters ? (
             <button
               type="button"
-              onClick={() => setFilters({ status: "", source: "", query: "" })}
+              onClick={() => pushParams((params) => {
+                params.delete("status");
+                params.delete("source");
+                params.delete("q");
+              })}
               className="font-mono text-[10px] tracking-wide text-cm-muted uppercase hover:text-cm-accent"
             >
               Καθαρισμός
@@ -106,19 +72,18 @@ export function CrmLeadsPanel({ leads, initialStatus }: CrmLeadsPanelProps) {
               Κατάσταση
             </label>
             <select
-              value={filters.status}
+              value={status}
               onChange={(event) =>
-                setFilters((current) => ({
-                  ...current,
-                  status: event.target.value as LeadFilters["status"],
-                }))
+                pushParams((params) => {
+                  setSearchParam(params, "status", event.target.value);
+                })
               }
               className={selectClass}
             >
               <option value="">Όλες</option>
-              {statuses.map((status) => (
-                <option key={status} value={status}>
-                  {leadStatusLabels[status]}
+              {statuses.map((item) => (
+                <option key={item} value={item}>
+                  {leadStatusLabels[item]}
                 </option>
               ))}
             </select>
@@ -129,19 +94,18 @@ export function CrmLeadsPanel({ leads, initialStatus }: CrmLeadsPanelProps) {
               Πηγή
             </label>
             <select
-              value={filters.source}
+              value={source}
               onChange={(event) =>
-                setFilters((current) => ({
-                  ...current,
-                  source: event.target.value as LeadFilters["source"],
-                }))
+                pushParams((params) => {
+                  setSearchParam(params, "source", event.target.value);
+                })
               }
               className={selectClass}
             >
               <option value="">Όλες</option>
-              {sources.map((source) => (
-                <option key={source} value={source}>
-                  {leadSourceLabels[source]}
+              {sources.map((item) => (
+                <option key={item} value={item}>
+                  {leadSourceLabels[item]}
                 </option>
               ))}
             </select>
@@ -153,9 +117,11 @@ export function CrmLeadsPanel({ leads, initialStatus }: CrmLeadsPanelProps) {
             </label>
             <input
               type="search"
-              value={filters.query}
+              value={query}
               onChange={(event) =>
-                setFilters((current) => ({ ...current, query: event.target.value }))
+                pushParams((params) => {
+                  setSearchParam(params, "q", event.target.value);
+                })
               }
               placeholder="Όνομα, email, μήνυμα…"
               className={selectClass}
@@ -164,7 +130,14 @@ export function CrmLeadsPanel({ leads, initialStatus }: CrmLeadsPanelProps) {
         </div>
       </div>
 
-      <CrmLeadsTable leads={filtered} />
+      <div className="overflow-hidden rounded-xl border border-cm-border bg-cm-card/30">
+        <CrmLeadsTable leads={result.items} bare />
+        <CrmListPaginationBar
+          slice={result}
+          pathname={pathname}
+          searchParams={new URLSearchParams(searchParams.toString())}
+        />
+      </div>
     </div>
   );
 }

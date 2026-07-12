@@ -11,6 +11,7 @@ import { revalidatePath } from "next/cache";
 import { requireCrmSession } from "@/lib/crm/auth";
 import {
   createLead,
+  searchLeadListingOptions,
   updateLeadAdminNotes,
   updateLeadListingSlug,
   updateLeadStatus,
@@ -40,6 +41,11 @@ export async function updateLeadListingSlugAction(leadId: string, listingSlug: s
   await updateLeadListingSlug(leadId, slug || null);
   revalidatePath("/admin/leads");
   revalidatePath(`/admin/leads/${leadId}`);
+}
+
+export async function searchLeadListingOptionsAction(query: string) {
+  await requireCrmSession();
+  return searchLeadListingOptions(query);
 }
 
 export async function submitContactLeadAction(formData: FormData) {

@@ -5,8 +5,8 @@
  * @copyright 2026 Katsoulakis. All rights reserved.
  */
 
-import Link from "next/link";
 import { DepotMobileDispatchForm } from "@/components/depot/DepotMobileDispatchForm";
+import { DepotPrefetchLink } from "@/components/depot/DepotPrefetchLink";
 import { loadDepotDispatchPageData } from "@/lib/depot/actions/depot-actions";
 
 type DepotDispatchPageProps = {
@@ -19,12 +19,12 @@ export default async function DepotDispatchPage({ searchParams }: DepotDispatchP
 
   return (
     <div className="space-y-4">
-      <Link
+      <DepotPrefetchLink
         href="/depot/offers"
-        className="inline-flex rounded-xl border border-cm-light-border-strong bg-white px-3 py-2 font-display text-sm font-semibold text-cm-accent transition-colors hover:border-cm-accent/40 hover:bg-cm-accent/5"
+        className="rounded-xl border border-cm-light-border-strong bg-white px-3 py-2 font-display text-sm font-semibold text-cm-accent transition-colors hover:border-cm-accent/40 hover:bg-cm-accent/5"
       >
         Ιστορικό προσφορών →
-      </Link>
+      </DepotPrefetchLink>
 
       <DepotMobileDispatchForm
         containers={containers}

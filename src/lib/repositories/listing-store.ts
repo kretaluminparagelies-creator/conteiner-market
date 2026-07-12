@@ -16,18 +16,33 @@ import { resolveListingImages } from "@/lib/crm/listing-images";
 import { site } from "@/lib/constants/site";
 import { formatPriceEur, slugifyListing, uniqueSlug } from "@/lib/repositories/listing-format";
 import {
+  countAdminActiveListingsFromSupabase,
+  countAdminOfferListingsFromSupabase,
+  countAdminRentListingsFromSupabase,
   createListingInSupabase,
   deleteListingInSupabase,
   fetchAdminActiveRentalsFromSupabase,
+  fetchAdminHistoryPaginatedFromSupabase,
   fetchAdminListingSummariesFromSupabase,
+  fetchAdminListingsPaginatedFromSupabase,
+  fetchAdminRentalsPaginatedFromSupabase,
   fetchListingBySlugFromSupabase,
   setListingArchiveInSupabase,
   updateListingInSupabase,
+  type AdminHistoryQuery,
   type AdminListingFilter,
+  type AdminListingsPageQuery,
+  type AdminRentalsQuery,
 } from "@/lib/repositories/supabase-listings";
 import { isSupabaseAdminConfigured } from "@/lib/supabase/env";
 import type { Listing, ArchiveReason, RentalLocation } from "@/lib/types/listing";
-import { isActiveRentalListing, type RentalHandoverInput } from "@/lib/crm/rental-contract";
+import { getRentalContractStatus, isActiveRentalListing, type RentalHandoverInput } from "@/lib/crm/rental-contract";
+import {
+  paginateSlice,
+  parsePageParam,
+  type PaginatedSlice,
+} from "@/lib/crm/pagination";
+import { resolveIsOffer, resolveStockCondition } from "@/lib/utils/listing-carousel-filters";
 
 function resolveRentalLocation(
   handover?: RentalHandoverInput,
@@ -39,7 +54,12 @@ function resolveRentalLocation(
   return undefined;
 }
 
-export type { AdminListingFilter } from "@/lib/repositories/supabase-listings";
+export type {
+  AdminHistoryQuery,
+  AdminListingFilter,
+  AdminListingsPageQuery,
+  AdminRentalsQuery,
+} from "@/lib/repositories/supabase-listings";
 
 export {
   formatPriceEur,
@@ -111,6 +131,169 @@ async function readAdminListingsUncached(filter: AdminListingFilter = "all"): Pr
 
 export const readAdminListings = cache(() => readAdminListingsUncached("active"));
 export const readAdminHistoryListings = cache(() => readAdminListingsUncached("inactive"));
+
+export async function readAdminListingsPaginated(
+  query: AdminListingsPageQuery = {},
+): Promise<PaginatedSlice<Listing>> {
+  if (isSupabaseAdminConfigured()) {
+    try {
+      return await fetchAdminListingsPaginatedFromSupabase(query);
+    } catch (error) {
+      console.error("[listing-store] Supabase paginated listings failed, falling back to JSON:", error);
+    }
+  }
+
+  const page = parsePageParam(query.page ? String(query.page) : "1");
+  let listings = (await readListingsFromDisk()).filter((listing) => listing.active);
+  if (query.listingType) {
+    listings = listings.filter((listing) => listing.listingType === query.listingType);
+  }
+  if (query.isOffer !== undefined) {
+    listings = listings.filter((listing) => resolveIsOffer(listing) === query.isOffer);
+  }
+  return paginateSlice(listings, page);
+}
+
+export async function readAdminListingTabCounts() {
+  if (isSupabaseAdminConfigured()) {
+    try {
+      const [all, offers, rent] = await Promise.all([
+        countAdminActiveListingsFromSupabase(),
+        countAdminOfferListingsFromSupabase(),
+        countAdminRentListingsFromSupabase(),
+      ]);
+      return { all, offers, rent };
+    } catch (error) {
+      console.error("[listing-store] Supabase listing counts failed, falling back to JSON:", error);
+    }
+  }
+
+  const listings = (await readListingsFromDisk()).filter((listing) => listing.active);
+  return {
+    all: listings.length,
+    offers: listings.filter((listing) => resolveIsOffer(listing)).length,
+    rent: listings.filter((listing) => listing.listingType === "rent").length,
+  };
+}
+
+function filterHistoryListings(listings: Listing[], query: AdminHistoryQuery): Listing[] {
+  const q = query.containerNumber?.trim().toLowerCase();
+
+  return listings.filter((listing) => {
+    if (query.type && listing.type !== query.type) return false;
+    if (query.listingType && listing.listingType !== query.listingType) return false;
+    if (query.stockCondition && resolveStockCondition(listing) !== query.stockCondition) {
+      return false;
+    }
+    if (query.archiveReason && listing.archiveReason !== query.archiveReason) return false;
+    if (query.rentalLocation && listing.rentalLocation !== query.rentalLocation) return false;
+    if (query.isOffer === "yes" && !resolveIsOffer(listing)) return false;
+    if (query.isOffer === "no" && resolveIsOffer(listing)) return false;
+    if (q && !(listing.containerNumber ?? "").toLowerCase().includes(q)) return false;
+    return true;
+  });
+}
+
+export async function countAdminHistoryListings(): Promise<number> {
+  if (isSupabaseAdminConfigured()) {
+    try {
+      const client = (await import("@/lib/supabase/server")).getSupabaseAdminClient();
+      const { count, error } = await client
+        .from("listings")
+        .select("*", { count: "exact", head: true })
+        .eq("active", false);
+      if (error) throw new Error(error.message);
+      return count ?? 0;
+    } catch (error) {
+      console.error("[listing-store] Supabase history count failed, falling back to JSON:", error);
+    }
+  }
+
+  const listings = await readListingsFromDisk();
+  return listings.filter((listing) => !listing.active).length;
+}
+
+export async function readAdminHistoryPaginated(
+  query: AdminHistoryQuery = {},
+): Promise<PaginatedSlice<Listing>> {
+  if (isSupabaseAdminConfigured()) {
+    try {
+      return await fetchAdminHistoryPaginatedFromSupabase(query);
+    } catch (error) {
+      console.error("[listing-store] Supabase paginated history failed, falling back to JSON:", error);
+    }
+  }
+
+  const page = parsePageParam(query.page ? String(query.page) : "1");
+  const listings = filterHistoryListings(
+    (await readListingsFromDisk()).filter((listing) => !listing.active),
+    query,
+  );
+  return paginateSlice(listings, page);
+}
+
+function filterRentalListings(listings: Listing[], query: AdminRentalsQuery): Listing[] {
+  const q = query.query?.trim().toLowerCase();
+
+  return listings.filter((listing) => {
+    const { status } = getRentalContractStatus(listing.rentalEndsAt);
+    if (query.contractStatus && status !== query.contractStatus) return false;
+    if (query.rentalLocation && listing.rentalLocation !== query.rentalLocation) return false;
+    if (!q) return true;
+
+    const haystack = [
+      listing.containerNumber,
+      listing.type,
+      listing.rentalCustomerName,
+      listing.rentalCustomerPhone,
+      listing.rentalCustomerEmail,
+      listing.rentalCustomerCompany,
+      listing.rentalCustomerAddress,
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    return haystack.includes(q);
+  });
+}
+
+export async function readAdminRentalsPaginated(
+  query: AdminRentalsQuery = {},
+): Promise<PaginatedSlice<Listing>> {
+  if (isSupabaseAdminConfigured()) {
+    try {
+      return await fetchAdminRentalsPaginatedFromSupabase(query);
+    } catch (error) {
+      console.error("[listing-store] Supabase paginated rentals failed, falling back to JSON:", error);
+    }
+  }
+
+  const page = parsePageParam(query.page ? String(query.page) : "1");
+  const rentals = filterRentalListings(await readAdminActiveRentalsUncached(), query);
+  return paginateSlice(rentals, page);
+}
+
+export async function countAdminActiveRentals(): Promise<number> {
+  if (isSupabaseAdminConfigured()) {
+    try {
+      const client = (await import("@/lib/supabase/server")).getSupabaseAdminClient();
+      const { count, error } = await client
+        .from("listings")
+        .select("*", { count: "exact", head: true })
+        .eq("active", false)
+        .eq("archive_reason", "rented")
+        .eq("listing_type", "rent");
+      if (error) throw new Error(error.message);
+      return count ?? 0;
+    } catch (error) {
+      console.error("[listing-store] Supabase rental count failed, falling back to JSON:", error);
+    }
+  }
+
+  return (await readAdminActiveRentalsUncached()).length;
+}
+
 export const readAdminActiveRentals = cache(readAdminActiveRentalsUncached);
 export const readAdminAvailableRentListings = cache(async () => {
   const listings = await readAdminListingsUncached("active");

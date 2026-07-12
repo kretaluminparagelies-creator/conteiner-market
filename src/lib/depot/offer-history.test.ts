@@ -7,7 +7,12 @@
 
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { buildContainerOfferHistories, dispatchRecipientLabel } from "@/lib/depot/offer-history";
+import {
+  buildContainerOfferHistories,
+  dispatchRecipientLabel,
+  EXTERNAL_RECIPIENT_FILTER,
+  filterContainerOfferHistories,
+} from "@/lib/depot/offer-history";
 import type { DepotContainer, DepotDispatch, DepotRepresentative } from "@/lib/depot/types";
 
 const representative: DepotRepresentative = {
@@ -116,5 +121,62 @@ describe("dispatchRecipientLabel", () => {
     };
 
     assert.equal(dispatchRecipientLabel(dispatch), "Πελάτης Αθήνα");
+  });
+});
+
+describe("filterContainerOfferHistories", () => {
+  const dispatches: DepotDispatch[] = [
+    {
+      id: "d-1",
+      containerId: "c-1",
+      representativeId: "rep-1",
+      dispatchType: "offer",
+      createdAt: "2026-07-10T10:00:00.000Z",
+      container: containerA,
+      representative,
+    },
+    {
+      id: "d-2",
+      containerId: "c-2",
+      recipientLabel: "Πελάτης Αθήνα",
+      dispatchType: "offer",
+      createdAt: "2026-07-05T10:00:00.000Z",
+      container: containerB,
+    },
+  ];
+
+  const histories = buildContainerOfferHistories([], dispatches);
+
+  it("filters by representative", () => {
+    const filtered = filterContainerOfferHistories(histories, {
+      containerQuery: "",
+      representativeId: "rep-1",
+      recipientQuery: "",
+    });
+
+    assert.equal(filtered.length, 1);
+    assert.equal(filtered[0]?.container.id, "c-1");
+  });
+
+  it("filters external recipients only", () => {
+    const filtered = filterContainerOfferHistories(histories, {
+      containerQuery: "",
+      representativeId: EXTERNAL_RECIPIENT_FILTER,
+      recipientQuery: "",
+    });
+
+    assert.equal(filtered.length, 1);
+    assert.equal(filtered[0]?.container.id, "c-2");
+  });
+
+  it("filters by recipient search text", () => {
+    const filtered = filterContainerOfferHistories(histories, {
+      containerQuery: "",
+      representativeId: "",
+      recipientQuery: "αθήνα",
+    });
+
+    assert.equal(filtered.length, 1);
+    assert.equal(filtered[0]?.container.id, "c-2");
   });
 });

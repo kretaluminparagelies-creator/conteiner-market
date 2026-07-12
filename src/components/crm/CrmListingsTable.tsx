@@ -13,12 +13,13 @@ import { resolveIsOffer, resolveStockCondition } from "@/lib/utils/listing-carou
 
 type CrmListingsTableProps = {
   listings: Listing[];
+  rowOffset?: number;
 };
 
 const iconActionClass =
   "inline-flex h-8 w-8 items-center justify-center rounded-md border border-cm-border bg-white text-cm-ink-muted transition-colors hover:border-cm-accent/40 hover:bg-cm-accent/5 hover:text-cm-accent";
 
-export function CrmListingsTable({ listings }: CrmListingsTableProps) {
+export function CrmListingsTable({ listings, rowOffset = 0 }: CrmListingsTableProps) {
   return (
     <div className="overflow-hidden rounded-xl border border-cm-border">
       <div className="overflow-x-auto">
@@ -44,7 +45,9 @@ export function CrmListingsTable({ listings }: CrmListingsTableProps) {
           <tbody className="divide-y divide-cm-border/70 bg-cm-card/30">
             {listings.map((listing, index) => (
               <tr key={listing.id} className="hover:bg-cm-surf/30">
-                <td className="px-3 py-3 text-center font-mono text-xs text-cm-muted">{index + 1}</td>
+                <td className="px-3 py-3 text-center font-mono text-xs text-cm-muted">
+                  {rowOffset + index + 1}
+                </td>
                 <td className="px-4 py-3 font-mono text-xs whitespace-nowrap text-cm-sub">
                   {listing.createdAt ? formatCrmDate(listing.createdAt) : "—"}
                 </td>

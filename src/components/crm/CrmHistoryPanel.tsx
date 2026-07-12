@@ -6,37 +6,21 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
 import { Pencil } from "lucide-react";
+import { CrmListPaginationBar } from "@/components/crm/CrmListPaginationBar";
 import { formatArchiveReason } from "@/lib/crm/archive-labels";
 import { formatCrmDate } from "@/lib/crm/format-crm-date";
 import { formatRentalLocation, rentalLocationLabels } from "@/lib/crm/rental-location-labels";
 import { containerTypeOptions } from "@/lib/crm/listing-form";
+import type { PaginatedSlice } from "@/lib/crm/pagination";
+import { setSearchParam } from "@/lib/crm/pagination";
+import { useCrmUrlFilters } from "@/lib/hooks/useCrmUrlFilters";
 import type { ArchiveReason, Listing, ListingType, RentalLocation, StockCondition } from "@/lib/types/listing";
 import { resolveIsOffer, resolveStockCondition } from "@/lib/utils/listing-carousel-filters";
 
 type CrmHistoryPanelProps = {
-  listings: Listing[];
-};
-
-type HistoryFilters = {
-  type: string;
-  listingType: "" | ListingType;
-  stockCondition: "" | StockCondition;
-  archiveReason: "" | ArchiveReason;
-  rentalLocation: "" | RentalLocation;
-  isOffer: "" | "yes" | "no";
-  containerNumber: string;
-};
-
-const defaultFilters: HistoryFilters = {
-  type: "",
-  listingType: "",
-  stockCondition: "",
-  archiveReason: "",
-  rentalLocation: "",
-  isOffer: "",
-  containerNumber: "",
+  result: PaginatedSlice<Listing>;
+  totalAll: number;
 };
 
 const selectClass =
@@ -45,30 +29,18 @@ const selectClass =
 const iconActionClass =
   "inline-flex h-8 w-8 items-center justify-center rounded-md border border-cm-border bg-white text-cm-ink-muted transition-colors hover:border-cm-accent/40 hover:bg-cm-accent/5 hover:text-cm-accent";
 
-export function CrmHistoryPanel({ listings }: CrmHistoryPanelProps) {
-  const [filters, setFilters] = useState<HistoryFilters>(defaultFilters);
-
-  const filtered = useMemo(() => {
-    const q = filters.containerNumber.trim().toLowerCase();
-
-    return listings.filter((listing) => {
-      if (filters.type && listing.type !== filters.type) return false;
-      if (filters.listingType && listing.listingType !== filters.listingType) return false;
-      if (filters.stockCondition && resolveStockCondition(listing) !== filters.stockCondition) {
-        return false;
-      }
-      if (filters.archiveReason && listing.archiveReason !== filters.archiveReason) return false;
-      if (filters.rentalLocation && listing.rentalLocation !== filters.rentalLocation) {
-        return false;
-      }
-      if (filters.isOffer === "yes" && !resolveIsOffer(listing)) return false;
-      if (filters.isOffer === "no" && resolveIsOffer(listing)) return false;
-      if (q && !(listing.containerNumber ?? "").toLowerCase().includes(q)) return false;
-      return true;
-    });
-  }, [listings, filters]);
-
-  const hasFilters = Object.values(filters).some((value) => value !== "");
+export function CrmHistoryPanel({ result, totalAll }: CrmHistoryPanelProps) {
+  const { pathname, searchParams, pushParams } = useCrmUrlFilters();
+  const type = searchParams.get("type") ?? "";
+  const listingType = (searchParams.get("deal") ?? "") as ListingType | "";
+  const stockCondition = (searchParams.get("stock") ?? "") as StockCondition | "";
+  const archiveReason = (searchParams.get("reason") ?? "") as ArchiveReason | "";
+  const rentalLocation = (searchParams.get("location") ?? "") as RentalLocation | "";
+  const isOffer = (searchParams.get("offer") ?? "") as "" | "yes" | "no";
+  const containerNumber = searchParams.get("cn") ?? "";
+  const hasFilters = Boolean(
+    type || listingType || stockCondition || archiveReason || rentalLocation || isOffer || containerNumber,
+  );
 
   return (
     <div className="space-y-4">
@@ -78,7 +50,13 @@ export function CrmHistoryPanel({ listings }: CrmHistoryPanelProps) {
           {hasFilters ? (
             <button
               type="button"
-              onClick={() => setFilters(defaultFilters)}
+              onClick={() =>
+                pushParams((params) => {
+                  ["type", "deal", "stock", "reason", "location", "offer", "cn"].forEach((key) =>
+                    params.delete(key),
+                  );
+                })
+              }
               className="font-mono text-[10px] tracking-wide text-cm-muted uppercase hover:text-cm-accent"
             >
               Καθαρισμός
@@ -93,8 +71,10 @@ export function CrmHistoryPanel({ listings }: CrmHistoryPanelProps) {
             </label>
             <select
               className={`${selectClass} w-full`}
-              value={filters.type}
-              onChange={(e) => setFilters((f) => ({ ...f, type: e.target.value }))}
+              value={type}
+              onChange={(e) =>
+                pushParams((params) => setSearchParam(params, "type", e.target.value))
+              }
             >
               <option value="">Όλοι</option>
               {containerTypeOptions.map((option) => (
@@ -111,9 +91,9 @@ export function CrmHistoryPanel({ listings }: CrmHistoryPanelProps) {
             </label>
             <select
               className={`${selectClass} w-full`}
-              value={filters.listingType}
+              value={listingType}
               onChange={(e) =>
-                setFilters((f) => ({ ...f, listingType: e.target.value as "" | ListingType }))
+                pushParams((params) => setSearchParam(params, "deal", e.target.value))
               }
             >
               <option value="">Όλα</option>
@@ -128,12 +108,9 @@ export function CrmHistoryPanel({ listings }: CrmHistoryPanelProps) {
             </label>
             <select
               className={`${selectClass} w-full`}
-              value={filters.stockCondition}
+              value={stockCondition}
               onChange={(e) =>
-                setFilters((f) => ({
-                  ...f,
-                  stockCondition: e.target.value as "" | StockCondition,
-                }))
+                pushParams((params) => setSearchParam(params, "stock", e.target.value))
               }
             >
               <option value="">Όλα</option>
@@ -148,12 +125,9 @@ export function CrmHistoryPanel({ listings }: CrmHistoryPanelProps) {
             </label>
             <select
               className={`${selectClass} w-full`}
-              value={filters.archiveReason}
+              value={archiveReason}
               onChange={(e) =>
-                setFilters((f) => ({
-                  ...f,
-                  archiveReason: e.target.value as "" | ArchiveReason,
-                }))
+                pushParams((params) => setSearchParam(params, "reason", e.target.value))
               }
             >
               <option value="">Όλα</option>
@@ -169,12 +143,9 @@ export function CrmHistoryPanel({ listings }: CrmHistoryPanelProps) {
             </label>
             <select
               className={`${selectClass} w-full`}
-              value={filters.rentalLocation}
+              value={rentalLocation}
               onChange={(e) =>
-                setFilters((f) => ({
-                  ...f,
-                  rentalLocation: e.target.value as "" | RentalLocation,
-                }))
+                pushParams((params) => setSearchParam(params, "location", e.target.value))
               }
             >
               <option value="">Όλες</option>
@@ -189,9 +160,9 @@ export function CrmHistoryPanel({ listings }: CrmHistoryPanelProps) {
             </label>
             <select
               className={`${selectClass} w-full`}
-              value={filters.isOffer}
+              value={isOffer}
               onChange={(e) =>
-                setFilters((f) => ({ ...f, isOffer: e.target.value as "" | "yes" | "no" }))
+                pushParams((params) => setSearchParam(params, "offer", e.target.value))
               }
             >
               <option value="">Όλα</option>
@@ -208,15 +179,17 @@ export function CrmHistoryPanel({ listings }: CrmHistoryPanelProps) {
               type="search"
               className={`${selectClass} w-full`}
               placeholder="π.χ. ABCD1234567"
-              value={filters.containerNumber}
-              onChange={(e) => setFilters((f) => ({ ...f, containerNumber: e.target.value }))}
+              value={containerNumber}
+              onChange={(e) =>
+                pushParams((params) => setSearchParam(params, "cn", e.target.value))
+              }
             />
           </div>
         </div>
       </div>
 
       <p className="text-sm text-cm-sub">
-        {filtered.length} από {listings.length} εγγραφές στο ιστορικό
+        {result.total} από {totalAll} εγγραφές στο ιστορικό
       </p>
 
       <div className="overflow-hidden rounded-xl border border-cm-border">
@@ -239,17 +212,17 @@ export function CrmHistoryPanel({ listings }: CrmHistoryPanelProps) {
               </tr>
             </thead>
             <tbody className="divide-y divide-cm-border/70 bg-cm-card/30">
-              {filtered.length === 0 ? (
+              {result.items.length === 0 ? (
                 <tr>
                   <td colSpan={10} className="px-4 py-8 text-center text-cm-muted">
                     Δεν βρέθηκαν εγγραφές με τα τρέχοντα φίλτρα.
                   </td>
                 </tr>
               ) : (
-                filtered.map((listing, index) => (
+                result.items.map((listing, index) => (
                   <tr key={listing.id} className="hover:bg-cm-surf/30">
                     <td className="px-3 py-3 text-center font-mono text-xs text-cm-muted">
-                      {index + 1}
+                      {result.rowOffset + index + 1}
                     </td>
                     <td className="px-4 py-3 font-mono text-xs whitespace-nowrap text-cm-sub">
                       {listing.archivedAt
@@ -305,6 +278,11 @@ export function CrmHistoryPanel({ listings }: CrmHistoryPanelProps) {
             </tbody>
           </table>
         </div>
+        <CrmListPaginationBar
+          slice={result}
+          pathname={pathname}
+          searchParams={new URLSearchParams(searchParams.toString())}
+        />
       </div>
     </div>
   );

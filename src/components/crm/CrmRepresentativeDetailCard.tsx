@@ -10,11 +10,13 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
+import { CrmListPaginationBar } from "@/components/crm/CrmListPaginationBar";
 import { CrmRepresentativeFormFields } from "@/components/crm/CrmRepresentativeFormFields";
 import { updateRepresentativeAction } from "@/lib/crm/actions/representative-actions";
 import { representativeDisplayLabel } from "@/lib/depot/filter-representatives";
 import { depotStatusLabels } from "@/lib/depot/status";
 import type { DepotRepresentativeProfile } from "@/lib/depot/representative-profile";
+import { useCrmUrlFilters } from "@/lib/hooks/useCrmUrlFilters";
 
 const labelClass = "font-mono text-[10px] tracking-[0.12em] text-cm-muted uppercase";
 
@@ -34,7 +36,8 @@ type CrmRepresentativeDetailCardProps = {
 
 export function CrmRepresentativeDetailCard({ profile }: CrmRepresentativeDetailCardProps) {
   const router = useRouter();
-  const { representative, dispatches, totalDispatches, activeOutCount } = profile;
+  const { pathname, searchParams } = useCrmUrlFilters();
+  const { representative, dispatchSlice, totalDispatches, activeOutCount } = profile;
   const [active, setActive] = useState(representative.active);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
@@ -112,42 +115,49 @@ export function CrmRepresentativeDetailCard({ profile }: CrmRepresentativeDetail
       <section>
         <h2 className="mb-4 font-display text-lg font-semibold text-cm-ink">Ιστορικό αποστολών</h2>
 
-        {dispatches.length === 0 ? (
+        {dispatchSlice.items.length === 0 ? (
           <p className="rounded-xl border border-cm-border bg-cm-card/50 px-4 py-6 text-sm text-cm-sub">
             Δεν έχουν σταλεί ακόμα κοντέινερ σε αυτόν τον αντιπρόσωπο.
           </p>
         ) : (
-          <div className="overflow-hidden rounded-xl border border-cm-border">
-            <table className="w-full text-left text-sm">
-              <thead className="bg-cm-light-bg font-mono text-[10px] tracking-[0.1em] text-cm-muted uppercase">
-                <tr>
-                  <th className="px-4 py-3">Ημερομηνία</th>
-                  <th className="px-4 py-3">Κοντέινερ</th>
-                  <th className="px-4 py-3">Τύπος</th>
-                  <th className="px-4 py-3">Κατάσταση</th>
-                </tr>
-              </thead>
-              <tbody>
-                {dispatches.map((dispatch) => (
-                  <tr key={dispatch.id} className="border-t border-cm-border/60">
-                    <td className="px-4 py-3 font-mono text-xs text-cm-sub">
-                      {formatDate(dispatch.createdAt)}
-                    </td>
-                    <td className="px-4 py-3 font-mono text-xs font-bold">
-                      {dispatch.container?.containerNumber ?? "—"}
-                    </td>
-                    <td className="px-4 py-3 text-cm-sub">
-                      {dispatch.dispatchType === "offer" ? "Προσφορά" : "Δωρεάν αποθήκη"}
-                    </td>
-                    <td className="px-4 py-3 text-cm-sub">
-                      {dispatch.container
-                        ? depotStatusLabels[dispatch.container.status]
-                        : "—"}
-                    </td>
+          <div className="space-y-4">
+            <div className="overflow-hidden rounded-xl border border-cm-border">
+              <table className="w-full text-left text-sm">
+                <thead className="bg-cm-light-bg font-mono text-[10px] tracking-[0.1em] text-cm-muted uppercase">
+                  <tr>
+                    <th className="px-4 py-3">Ημερομηνία</th>
+                    <th className="px-4 py-3">Κοντέινερ</th>
+                    <th className="px-4 py-3">Τύπος</th>
+                    <th className="px-4 py-3">Κατάσταση</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {dispatchSlice.items.map((dispatch) => (
+                    <tr key={dispatch.id} className="border-t border-cm-border/60">
+                      <td className="px-4 py-3 font-mono text-xs text-cm-sub">
+                        {formatDate(dispatch.createdAt)}
+                      </td>
+                      <td className="px-4 py-3 font-mono text-xs font-bold">
+                        {dispatch.container?.containerNumber ?? "—"}
+                      </td>
+                      <td className="px-4 py-3 text-cm-sub">
+                        {dispatch.dispatchType === "offer" ? "Προσφορά" : "Δωρεάν αποθήκη"}
+                      </td>
+                      <td className="px-4 py-3 text-cm-sub">
+                        {dispatch.container
+                          ? depotStatusLabels[dispatch.container.status]
+                          : "—"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <CrmListPaginationBar
+              slice={dispatchSlice}
+              pathname={pathname}
+              searchParams={searchParams}
+            />
           </div>
         )}
       </section>

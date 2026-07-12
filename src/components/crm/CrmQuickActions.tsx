@@ -4,63 +4,31 @@
  */
 
 import Link from "next/link";
-import { KeyRound, MessageSquare, Package, PlusCircle, Warehouse } from "lucide-react";
+import { KeyRound, PlusCircle, Warehouse } from "lucide-react";
 import { isDepotEnabled } from "@/lib/depot/config";
 
-type CrmQuickActionsProps = {
-  newLeadsCount: number;
-  expiringRentalsCount: number;
-};
-
 const actionClass =
-  "flex items-center gap-3 rounded-xl border border-cm-border bg-cm-card px-4 py-3 shadow-cm-light-xs transition-colors hover:border-cm-accent/35 hover:bg-cm-accent/5";
+  "flex items-center gap-2.5 rounded-lg border border-cm-border bg-cm-card/50 px-3 py-2.5 text-sm transition-colors hover:border-cm-accent/35 hover:bg-cm-accent/5";
 
-export function CrmQuickActions({ newLeadsCount, expiringRentalsCount }: CrmQuickActionsProps) {
+export function CrmQuickActions() {
   return (
-    <section className="mt-8">
-      <h2 className="mb-4 font-display text-lg font-semibold text-cm-ink">Γρήγορες ενέργειες</h2>
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <Link href="/admin/listings/new" className={actionClass}>
-          <PlusCircle className="h-5 w-5 shrink-0 text-cm-accent" aria-hidden="true" />
-          <span className="font-display text-sm font-semibold">Νέα καταχώριση</span>
-        </Link>
+    <div className="flex flex-wrap gap-2">
+      <Link href="/admin/listings/new" className={actionClass}>
+        <PlusCircle className="h-4 w-4 shrink-0 text-cm-accent" aria-hidden="true" />
+        <span className="font-display font-semibold">Νέα καταχώριση</span>
+      </Link>
 
-        <Link href="/admin/rentals/new" className={actionClass}>
-          <KeyRound className="h-5 w-5 shrink-0 text-cm-rent" aria-hidden="true" />
-          <span className="font-display text-sm font-semibold">Νέα ενοικίαση</span>
-        </Link>
+      <Link href="/admin/rentals/new" className={actionClass}>
+        <KeyRound className="h-4 w-4 shrink-0 text-cm-rent" aria-hidden="true" />
+        <span className="font-display font-semibold">Νέα ενοικίαση</span>
+      </Link>
 
-        <Link href="/admin/leads?status=new" className={actionClass}>
-          <MessageSquare className="h-5 w-5 shrink-0 text-cm-ink-sub" aria-hidden="true" />
-          <span className="font-display text-sm font-semibold">
-            Νέα αιτήματα
-            {newLeadsCount > 0 ? (
-              <span className="ml-1.5 rounded-full bg-orange-100 px-2 py-0.5 font-mono text-[10px] text-orange-800">
-                {newLeadsCount}
-              </span>
-            ) : null}
-          </span>
+      {isDepotEnabled() ? (
+        <Link href="/admin/depot" className={actionClass}>
+          <Warehouse className="h-4 w-4 shrink-0 text-cm-accent" aria-hidden="true" />
+          <span className="font-display font-semibold">Αποθήκη</span>
         </Link>
-
-        <Link href="/admin/rentals" className={actionClass}>
-          <Package className="h-5 w-5 shrink-0 text-amber-700" aria-hidden="true" />
-          <span className="font-display text-sm font-semibold">
-            Λήγουν σύντομα
-            {expiringRentalsCount > 0 ? (
-              <span className="ml-1.5 rounded-full bg-amber-100 px-2 py-0.5 font-mono text-[10px] text-amber-900">
-                {expiringRentalsCount}
-              </span>
-            ) : null}
-          </span>
-        </Link>
-
-        {isDepotEnabled() ? (
-          <Link href="/depot" className={actionClass}>
-            <Warehouse className="h-5 w-5 shrink-0 text-cm-accent" aria-hidden="true" />
-            <span className="font-display text-sm font-semibold">Depot (αποθήκη)</span>
-          </Link>
-        ) : null}
-      </div>
-    </section>
+      ) : null}
+    </div>
   );
 }

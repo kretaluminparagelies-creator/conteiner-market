@@ -25,6 +25,7 @@ import {
   intakeDepotContainer,
   listDepotContainers,
   listDepotDispatches,
+  listDepotOfferDispatches,
   listDepotRepresentatives,
   getDepotContainerById,
   returnDepotContainerToDepot,
@@ -211,12 +212,8 @@ export async function loadDepotDashboardData() {
 }
 
 export async function loadDepotOffersHistoryData() {
-  const [containers, dispatches] = await Promise.all([
-    loadDepotContainersCached(),
-    loadDepotDispatchesCached(),
-  ]);
-
-  return { containers, dispatches };
+  const dispatches = await loadDepotOfferDispatchesCached();
+  return { dispatches };
 }
 
 export async function loadDepotHomeData() {
@@ -257,4 +254,9 @@ const loadDepotRepresentativesCached = cache(async () => {
 const loadDepotDispatchesCached = cache(async () => {
   await ensureDepotSession();
   return listDepotDispatches();
+});
+
+const loadDepotOfferDispatchesCached = cache(async () => {
+  await ensureDepotSession();
+  return listDepotOfferDispatches();
 });

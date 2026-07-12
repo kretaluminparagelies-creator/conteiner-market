@@ -92,6 +92,17 @@ export type DepotIntakeInput = {
   recordedBy?: string;
 };
 
+export type DepotContainerUpdate = {
+  containerNumber?: string;
+  containerType?: string;
+  grade?: DepotGrade;
+  salePrice?: number | null;
+  rentPrice?: number | null;
+  notes?: string | null;
+  images?: string[];
+  status?: DepotContainerStatus;
+};
+
 export type DepotDispatchInput = {
   containerId: string;
   representativeId?: string;

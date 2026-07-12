@@ -11,25 +11,36 @@ import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { DepotContainerCard } from "@/components/depot/DepotContainerCard";
+import { DepotOfferHistoryFilters } from "@/components/depot/DepotOfferHistoryFilters";
 import {
   buildContainerOfferHistories,
+  collectOfferHistoryRepresentatives,
   dispatchRecipientLabel,
+  emptyOfferHistoryFilters,
+  filterContainerOfferHistories,
   formatDepotDispatchDate,
 } from "@/lib/depot/offer-history";
-import type { DepotContainer, DepotDispatch } from "@/lib/depot/types";
+import type { DepotDispatch } from "@/lib/depot/types";
 import { cn } from "@/lib/utils";
 
 type DepotOffersHistoryListProps = {
-  containers: DepotContainer[];
   dispatches: DepotDispatch[];
 };
 
-export function DepotOffersHistoryList({ containers, dispatches }: DepotOffersHistoryListProps) {
-  const histories = useMemo(
-    () => buildContainerOfferHistories(containers, dispatches),
-    [containers, dispatches],
-  );
+export function DepotOffersHistoryList({ dispatches }: DepotOffersHistoryListProps) {
+  const histories = useMemo(() => buildContainerOfferHistories([], dispatches), [dispatches]);
+  const [filters, setFilters] = useState(emptyOfferHistoryFilters);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  const representatives = useMemo(() => collectOfferHistoryRepresentatives(histories), [histories]);
+  const hasExternalRecipients = useMemo(
+    () => histories.some((history) => history.dispatches.some((dispatch) => !dispatch.representativeId)),
+    [histories],
+  );
+  const filteredHistories = useMemo(
+    () => filterContainerOfferHistories(histories, filters),
+    [histories, filters],
+  );
 
   if (histories.length === 0) {
     return (
@@ -44,7 +55,20 @@ export function DepotOffersHistoryList({ containers, dispatches }: DepotOffersHi
 
   return (
     <div className="space-y-3">
-      {histories.map((history) => {
+      <DepotOfferHistoryFilters
+        value={filters}
+        onChange={setFilters}
+        representatives={representatives}
+        hasExternalRecipients={hasExternalRecipients}
+      />
+
+      {filteredHistories.length === 0 ? (
+        <div className="rounded-2xl border border-cm-light-border-strong bg-white px-4 py-5 text-sm text-cm-ink-sub">
+          Δεν βρέθηκαν προσφορές με αυτά τα φίλτρα.
+        </div>
+      ) : null}
+
+      {filteredHistories.map((history) => {
         const expanded = expandedId === history.container.id;
         const latestRecipient = dispatchRecipientLabel(history.latestDispatch);
 

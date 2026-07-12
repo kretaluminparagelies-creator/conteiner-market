@@ -6,22 +6,38 @@
  */
 
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { CrmRepresentativesPanel } from "@/components/crm/CrmRepresentativesPanel";
 import { CrmShellPage } from "@/components/crm/CrmShellPage";
-import { loadCrmRepresentatives } from "@/lib/crm/actions/representative-actions";
+import { loadCrmRepresentativesPaginated } from "@/lib/crm/actions/representative-actions";
 import { isDepotEnabled } from "@/lib/depot/config";
 
-export default async function AdminRepresentativesPage() {
+type AdminRepresentativesPageProps = {
+  searchParams: Promise<{ page?: string }>;
+};
+
+export default async function AdminRepresentativesPage({
+  searchParams,
+}: AdminRepresentativesPageProps) {
   if (!isDepotEnabled()) notFound();
 
-  const representatives = await loadCrmRepresentatives();
+  const { page } = await searchParams;
+  const result = await loadCrmRepresentativesPaginated(page);
 
   return (
     <CrmShellPage
       title="Αντιπρόσωποι"
       description="Πλήρης διαχείριση — καρτέλα, σημειώσεις, ιστορικό αποστολών."
     >
-      <CrmRepresentativesPanel representatives={representatives} />
+      <Suspense
+        fallback={
+          <div className="rounded-xl border border-cm-border px-4 py-10 text-center text-sm text-cm-sub">
+            Φόρτωση αντιπροσώπων…
+          </div>
+        }
+      >
+        <CrmRepresentativesPanel result={result} />
+      </Suspense>
     </CrmShellPage>
   );
 }

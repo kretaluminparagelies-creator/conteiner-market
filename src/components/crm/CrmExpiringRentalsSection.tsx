@@ -4,35 +4,30 @@
  */
 
 import Link from "next/link";
-import { Pencil } from "lucide-react";
 import { formatCrmDateOnly } from "@/lib/crm/format-crm-date-only";
-import { readExpiringRentals } from "@/lib/crm/expiring-rentals";
+import { readExpiringRentalsPaginated } from "@/lib/crm/expiring-rentals";
 import { getRentalContractStatus } from "@/lib/crm/rental-contract";
 import { formatRentalLocation } from "@/lib/crm/rental-location-labels";
+import { CrmListPaginationBar } from "@/components/crm/CrmListPaginationBar";
+import { parsePageParam } from "@/lib/crm/pagination";
 
-export async function CrmExpiringRentalsSection() {
-  const rentals = await readExpiringRentals();
+type CrmExpiringRentalsSectionProps = {
+  page?: string;
+};
 
-  if (rentals.length === 0) {
-    return (
-      <section className="mt-10">
-        <h2 className="mb-4 font-display text-lg font-semibold text-cm-ink">Λήγουν σύντομα</h2>
-        <div className="rounded-xl border border-cm-border bg-cm-card p-6 text-sm text-cm-ink-sub">
-          Δεν υπάρχουν ενεργές ενοικιάσεις που λήγουν εντός 30 ημερών ή έχουν λήξει.
-        </div>
-      </section>
-    );
+export async function CrmExpiringRentalsSection({ page }: CrmExpiringRentalsSectionProps) {
+  const safePage = parsePageParam(page);
+  const result = await readExpiringRentalsPaginated(safePage);
+
+  if (result.total === 0) {
+    return null;
   }
 
+  const baseParams = new URLSearchParams();
+
   return (
-    <section className="mt-10">
-      <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
-        <div>
-          <h2 className="font-display text-lg font-semibold text-cm-ink">Λήγουν σύντομα</h2>
-          <p className="mt-1 text-sm text-cm-ink-sub">
-            Ενοικιάσεις ≤30 ημ. ή ήδη ληγμένες — {rentals.length} συνολικά
-          </p>
-        </div>
+    <div className="overflow-hidden rounded-xl border border-cm-border bg-cm-card/30">
+      <div className="flex items-center justify-end border-b border-cm-border bg-cm-surf/40 px-4 py-2">
         <Link
           href="/admin/rentals"
           className="font-mono text-[11px] text-cm-accent hover:underline"
@@ -41,60 +36,68 @@ export async function CrmExpiringRentalsSection() {
         </Link>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-cm-border">
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[720px] text-left text-sm">
-            <thead className="border-b border-cm-border bg-cm-light-bg font-mono text-[10px] tracking-[0.12em] text-cm-muted uppercase">
-              <tr>
-                <th className="px-4 py-3">Κοντέινερ</th>
-                <th className="px-4 py-3">Πελάτης</th>
-                <th className="px-4 py-3">Τοποθεσία</th>
-                <th className="px-4 py-3">Λήξη</th>
-                <th className="px-4 py-3">Κατάσταση</th>
-                <th className="px-3 py-3 text-center" aria-label="Επεξεργασία" />
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-cm-border/70 bg-white">
-              {rentals.map((listing) => {
-                const contract = getRentalContractStatus(listing.rentalEndsAt);
-                const statusClass =
-                  contract.status === "expired"
-                    ? "font-semibold text-red-700"
-                    : "font-semibold text-amber-800";
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[720px] text-left text-sm">
+          <thead className="border-b border-cm-border/70 bg-cm-surf/30 font-mono text-[10px] tracking-[0.12em] text-cm-muted uppercase">
+            <tr>
+              <th className="px-4 py-3">Κοντέινερ</th>
+              <th className="px-4 py-3">Πελάτης</th>
+              <th className="px-4 py-3">Τοποθεσία</th>
+              <th className="px-4 py-3">Λήξη</th>
+              <th className="px-4 py-3">Κατάσταση</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-cm-border/70">
+            {result.items.map((listing) => {
+              const contract = getRentalContractStatus(listing.rentalEndsAt);
+              const statusClass =
+                contract.status === "expired"
+                  ? "font-semibold text-red-700"
+                  : "font-semibold text-amber-800";
+              const editHref = `/admin/listings/${listing.slug}/edit`;
 
-                return (
-                  <tr key={listing.id} className="hover:bg-cm-light-bg">
-                    <td className="px-4 py-3">
-                      <div className="font-medium">{listing.type}</div>
+              return (
+                <tr key={listing.id} className="transition-colors hover:bg-cm-surf/30">
+                  <td className="px-4 py-3">
+                    <Link href={editHref} className="block">
+                      <div className="font-medium text-cm-text">{listing.type}</div>
                       <div className="font-mono text-xs text-cm-accent">
                         {listing.containerNumber || listing.slug}
                       </div>
-                    </td>
-                    <td className="px-4 py-3">{listing.rentalCustomerName || "—"}</td>
-                    <td className="px-4 py-3 text-cm-ink-sub">
+                    </Link>
+                  </td>
+                  <td className="px-4 py-3">
+                    <Link href={editHref} className="block text-cm-sub">
+                      {listing.rentalCustomerName || "—"}
+                    </Link>
+                  </td>
+                  <td className="px-4 py-3">
+                    <Link href={editHref} className="block text-cm-ink-sub">
                       {formatRentalLocation(listing.rentalLocation)}
-                    </td>
-                    <td className="px-4 py-3 font-mono text-xs whitespace-nowrap">
+                    </Link>
+                  </td>
+                  <td className="px-4 py-3 font-mono text-xs whitespace-nowrap">
+                    <Link href={editHref} className="block">
                       {listing.rentalEndsAt ? formatCrmDateOnly(listing.rentalEndsAt) : "—"}
-                    </td>
-                    <td className={`px-4 py-3 text-xs ${statusClass}`}>{contract.label}</td>
-                    <td className="px-3 py-3 text-center">
-                      <Link
-                        href={`/admin/listings/${listing.slug}/edit`}
-                        className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-cm-border bg-white text-cm-ink-muted transition-colors hover:border-cm-accent/40 hover:bg-cm-accent/5 hover:text-cm-accent"
-                        title="Επεξεργασία"
-                        aria-label={`Επεξεργασία ${listing.type}`}
-                      >
-                        <Pencil className="h-4 w-4" aria-hidden="true" />
-                      </Link>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+                    </Link>
+                  </td>
+                  <td className={`px-4 py-3 text-xs ${statusClass}`}>
+                    <Link href={editHref} className="block">
+                      {contract.label}
+                    </Link>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
-    </section>
+
+      <CrmListPaginationBar
+        slice={result}
+        pathname="/admin"
+        searchParams={baseParams}
+      />
+    </div>
   );
 }

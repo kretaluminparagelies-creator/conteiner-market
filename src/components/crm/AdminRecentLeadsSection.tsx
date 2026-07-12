@@ -11,5 +11,5 @@ import { readRecentLeads } from "@/lib/crm/lead-store";
 export async function AdminRecentLeadsSection() {
   const leads = await readRecentLeads(5);
 
-  return <CrmLeadsTable leads={leads} />;
+  return <CrmLeadsTable leads={leads} title="Πρόσφατα αιτήματα" />;
 }

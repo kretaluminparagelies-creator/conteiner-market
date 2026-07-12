@@ -48,6 +48,13 @@ const baseCrmNavItems: CrmNavItem[] = [
 ];
 
 const depotNavItem: CrmNavItem = {
+  href: "/admin/depot",
+  label: "Αποθήκη",
+  labelEn: "Depot",
+  icon: "depot",
+};
+
+const representativesNavItem: CrmNavItem = {
   href: "/admin/representatives",
   label: "Αντιπρόσωποι",
   labelEn: "Representatives",
@@ -57,7 +64,7 @@ const depotNavItem: CrmNavItem = {
 export function getCrmNavItems(): CrmNavItem[] {
   if (!isDepotEnabled()) return baseCrmNavItems;
   const items = [...baseCrmNavItems];
-  items.splice(items.length - 1, 0, depotNavItem);
+  items.splice(items.length - 1, 0, depotNavItem, representativesNavItem);
   return items;
 }
 

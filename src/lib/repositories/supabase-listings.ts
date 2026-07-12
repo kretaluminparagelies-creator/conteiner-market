@@ -31,9 +31,46 @@ import {
   getSupabaseAnonServerClient,
   type ListingRow,
 } from "@/lib/supabase/server";
-import type { Listing, ListingType, ArchiveReason, RentalLocation } from "@/lib/types/listing";
+import type { Listing, ListingType, ArchiveReason, RentalLocation, StockCondition } from "@/lib/types/listing";
+import {
+  buildPaginatedResult,
+  getPageRange,
+  paginateSlice,
+  parsePageParam,
+  type PaginatedSlice,
+} from "@/lib/crm/pagination";
 
 export type AdminListingFilter = "all" | "active" | "inactive";
+
+export type AdminListingsPageQuery = {
+  page?: number;
+  listingType?: ListingType;
+  isOffer?: boolean;
+};
+
+export type AdminHistoryQuery = {
+  page?: number;
+  type?: string;
+  listingType?: ListingType | "";
+  stockCondition?: StockCondition | "";
+  archiveReason?: ArchiveReason | "";
+  rentalLocation?: RentalLocation | "";
+  isOffer?: "" | "yes" | "no";
+  containerNumber?: string;
+};
+
+export type AdminRentalsQuery = {
+  page?: number;
+  contractStatus?: "active" | "expiring" | "expired" | "";
+  rentalLocation?: RentalLocation | "";
+  query?: string;
+};
+
+type ListingCountQuery = {
+  active?: boolean;
+  listingType?: ListingType;
+  isOffer?: boolean;
+};
 
 type ExistingListingLookupRow = {
   id: string;
@@ -69,6 +106,174 @@ export async function fetchAdminListingSummariesFromSupabase(
   }
 
   return (data ?? []).map((row) => listingAdminRowToListing(row as unknown as ListingAdminRow));
+}
+
+async function countListingsFromSupabase(query: ListingCountQuery): Promise<number> {
+  const client = getSupabaseAdminClient();
+  let request = client.from("listings").select("*", { count: "exact", head: true });
+
+  if (query.active !== undefined) {
+    request = request.eq("active", query.active);
+  }
+  if (query.listingType) {
+    request = request.eq("listing_type", query.listingType);
+  }
+  if (query.isOffer !== undefined) {
+    request = request.eq("is_offer", query.isOffer);
+  }
+
+  const { count, error } = await request;
+  if (error) throw new Error(`Supabase listings count failed: ${error.message}`);
+  return count ?? 0;
+}
+
+export async function countAdminActiveListingsFromSupabase(): Promise<number> {
+  return countListingsFromSupabase({ active: true });
+}
+
+export async function countAdminOfferListingsFromSupabase(): Promise<number> {
+  return countListingsFromSupabase({ active: true, isOffer: true });
+}
+
+export async function countAdminRentListingsFromSupabase(): Promise<number> {
+  return countListingsFromSupabase({ active: true, listingType: "rent" });
+}
+
+export async function fetchAdminListingsPaginatedFromSupabase(
+  query: AdminListingsPageQuery = {},
+): Promise<PaginatedSlice<Listing>> {
+  const client = getSupabaseAdminClient();
+  const columns = await listingSelectColumns("admin");
+  const page = parsePageParam(query.page ? String(query.page) : "1");
+  const { from, to } = getPageRange(page);
+
+  let request = client
+    .from("listings")
+    .select(columns, { count: "exact" })
+    .eq("active", true)
+    .order("created_at", { ascending: false });
+
+  if (query.listingType) {
+    request = request.eq("listing_type", query.listingType);
+  }
+  if (query.isOffer !== undefined) {
+    request = request.eq("is_offer", query.isOffer);
+  }
+
+  const { data, count, error } = await request.range(from, to);
+  if (error) throw new Error(`Supabase admin listings paginated fetch failed: ${error.message}`);
+
+  const items = (data ?? []).map((row) => listingAdminRowToListing(row as unknown as ListingAdminRow));
+  return buildPaginatedResult(items, count ?? 0, page);
+}
+
+function applyHistoryFilters(request: any, query: AdminHistoryQuery) {
+  let next = request.eq("active", false);
+
+  if (query.type) next = next.eq("type", query.type);
+  if (query.listingType) next = next.eq("listing_type", query.listingType);
+  if (query.stockCondition) next = next.eq("stock_condition", query.stockCondition);
+  if (query.archiveReason) next = next.eq("archive_reason", query.archiveReason);
+  if (query.rentalLocation) next = next.eq("rental_location", query.rentalLocation);
+  if (query.isOffer === "yes") next = next.eq("is_offer", true);
+  if (query.isOffer === "no") next = next.eq("is_offer", false);
+  if (query.containerNumber?.trim()) {
+    next = next.ilike("container_number", `%${query.containerNumber.trim()}%`);
+  }
+
+  return next;
+}
+
+export async function fetchAdminHistoryPaginatedFromSupabase(
+  query: AdminHistoryQuery = {},
+): Promise<PaginatedSlice<Listing>> {
+  const client = getSupabaseAdminClient();
+  const mode = await getListingSchemaMode();
+  const columns = await listingSelectColumns("admin");
+  const page = parsePageParam(query.page ? String(query.page) : "1");
+  const { from, to } = getPageRange(page);
+
+  let request = client.from("listings").select(columns, { count: "exact" });
+  request = applyHistoryFilters(request, query);
+  request =
+    mode === "extended"
+      ? request.order("archived_at", { ascending: false })
+      : request.order("updated_at", { ascending: false });
+
+  const { data, count, error } = await request.range(from, to);
+  if (error) throw new Error(`Supabase history paginated fetch failed: ${error.message}`);
+
+  const items = (data ?? []).map((row) => listingAdminRowToListing(row as unknown as ListingAdminRow));
+  return buildPaginatedResult(items, count ?? 0, page);
+}
+
+function rentalContractDateBounds(status: "active" | "expiring" | "expired") {
+  const today = new Date();
+  const todayIso = today.toISOString().slice(0, 10);
+  const in30 = new Date(today);
+  in30.setDate(in30.getDate() + 30);
+  const in30Iso = in30.toISOString().slice(0, 10);
+
+  if (status === "expired") {
+    return { lt: todayIso };
+  }
+  if (status === "expiring") {
+    return { gte: todayIso, lte: in30Iso };
+  }
+  return { gt: in30Iso };
+}
+
+export async function fetchAdminRentalsPaginatedFromSupabase(
+  query: AdminRentalsQuery = {},
+): Promise<PaginatedSlice<Listing>> {
+  const client = getSupabaseAdminClient();
+  const columns = await listingSelectColumns("admin");
+  const page = parsePageParam(query.page ? String(query.page) : "1");
+  const { from, to } = getPageRange(page);
+
+  let request = client
+    .from("listings")
+    .select(columns, { count: "exact" })
+    .eq("active", false)
+    .eq("archive_reason", "rented")
+    .eq("listing_type", "rent")
+    .order("rental_ends_at", { ascending: true, nullsFirst: false });
+
+  if (query.rentalLocation) {
+    request = request.eq("rental_location", query.rentalLocation);
+  }
+  if (query.contractStatus) {
+    const bounds = rentalContractDateBounds(query.contractStatus);
+    if ("lt" in bounds && bounds.lt) {
+      request = request.lt("rental_ends_at", bounds.lt);
+    }
+    if ("gte" in bounds && bounds.gte && "lte" in bounds && bounds.lte) {
+      request = request.gte("rental_ends_at", bounds.gte).lte("rental_ends_at", bounds.lte);
+    }
+    if ("gt" in bounds && bounds.gt) {
+      request = request.or(`rental_ends_at.gt.${bounds.gt},rental_ends_at.is.null`);
+    }
+  }
+  if (query.query?.trim()) {
+    const needle = `%${query.query.trim()}%`;
+    request = request.or(
+      [
+        `container_number.ilike.${needle}`,
+        `type.ilike.${needle}`,
+        `rental_customer_name.ilike.${needle}`,
+        `rental_customer_phone.ilike.${needle}`,
+        `rental_customer_email.ilike.${needle}`,
+        `rental_customer_company.ilike.${needle}`,
+        `rental_customer_address.ilike.${needle}`,
+      ].join(","),
+    );
+  }
+
+  const { data, count, error } = await request.range(from, to);
+  if (error) throw new Error(`Supabase rentals paginated fetch failed: ${error.message}`);
+
+  const items = (data ?? []).map((row) => listingAdminRowToListing(row as unknown as ListingAdminRow));
+  return buildPaginatedResult(items, count ?? 0, page);
 }
 
 export async function fetchAdminActiveRentalsFromSupabase(): Promise<Listing[]> {

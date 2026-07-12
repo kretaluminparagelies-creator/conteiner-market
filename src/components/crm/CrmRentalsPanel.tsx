@@ -6,27 +6,23 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
 import { Pencil } from "lucide-react";
+import { CrmListPaginationBar } from "@/components/crm/CrmListPaginationBar";
 import { formatCrmDateOnly } from "@/lib/crm/format-crm-date-only";
 import { getRentalContractStatus, type RentalContractStatus } from "@/lib/crm/rental-contract";
 import { formatRentalLocation, rentalLocationLabels } from "@/lib/crm/rental-location-labels";
+import type { PaginatedSlice } from "@/lib/crm/pagination";
+import { setSearchParam } from "@/lib/crm/pagination";
+import { useCrmUrlFilters } from "@/lib/hooks/useCrmUrlFilters";
 import type { Listing, RentalLocation } from "@/lib/types/listing";
 
 type CrmRentalsPanelProps = {
-  rentals: Listing[];
-};
-
-type RentalFilters = {
-  status: "" | RentalContractStatus;
-  location: "" | RentalLocation;
-  query: string;
-};
-
-const defaultFilters: RentalFilters = {
-  status: "",
-  location: "",
-  query: "",
+  result: PaginatedSlice<Listing>;
+  stats: {
+    total: number;
+    expiring: number;
+    expired: number;
+  };
 };
 
 const selectClass =
@@ -41,47 +37,12 @@ const statusBadgeClass: Record<RentalContractStatus, string> = {
   expired: "font-semibold text-red-700",
 };
 
-export function CrmRentalsPanel({ rentals }: CrmRentalsPanelProps) {
-  const [filters, setFilters] = useState<RentalFilters>(defaultFilters);
-
-  const filtered = useMemo(() => {
-    const q = filters.query.trim().toLowerCase();
-
-    return rentals.filter((listing) => {
-      const { status } = getRentalContractStatus(listing.rentalEndsAt);
-      if (filters.status && status !== filters.status) return false;
-      if (filters.location && listing.rentalLocation !== filters.location) return false;
-      if (!q) return true;
-
-      const haystack = [
-        listing.containerNumber,
-        listing.type,
-        listing.rentalCustomerName,
-        listing.rentalCustomerPhone,
-        listing.rentalCustomerEmail,
-        listing.rentalCustomerCompany,
-        listing.rentalCustomerAddress,
-      ]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase();
-
-      return haystack.includes(q);
-    });
-  }, [rentals, filters]);
-
-  const stats = useMemo(() => {
-    let expiring = 0;
-    let expired = 0;
-    for (const listing of rentals) {
-      const { status } = getRentalContractStatus(listing.rentalEndsAt);
-      if (status === "expiring") expiring += 1;
-      if (status === "expired") expired += 1;
-    }
-    return { total: rentals.length, expiring, expired };
-  }, [rentals]);
-
-  const hasFilters = Object.values(filters).some((value) => value !== "");
+export function CrmRentalsPanel({ result, stats }: CrmRentalsPanelProps) {
+  const { pathname, searchParams, pushParams } = useCrmUrlFilters();
+  const status = (searchParams.get("status") ?? "") as RentalContractStatus | "";
+  const location = (searchParams.get("location") ?? "") as RentalLocation | "";
+  const query = searchParams.get("q") ?? "";
+  const hasFilters = Boolean(status || location || query);
 
   return (
     <div className="space-y-4">
@@ -108,7 +69,11 @@ export function CrmRentalsPanel({ rentals }: CrmRentalsPanelProps) {
           {hasFilters ? (
             <button
               type="button"
-              onClick={() => setFilters(defaultFilters)}
+              onClick={() =>
+                pushParams((params) => {
+                  ["status", "location", "q"].forEach((key) => params.delete(key));
+                })
+              }
               className="font-mono text-[10px] tracking-wide text-cm-muted uppercase hover:text-cm-accent"
             >
               Καθαρισμός
@@ -123,12 +88,9 @@ export function CrmRentalsPanel({ rentals }: CrmRentalsPanelProps) {
             </label>
             <select
               className={`${selectClass} w-full`}
-              value={filters.status}
+              value={status}
               onChange={(e) =>
-                setFilters((f) => ({
-                  ...f,
-                  status: e.target.value as "" | RentalContractStatus,
-                }))
+                pushParams((params) => setSearchParam(params, "status", e.target.value))
               }
             >
               <option value="">Όλες</option>
@@ -143,12 +105,9 @@ export function CrmRentalsPanel({ rentals }: CrmRentalsPanelProps) {
             </label>
             <select
               className={`${selectClass} w-full`}
-              value={filters.location}
+              value={location}
               onChange={(e) =>
-                setFilters((f) => ({
-                  ...f,
-                  location: e.target.value as "" | RentalLocation,
-                }))
+                pushParams((params) => setSearchParam(params, "location", e.target.value))
               }
             >
               <option value="">Όλες</option>
@@ -164,16 +123,16 @@ export function CrmRentalsPanel({ rentals }: CrmRentalsPanelProps) {
               type="search"
               className={`${selectClass} w-full`}
               placeholder="Πελάτης, τηλέφωνο, αριθμός κοντέινερ…"
-              value={filters.query}
-              onChange={(e) => setFilters((f) => ({ ...f, query: e.target.value }))}
+              value={query}
+              onChange={(e) =>
+                pushParams((params) => setSearchParam(params, "q", e.target.value))
+              }
             />
           </div>
         </div>
       </div>
 
-      <p className="text-sm text-cm-sub">
-        {filtered.length} από {rentals.length} ενεργές ενοικιάσεις
-      </p>
+      <p className="text-sm text-cm-sub">{result.total} ενεργές ενοικιάσεις (με φίλτρα)</p>
 
       <div className="overflow-hidden rounded-xl border border-cm-border">
         <div className="overflow-x-auto">
@@ -194,19 +153,19 @@ export function CrmRentalsPanel({ rentals }: CrmRentalsPanelProps) {
               </tr>
             </thead>
             <tbody className="divide-y divide-cm-border/70 bg-cm-card/30">
-              {filtered.length === 0 ? (
+              {result.items.length === 0 ? (
                 <tr>
                   <td colSpan={9} className="px-4 py-8 text-center text-cm-muted">
                     Δεν βρέθηκαν ενεργές ενοικιάσεις.
                   </td>
                 </tr>
               ) : (
-                filtered.map((listing, index) => {
+                result.items.map((listing, index) => {
                   const contract = getRentalContractStatus(listing.rentalEndsAt);
                   return (
                     <tr key={listing.id} className="hover:bg-cm-surf/30">
                       <td className="px-3 py-3 text-center font-mono text-xs text-cm-muted">
-                        {index + 1}
+                        {result.rowOffset + index + 1}
                       </td>
                       <td className="px-4 py-3">
                         <p className="font-medium">{listing.type}</p>
@@ -224,9 +183,7 @@ export function CrmRentalsPanel({ rentals }: CrmRentalsPanelProps) {
                         ) : null}
                       </td>
                       <td className="px-4 py-3 font-mono text-xs text-cm-sub">
-                        {listing.rentalCustomerPhone ? (
-                          <p>{listing.rentalCustomerPhone}</p>
-                        ) : null}
+                        {listing.rentalCustomerPhone ? <p>{listing.rentalCustomerPhone}</p> : null}
                         {listing.rentalCustomerEmail ? (
                           <p className="text-cm-muted">{listing.rentalCustomerEmail}</p>
                         ) : null}
@@ -268,6 +225,11 @@ export function CrmRentalsPanel({ rentals }: CrmRentalsPanelProps) {
             </tbody>
           </table>
         </div>
+        <CrmListPaginationBar
+          slice={result}
+          pathname={pathname}
+          searchParams={new URLSearchParams(searchParams.toString())}
+        />
       </div>
     </div>
   );
