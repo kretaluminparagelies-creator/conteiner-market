@@ -131,14 +131,16 @@ export function DepotShell({ children }: DepotShellProps) {
             const Icon = item.icon;
             const active =
               item.href === "/depot" ? pathname === item.href : pathname.startsWith(item.href);
-            const pending = pendingHref === item.href;
+            const pending = pendingHref === item.href && pathname !== item.href;
 
             return (
               <Link
                 key={item.href}
                 href={item.href}
                 prefetch
-                onClick={() => setPendingHref(item.href)}
+                onClick={() => {
+                  if (item.href !== pathname) setPendingHref(item.href);
+                }}
                 aria-busy={pending}
                 aria-current={active ? "page" : undefined}
                 className={cn(
