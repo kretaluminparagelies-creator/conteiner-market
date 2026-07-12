@@ -18,7 +18,7 @@ import {
 } from "@/lib/iso6346ContainerFormat";
 
 const fieldClass =
-  "w-full rounded-xl border border-cm-light-border-strong bg-white px-3 py-3 text-sm text-cm-ink outline-none transition-colors focus:border-cm-accent/50";
+  "w-full rounded-xl border border-cm-light-border-strong bg-white px-3 py-3 text-base text-cm-ink outline-none transition-colors focus:border-cm-accent/50";
 
 const labelClass = "mb-1.5 block font-mono text-[10px] tracking-[0.14em] text-cm-ink-muted uppercase";
 

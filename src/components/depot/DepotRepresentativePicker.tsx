@@ -17,7 +17,7 @@ import type { DepotRepresentative } from "@/lib/depot/types";
 import { cn } from "@/lib/utils";
 
 const fieldClass =
-  "w-full rounded-xl border border-cm-light-border-strong bg-white px-3 py-2.5 text-sm text-cm-ink outline-none focus:border-cm-accent/50";
+  "w-full rounded-xl border border-cm-light-border-strong bg-white px-3 py-2.5 text-base text-cm-ink outline-none focus:border-cm-accent/50";
 
 export type DepotRecipientMode = "crm" | "external";
 

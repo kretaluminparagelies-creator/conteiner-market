@@ -55,33 +55,40 @@ export function DepotShell({ children }: DepotShellProps) {
     const prevBodyOverflow = body.style.overflow;
     const prevHtmlOverscroll = html.style.overscrollBehavior;
     const prevBodyOverscroll = body.style.overscrollBehavior;
-    const prevBodyPosition = body.style.position;
-    const prevBodyWidth = body.style.width;
-    const prevBodyTop = body.style.top;
-    const scrollY = window.scrollY;
 
     html.style.overflow = "hidden";
     body.style.overflow = "hidden";
     html.style.overscrollBehavior = "none";
     body.style.overscrollBehavior = "none";
-    body.style.position = "fixed";
-    body.style.width = "100%";
-    body.style.top = `-${scrollY}px`;
 
     return () => {
       html.style.overflow = prevHtmlOverflow;
       body.style.overflow = prevBodyOverflow;
       html.style.overscrollBehavior = prevHtmlOverscroll;
       body.style.overscrollBehavior = prevBodyOverscroll;
-      body.style.position = prevBodyPosition;
-      body.style.width = prevBodyWidth;
-      body.style.top = prevBodyTop;
-      window.scrollTo(0, scrollY);
     };
   }, []);
 
+  useEffect(() => {
+    const main = mainRef.current;
+    if (!main) return;
+
+    const onFocusIn = (event: FocusEvent) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+      if (!target.matches("input:not([type=hidden]), select, textarea")) return;
+
+      requestAnimationFrame(() => {
+        target.scrollIntoView({ block: "center", inline: "nearest" });
+      });
+    };
+
+    main.addEventListener("focusin", onFocusIn);
+    return () => main.removeEventListener("focusin", onFocusIn);
+  }, []);
+
   return (
-    <div className="depot-app fixed inset-0 flex h-dvh max-h-dvh w-full max-w-[100vw] flex-col overflow-hidden overscroll-none bg-cm-light-bg text-cm-ink touch-manipulation">
+    <div className="depot-app fixed inset-0 flex h-dvh max-h-dvh w-full max-w-[100vw] flex-col overflow-hidden overscroll-none bg-cm-light-bg text-cm-ink touch-manipulation [&_input:not([type=hidden])]:text-base [&_select]:text-base [&_textarea]:text-base">
       <div className="shrink-0 border-b border-cm-light-border-strong bg-white shadow-cm-light-sm pt-[env(safe-area-inset-top)]">
         <div className="flex items-center justify-between px-3 py-2">
           <p className="font-mono text-[10px] font-bold tracking-[0.14em] text-cm-accent uppercase">
