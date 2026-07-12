@@ -312,7 +312,7 @@ export function DepotMobileDispatchForm({
             Αποστολή
           </p>
 
-          <pre className="whitespace-pre-wrap rounded-xl border border-cm-light-border-strong bg-white px-3 py-2 font-sans text-sm text-cm-ink">
+          <pre className="overflow-x-auto whitespace-pre-wrap break-words rounded-xl border border-cm-light-border-strong bg-white px-3 py-2 font-sans text-sm text-cm-ink">
             {shareText}
           </pre>
 
