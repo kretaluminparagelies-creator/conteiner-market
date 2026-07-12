@@ -61,8 +61,13 @@ export async function updateSupabaseSession(request: NextRequest) {
   const isPublicAdmin = pathname === "/admin/login" || pathname === "/admin/reset-password";
   const isAdmin = pathname.startsWith("/admin");
   const isDepot = pathname.startsWith("/depot");
+  const isPublicDepotAsset =
+    pathname === "/depot/icon" ||
+    pathname.startsWith("/depot/icon?") ||
+    pathname === "/depot/apple-icon" ||
+    pathname.startsWith("/depot/apple-icon?");
 
-  if ((isAdmin || isDepot) && !isPublicAdmin && !user) {
+  if ((isAdmin || isDepot) && !isPublicAdmin && !isPublicDepotAsset && !user) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = "/admin/login";
     loginUrl.searchParams.set("next", pathname);
