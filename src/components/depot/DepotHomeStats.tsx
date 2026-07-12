@@ -47,7 +47,7 @@ export function DepotHomeStats({ containers, dispatches }: DepotHomeStatsProps) 
         const Icon = card.icon;
         return (
           <Link
-            key={card.href}
+            key={card.label}
             href={card.href}
             className="flex items-center justify-between rounded-2xl border border-cm-light-border-strong bg-white px-4 py-4 shadow-cm-light-sm transition-transform active:scale-[0.99]"
           >
