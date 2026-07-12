@@ -14,3 +14,7 @@ npm run lint && npm test && npm run build
 ```
 
 Never skip `npm run lint` — `npm run build` does not run ESLint.
+
+## Bugbot
+
+Run Bugbot **only** when the user says «bugbot». Never auto-run it.
