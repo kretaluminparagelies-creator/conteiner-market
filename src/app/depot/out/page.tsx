@@ -6,15 +6,10 @@
  */
 
 import { DepotOutList } from "@/components/depot/DepotOutList";
-import { DepotShell } from "@/components/depot/DepotShell";
-import { loadDepotDashboardData } from "@/lib/depot/actions/depot-actions";
+import { loadDepotOutPageData } from "@/lib/depot/actions/depot-actions";
 
 export default async function DepotOutPage() {
-  const { containers } = await loadDepotDashboardData();
+  const { containers } = await loadDepotOutPageData();
 
-  return (
-    <DepotShell title="Τι είναι έξω" subtitle="Μη διαθέσιμα στο depo">
-      <DepotOutList containers={containers} />
-    </DepotShell>
-  );
+  return <DepotOutList containers={containers} />;
 }

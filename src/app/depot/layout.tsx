@@ -6,6 +6,7 @@
  */
 
 import { notFound } from "next/navigation";
+import { DepotShell } from "@/components/depot/DepotShell";
 import { isDepotEnabled } from "@/lib/depot/config";
 import type { Metadata } from "next";
 
@@ -18,5 +19,5 @@ export const dynamic = "force-dynamic";
 
 export default function DepotLayout({ children }: { children: React.ReactNode }) {
   if (!isDepotEnabled()) notFound();
-  return children;
+  return <DepotShell>{children}</DepotShell>;
 }

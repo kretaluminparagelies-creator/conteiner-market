@@ -6,12 +6,7 @@
  */
 
 import { DepotIntakeForm } from "@/components/depot/DepotIntakeForm";
-import { DepotShell } from "@/components/depot/DepotShell";
 
 export default function DepotIntakePage() {
-  return (
-    <DepotShell title="Νέο κοντέινερ" subtitle="Φωτογραφία και στοιχεία">
-      <DepotIntakeForm />
-    </DepotShell>
-  );
+  return <DepotIntakeForm />;
 }

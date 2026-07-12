@@ -7,6 +7,7 @@
 
 "use server";
 
+import { cache } from "react";
 import { revalidatePath } from "next/cache";
 import {
   compactIso6346FromDisplay,
@@ -187,13 +188,51 @@ export async function returnDepotContainerAction(containerId: string) {
 }
 
 export async function loadDepotDashboardData() {
-  await requireCrmSession();
-
   const [containers, representatives, dispatches] = await Promise.all([
-    listDepotContainers(),
-    listDepotRepresentatives(),
-    listDepotDispatches(),
+    loadDepotContainersCached(),
+    loadDepotRepresentativesCached(),
+    loadDepotDispatchesCached(),
   ]);
 
   return { containers, representatives, dispatches };
 }
+
+export async function loadDepotHomeData() {
+  const [containers, dispatches] = await Promise.all([
+    loadDepotContainersCached(),
+    loadDepotDispatchesCached(),
+  ]);
+
+  return { containers, dispatches };
+}
+
+export async function loadDepotDispatchPageData() {
+  const [containers, representatives] = await Promise.all([
+    loadDepotContainersCached(),
+    loadDepotRepresentativesCached(),
+  ]);
+
+  return { containers, representatives };
+}
+
+export async function loadDepotOutPageData() {
+  const containers = await loadDepotContainersCached();
+  return { containers };
+}
+
+const ensureDepotSession = cache(async () => requireCrmSession());
+
+const loadDepotContainersCached = cache(async () => {
+  await ensureDepotSession();
+  return listDepotContainers();
+});
+
+const loadDepotRepresentativesCached = cache(async () => {
+  await ensureDepotSession();
+  return listDepotRepresentatives();
+});
+
+const loadDepotDispatchesCached = cache(async () => {
+  await ensureDepotSession();
+  return listDepotDispatches();
+});
