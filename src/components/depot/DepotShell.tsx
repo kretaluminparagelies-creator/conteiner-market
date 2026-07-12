@@ -81,15 +81,21 @@ export function DepotShell({ children }: DepotShellProps) {
   }, []);
 
   return (
-    <div className="depot-app fixed inset-0 flex h-dvh max-h-dvh w-full max-w-[100vw] overflow-hidden overscroll-none bg-cm-light-bg text-cm-ink touch-manipulation">
-      <aside className="flex w-[4.75rem] shrink-0 flex-col border-r border-cm-light-border-strong bg-white pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)] sm:w-48">
-        <div className="border-b border-cm-light-border-strong px-2 py-3 sm:px-4 sm:py-4">
-          <p className="text-center font-mono text-[9px] font-bold tracking-[0.12em] text-cm-accent uppercase sm:text-left sm:text-[10px]">
+    <div className="depot-app fixed inset-0 flex h-dvh max-h-dvh w-full max-w-[100vw] flex-col overflow-hidden overscroll-none bg-cm-light-bg text-cm-ink touch-manipulation">
+      <div className="shrink-0 border-b border-cm-light-border-strong bg-white shadow-cm-light-sm pt-[env(safe-area-inset-top)]">
+        <div className="flex items-center justify-between px-3 py-2">
+          <p className="font-mono text-[10px] font-bold tracking-[0.14em] text-cm-accent uppercase">
             Depot
           </p>
+          <Link
+            href="/admin"
+            className="rounded-lg border border-cm-light-border-strong px-2.5 py-1 font-mono text-[10px] text-cm-ink-muted transition-colors hover:text-cm-ink"
+          >
+            CRM
+          </Link>
         </div>
 
-        <nav className="flex flex-1 flex-col gap-1 overflow-y-auto p-1.5 sm:p-3">
+        <nav className="grid grid-cols-4 border-t border-cm-light-border-strong">
           {navItems.map((item) => {
             const Icon = item.icon;
             const active =
@@ -103,20 +109,21 @@ export function DepotShell({ children }: DepotShellProps) {
                 prefetch
                 onClick={() => setPendingHref(item.href)}
                 aria-busy={pending}
+                aria-current={active ? "page" : undefined}
                 className={cn(
-                  "flex flex-col items-center gap-1 rounded-xl px-1.5 py-2.5 text-center transition-colors sm:flex-row sm:gap-3 sm:px-3 sm:text-left",
+                  "flex flex-col items-center gap-0.5 px-1 py-2.5 text-center transition-colors",
                   active
-                    ? "bg-cm-accent/12 text-cm-accent"
-                    : "text-cm-ink-sub hover:bg-cm-light-bg hover:text-cm-ink",
+                    ? "border-b-2 border-cm-accent bg-cm-accent/8 text-cm-accent"
+                    : "border-b-2 border-transparent text-cm-ink-sub hover:bg-cm-light-bg hover:text-cm-ink",
                   pending && "opacity-70",
                 )}
               >
                 {pending ? (
-                  <Loader2 className="size-5 shrink-0 animate-spin sm:size-4" aria-hidden="true" />
+                  <Loader2 className="size-5 shrink-0 animate-spin" aria-hidden="true" />
                 ) : (
-                  <Icon className="size-5 shrink-0 sm:size-4" aria-hidden="true" />
+                  <Icon className="size-5 shrink-0" aria-hidden="true" />
                 )}
-                <span className="max-w-full truncate font-display text-[10px] font-semibold leading-tight sm:text-sm">
+                <span className="max-w-full truncate font-display text-[10px] font-semibold leading-tight sm:text-xs">
                   {item.label}
                 </span>
               </Link>
@@ -124,41 +131,30 @@ export function DepotShell({ children }: DepotShellProps) {
           })}
         </nav>
 
-        <div className="border-t border-cm-light-border-strong p-1.5 sm:p-3">
-          <Link
-            href="/admin"
-            className="flex flex-col items-center gap-1 rounded-xl border border-cm-light-border-strong px-1.5 py-2 text-center sm:flex-row sm:gap-2 sm:px-3 sm:text-left"
-          >
-            <span className="font-mono text-[9px] text-cm-ink-muted sm:text-[10px]">CRM</span>
-          </Link>
-        </div>
-      </aside>
-
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-20 shrink-0 border-b border-cm-light-border-strong bg-white/95 px-3 py-3 shadow-cm-light-sm backdrop-blur-md pt-[max(0.75rem,env(safe-area-inset-top))]">
+        <header className="border-t border-cm-light-border-strong px-3 py-2.5">
           <div className="flex min-w-0 items-center justify-between gap-2">
             <div className="min-w-0">
-              <h1 className="truncate font-display text-base font-bold sm:text-lg">{meta.title}</h1>
+              <h1 className="truncate font-display text-base font-bold">{meta.title}</h1>
               {meta.subtitle ? (
-                <p className="truncate text-xs text-cm-ink-sub sm:text-sm">{meta.subtitle}</p>
+                <p className="truncate text-xs text-cm-ink-sub">{meta.subtitle}</p>
               ) : null}
             </div>
-          {isNavigating ? (
-            <Loader2
-              className="ml-2 size-4 shrink-0 animate-spin text-cm-accent"
-              aria-label="Φόρτωση σελίδας"
-            />
-          ) : null}
+            {isNavigating ? (
+              <Loader2
+                className="size-4 shrink-0 animate-spin text-cm-accent"
+                aria-label="Φόρτωση σελίδας"
+              />
+            ) : null}
           </div>
         </header>
-
-        <main
-          ref={mainRef}
-          className="min-h-0 flex-1 overflow-x-hidden overflow-y-scroll overscroll-none [-webkit-overflow-scrolling:touch] px-3 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:px-5"
-        >
-          <div className="mx-auto flex min-h-full w-full min-w-0 max-w-lg flex-col">{children}</div>
-        </main>
       </div>
+
+      <main
+        ref={mainRef}
+        className="min-h-0 flex-1 overflow-x-hidden overflow-y-scroll overscroll-none [-webkit-overflow-scrolling:touch] px-3 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:px-5"
+      >
+        <div className="mx-auto flex min-h-full w-full min-w-0 max-w-lg flex-col">{children}</div>
+      </main>
     </div>
   );
 }
