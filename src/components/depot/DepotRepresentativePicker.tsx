@@ -74,7 +74,8 @@ export function DepotRepresentativePicker({
             Αποστολή με Viber / WhatsApp
           </p>
           <p className="mt-1 text-xs text-cm-ink-sub">
-            Διάλεξε παραλήπτη στο Viber ή WhatsApp μετά την αποστολή.
+            Διάλεξε παραλήπτη στο Viber ή WhatsApp. Αν έγραψες όνομα παραπάνω, θα καταγραφεί στο
+            ιστορικό.
           </p>
         </div>
       ) : null}

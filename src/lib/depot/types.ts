@@ -66,10 +66,13 @@ export type DepotContainer = {
   updatedAt: string;
 };
 
+export const EXTERNAL_DISPATCH_RECIPIENT_LABEL = "Άλλος παραλήπτης (Viber / WhatsApp)";
+
 export type DepotDispatch = {
   id: string;
   containerId: string;
-  representativeId: string;
+  representativeId?: string;
+  recipientLabel?: string;
   dispatchType: DepotDispatchType;
   sentByEmail?: string;
   notes?: string;
@@ -91,7 +94,8 @@ export type DepotIntakeInput = {
 
 export type DepotDispatchInput = {
   containerId: string;
-  representativeId: string;
+  representativeId?: string;
+  recipientLabel?: string;
   dispatchType: DepotDispatchType;
   notes?: string;
 };

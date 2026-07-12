@@ -33,6 +33,7 @@ import {
   type DepotRecipientMode,
 } from "@/components/depot/DepotRepresentativePicker";
 import type { DepotContainer, DepotRepresentative } from "@/lib/depot/types";
+import { EXTERNAL_DISPATCH_RECIPIENT_LABEL } from "@/lib/depot/types";
 
 type DepotMobileDispatchFormProps = {
   containers: DepotContainer[];
@@ -237,7 +238,10 @@ export function DepotMobileDispatchForm({
 
       const result =
         useExternalShare && !representativeId
-          ? await shareDepotContainerExternallyAction(formData)
+          ? await (() => {
+              formData.set("recipientLabel", trimmedSearchQuery || EXTERNAL_DISPATCH_RECIPIENT_LABEL);
+              return shareDepotContainerExternallyAction(formData);
+            })()
           : await (() => {
               formData.set("representativeId", representativeId);
               formData.set("dispatchType", "offer");

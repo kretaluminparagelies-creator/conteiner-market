@@ -53,7 +53,8 @@ type DepotRepresentativeRow = {
 type DepotDispatchRow = {
   id: string;
   container_id: string;
-  representative_id: string;
+  representative_id: string | null;
+  recipient_label: string | null;
   dispatch_type: DepotDispatch["dispatchType"];
   sent_by_email: string | null;
   notes: string | null;
@@ -148,7 +149,8 @@ function mapDispatch(
   return {
     id: row.id,
     containerId: row.container_id,
-    representativeId: row.representative_id,
+    representativeId: row.representative_id ?? undefined,
+    recipientLabel: row.recipient_label ?? undefined,
     dispatchType: row.dispatch_type,
     sentByEmail: row.sent_by_email ?? undefined,
     notes: row.notes ?? undefined,
@@ -268,6 +270,11 @@ export async function createDepotDispatchInSupabase(
   input: DepotDispatchInput,
   sentByEmail?: string,
 ): Promise<DepotDispatch> {
+  const recipientLabel = input.recipientLabel?.trim() || undefined;
+  if (!input.representativeId && !recipientLabel) {
+    throw new Error("Επίλεξε αντιπρόσωπο ή όνομα εξωτερικού παραλήπτη.");
+  }
+
   const client = getSupabaseAdminClient();
   const nextStatus = statusAfterDispatch(input.dispatchType);
 
@@ -291,7 +298,8 @@ export async function createDepotDispatchInSupabase(
     .from("depot_dispatches")
     .insert({
       container_id: input.containerId,
-      representative_id: input.representativeId,
+      representative_id: input.representativeId ?? null,
+      recipient_label: input.recipientLabel?.trim() || null,
       dispatch_type: input.dispatchType,
       sent_by_email: sentByEmail ?? null,
       notes: input.notes?.trim() || null,
@@ -307,7 +315,9 @@ export async function createDepotDispatchInSupabase(
   ]);
 
   const container = containers.find((item) => item.id === input.containerId);
-  const representative = representatives.find((item) => item.id === input.representativeId);
+  const representative = input.representativeId
+    ? representatives.find((item) => item.id === input.representativeId)
+    : undefined;
 
   return mapDispatch(data as DepotDispatchRow, container, representative);
 }
@@ -333,7 +343,7 @@ export async function fetchDepotDispatchesFromSupabase(): Promise<DepotDispatch[
     mapDispatch(
       row,
       containerById.get(row.container_id),
-      representativeById.get(row.representative_id),
+      row.representative_id ? representativeById.get(row.representative_id) : undefined,
     ),
   );
 }

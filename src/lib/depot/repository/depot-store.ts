@@ -20,6 +20,7 @@ import type {
   DepotRepresentativeInput,
   DepotRepresentativeUpdate,
 } from "@/lib/depot/types";
+import { EXTERNAL_DISPATCH_RECIPIENT_LABEL } from "@/lib/depot/types";
 import {
   createDepotContainerInSupabase,
   createDepotDispatchInSupabase,
@@ -187,10 +188,19 @@ export async function dispatchDepotContainer(
 
   const file = await readDepotFile();
   const container = file.containers.find((item) => item.id === input.containerId);
-  const representative = file.representatives.find((item) => item.id === input.representativeId);
+  const representative = input.representativeId
+    ? file.representatives.find((item) => item.id === input.representativeId)
+    : undefined;
+  const recipientLabel = input.recipientLabel?.trim() || undefined;
 
-  if (!container || !representative) {
-    throw new Error("Μη έγκυρο κοντέινερ ή αντιπρόσωπος.");
+  if (!container) {
+    throw new Error("Μη έγκυρο κοντέινερ.");
+  }
+  if (!representative && !recipientLabel) {
+    throw new Error("Επίλεξε αντιπρόσωπο ή όνομα εξωτερικού παραλήπτη.");
+  }
+  if (input.representativeId && !representative) {
+    throw new Error("Μη έγκυρος αντιπρόσωπος.");
   }
 
   const nextStatus = statusAfterDispatch(input.dispatchType);
@@ -203,6 +213,7 @@ export async function dispatchDepotContainer(
     id: randomUUID(),
     containerId: input.containerId,
     representativeId: input.representativeId,
+    recipientLabel: representative ? undefined : recipientLabel ?? EXTERNAL_DISPATCH_RECIPIENT_LABEL,
     dispatchType: input.dispatchType,
     sentByEmail,
     notes: input.notes?.trim() || undefined,

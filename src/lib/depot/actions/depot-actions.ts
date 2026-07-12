@@ -18,6 +18,7 @@ import { requireCrmSession } from "@/lib/depot/auth";
 import { buildDepotMobileShareText } from "@/lib/depot/share-text";
 import { isDepotAvailable } from "@/lib/depot/status";
 import type { DepotDispatchType, DepotGrade } from "@/lib/depot/types";
+import { EXTERNAL_DISPATCH_RECIPIENT_LABEL } from "@/lib/depot/types";
 import {
   addDepotRepresentative,
   dispatchDepotContainer,
@@ -146,9 +147,11 @@ export async function dispatchDepotContainerAction(formData: FormData) {
 }
 
 export async function shareDepotContainerExternallyAction(formData: FormData) {
-  await requireCrmSession();
+  const user = await requireCrmSession();
 
   const containerId = String(formData.get("containerId") ?? "").trim();
+  const recipientLabelRaw = String(formData.get("recipientLabel") ?? "").trim();
+  const recipientLabel = recipientLabelRaw || EXTERNAL_DISPATCH_RECIPIENT_LABEL;
 
   if (!containerId) {
     return { error: "Επίλεξε κοντέινερ." };
@@ -162,6 +165,15 @@ export async function shareDepotContainerExternallyAction(formData: FormData) {
     if (!isDepotAvailable(container.status)) {
       return { error: "Το κοντέινερ δεν είναι διαθέσιμο." };
     }
+
+    await dispatchDepotContainer(
+      {
+        containerId,
+        dispatchType: "offer",
+        recipientLabel,
+      },
+      user?.email ?? undefined,
+    );
 
     revalidateDepot();
     return {

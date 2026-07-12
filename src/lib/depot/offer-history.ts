@@ -6,6 +6,7 @@
  */
 
 import { representativeDisplayLabel } from "@/lib/depot/filter-representatives";
+import { EXTERNAL_DISPATCH_RECIPIENT_LABEL } from "@/lib/depot/types";
 import type { DepotContainer, DepotDispatch } from "@/lib/depot/types";
 
 export type ContainerOfferHistory = {
@@ -28,7 +29,10 @@ export function dispatchRecipientLabel(dispatch: DepotDispatch): string {
   if (dispatch.representative) {
     return representativeDisplayLabel(dispatch.representative);
   }
-  return "—";
+  if (dispatch.recipientLabel?.trim()) {
+    return dispatch.recipientLabel.trim();
+  }
+  return EXTERNAL_DISPATCH_RECIPIENT_LABEL;
 }
 
 export function buildContainerOfferHistories(

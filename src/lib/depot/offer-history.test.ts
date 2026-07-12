@@ -105,4 +105,16 @@ describe("dispatchRecipientLabel", () => {
 
     assert.match(dispatchRecipientLabel(dispatch), /Gamma AE/);
   });
+
+  it("shows external recipient label when no CRM representative", () => {
+    const dispatch: DepotDispatch = {
+      id: "d-2",
+      containerId: "c-1",
+      recipientLabel: "Πελάτης Αθήνα",
+      dispatchType: "offer",
+      createdAt: "2026-07-02T10:00:00.000Z",
+    };
+
+    assert.equal(dispatchRecipientLabel(dispatch), "Πελάτης Αθήνα");
+  });
 });

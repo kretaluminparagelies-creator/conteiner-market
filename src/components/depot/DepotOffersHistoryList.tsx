@@ -105,6 +105,7 @@ export function DepotOffersHistoryList({ containers, dispatches }: DepotOffersHi
                       </p>
                       <p className="mt-0.5 text-xs text-cm-ink-sub">
                         {formatDepotDispatchDate(dispatch.createdAt)}
+                        {dispatch.recipientLabel && !dispatch.representative ? " · Εξωτερικό" : ""}
                       </p>
                       {dispatch.sentByEmail ? (
                         <p className="mt-1 font-mono text-[10px] text-cm-ink-muted">
