@@ -8,7 +8,4 @@
 import "server-only";
 
 export { requireCrmSession, isCrmAuthEnabled } from "@/lib/crm/auth";
-
-export function isSafeDepotRedirect(path: string): boolean {
-  return path === "/depot" || path.startsWith("/depot/");
-}
+export { isSafeDepotRedirect } from "@/lib/auth/safe-redirect";

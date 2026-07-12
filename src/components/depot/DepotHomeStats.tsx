@@ -5,8 +5,8 @@
  * @copyright 2026 Katsoulakis. All rights reserved.
  */
 
-import Link from "next/link";
 import { Package, Send, Warehouse } from "lucide-react";
+import { DepotPrefetchLink } from "@/components/depot/DepotPrefetchLink";
 import type { DepotContainer, DepotDispatch } from "@/lib/depot/types";
 import { filterAvailableContainers } from "@/lib/depot/filters";
 import { isDepotOut } from "@/lib/depot/status";
@@ -48,10 +48,10 @@ export function DepotHomeStats({ containers, dispatches }: DepotHomeStatsProps) 
       {cards.map((card) => {
         const Icon = card.icon;
         return (
-          <Link
+          <DepotPrefetchLink
             key={card.label}
             href={card.href}
-            className="flex items-center justify-between rounded-2xl border border-cm-light-border-strong bg-white px-4 py-4 shadow-cm-light-sm transition-transform active:scale-[0.99]"
+            className="flex w-full items-center justify-between rounded-2xl border border-cm-light-border-strong bg-white px-4 py-4 shadow-cm-light-sm transition-transform active:scale-[0.99]"
           >
             <div>
               <p className="font-mono text-[10px] tracking-[0.14em] text-cm-ink-muted uppercase">
@@ -59,8 +59,8 @@ export function DepotHomeStats({ containers, dispatches }: DepotHomeStatsProps) 
               </p>
               <p className="mt-1 font-display text-3xl font-bold text-cm-ink">{card.value}</p>
             </div>
-            <Icon className="size-6 text-cm-accent" />
-          </Link>
+            <Icon className="size-6 shrink-0 text-cm-accent" />
+          </DepotPrefetchLink>
         );
       })}
     </div>

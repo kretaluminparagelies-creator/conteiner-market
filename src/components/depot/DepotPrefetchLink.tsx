@@ -11,6 +11,7 @@ import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, type ReactNode } from "react";
+import { linkPathname } from "@/lib/auth/safe-redirect";
 import { cn } from "@/lib/utils";
 
 type DepotPrefetchLinkProps = {
@@ -21,6 +22,7 @@ type DepotPrefetchLinkProps = {
 
 export function DepotPrefetchLink({ href, children, className }: DepotPrefetchLinkProps) {
   const pathname = usePathname();
+  const targetPath = linkPathname(href);
   const [prevPathname, setPrevPathname] = useState(pathname);
   const [navTarget, setNavTarget] = useState<string | null>(null);
 
@@ -29,14 +31,14 @@ export function DepotPrefetchLink({ href, children, className }: DepotPrefetchLi
     setNavTarget(null);
   }
 
-  const pending = navTarget === href && pathname !== href;
+  const pending = navTarget === href && pathname !== targetPath;
 
   return (
     <Link
       href={href}
       prefetch
       onClick={() => {
-        if (href !== pathname) setNavTarget(href);
+        if (targetPath !== pathname) setNavTarget(href);
       }}
       aria-busy={pending}
       className={cn(

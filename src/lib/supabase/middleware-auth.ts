@@ -7,6 +7,7 @@
 
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { safePostLoginRedirect } from "@/lib/auth/safe-redirect";
 import { CRM_USER_EMAIL_HEADER } from "@/lib/supabase/crm-session-header";
 import { getSupabaseAnonKey, getSupabaseUrl, isSupabaseReadConfigured } from "@/lib/supabase/env";
 
@@ -77,10 +78,10 @@ export async function updateSupabaseSession(request: NextRequest) {
   }
 
   if (isPublicAdmin && pathname === "/admin/login" && user) {
-    const adminUrl = request.nextUrl.clone();
-    adminUrl.pathname = "/admin";
-    adminUrl.search = "";
-    const redirect = NextResponse.redirect(adminUrl);
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = safePostLoginRedirect(request.nextUrl.searchParams.get("next"));
+    redirectUrl.search = "";
+    const redirect = NextResponse.redirect(redirectUrl);
     forwardSessionCookies(response, redirect);
     return redirect;
   }
