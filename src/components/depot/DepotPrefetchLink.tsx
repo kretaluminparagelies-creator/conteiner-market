@@ -21,14 +21,23 @@ type DepotPrefetchLinkProps = {
 
 export function DepotPrefetchLink({ href, children, className }: DepotPrefetchLinkProps) {
   const pathname = usePathname();
+  const [prevPathname, setPrevPathname] = useState(pathname);
   const [navTarget, setNavTarget] = useState<string | null>(null);
+
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname);
+    setNavTarget(null);
+  }
+
   const pending = navTarget === href && pathname !== href;
 
   return (
     <Link
       href={href}
       prefetch
-      onClick={() => setNavTarget(href)}
+      onClick={() => {
+        if (href !== pathname) setNavTarget(href);
+      }}
       aria-busy={pending}
       className={cn(
         "inline-flex items-center gap-2 transition-opacity",

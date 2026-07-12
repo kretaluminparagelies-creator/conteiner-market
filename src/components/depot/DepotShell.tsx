@@ -57,7 +57,14 @@ function DepotLogoutButton() {
 export function DepotShell({ children }: DepotShellProps) {
   const pathname = usePathname();
   const mainRef = useRef<HTMLElement>(null);
+  const [prevPathname, setPrevPathname] = useState(pathname);
   const [pendingHref, setPendingHref] = useState<string | null>(null);
+
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname);
+    setPendingHref(null);
+  }
+
   const headerPath = pendingHref ?? pathname;
   const meta = pageMeta[headerPath] ?? { title: "Αποθήκη" };
   const isNavigating = pendingHref !== null && pathname !== pendingHref;
