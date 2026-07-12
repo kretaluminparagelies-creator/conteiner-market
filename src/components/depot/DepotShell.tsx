@@ -7,10 +7,12 @@
 
 "use client";
 
-import { Home, Loader2, PackageOpen, Plus, Send } from "lucide-react";
+import { Home, Loader2, LogOut, PackageOpen, Plus, Send } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, useTransition, type ReactNode } from "react";
+import { logoutAction } from "@/lib/crm/actions/auth-actions";
+import { appVersionLabel } from "@/lib/constants/version";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -34,6 +36,22 @@ const pageMeta: Record<string, { title: string; subtitle?: string }> = {
 type DepotShellProps = {
   children: ReactNode;
 };
+
+function DepotLogoutButton() {
+  const [pending, startTransition] = useTransition();
+
+  return (
+    <button
+      type="button"
+      disabled={pending}
+      onClick={() => startTransition(() => logoutAction())}
+      className="inline-flex items-center gap-1 rounded-lg border border-cm-light-border-strong px-2.5 py-1 font-mono text-[10px] text-cm-ink-muted transition-colors hover:border-red-200 hover:text-red-700 disabled:opacity-50"
+    >
+      <LogOut className="size-3 shrink-0" aria-hidden="true" />
+      {pending ? "…" : "Αποσύνδεση"}
+    </button>
+  );
+}
 
 export function DepotShell({ children }: DepotShellProps) {
   const pathname = usePathname();
@@ -91,15 +109,21 @@ export function DepotShell({ children }: DepotShellProps) {
     <div className="depot-app fixed inset-0 flex h-dvh max-h-dvh w-full max-w-[100vw] flex-col overflow-hidden overscroll-none bg-cm-light-bg text-cm-ink touch-manipulation [&_input:not([type=hidden])]:text-base [&_select]:text-base [&_textarea]:text-base">
       <div className="shrink-0 border-b border-cm-light-border-strong bg-white shadow-cm-light-sm pt-[env(safe-area-inset-top)]">
         <div className="flex items-center justify-between px-3 py-2">
-          <p className="font-mono text-[10px] font-bold tracking-[0.14em] text-cm-accent uppercase">
-            Depot
-          </p>
-          <Link
-            href="/admin"
-            className="rounded-lg border border-cm-light-border-strong px-2.5 py-1 font-mono text-[10px] text-cm-ink-muted transition-colors hover:text-cm-ink"
-          >
-            CRM
-          </Link>
+          <div className="flex items-center gap-2">
+            <p className="font-mono text-[10px] font-bold tracking-[0.14em] text-cm-accent uppercase">
+              Depot
+            </p>
+            <span className="font-mono text-[10px] text-cm-ink-muted">{appVersionLabel}</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <DepotLogoutButton />
+            <Link
+              href="/admin"
+              className="rounded-lg border border-cm-light-border-strong px-2.5 py-1 font-mono text-[10px] text-cm-ink-muted transition-colors hover:text-cm-ink"
+            >
+              CRM
+            </Link>
+          </div>
         </div>
 
         <nav className="grid grid-cols-4 border-t border-cm-light-border-strong">
