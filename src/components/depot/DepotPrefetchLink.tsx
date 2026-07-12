@@ -10,7 +10,7 @@
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 type DepotPrefetchLinkProps = {
@@ -21,17 +21,14 @@ type DepotPrefetchLinkProps = {
 
 export function DepotPrefetchLink({ href, children, className }: DepotPrefetchLinkProps) {
   const pathname = usePathname();
-  const [pending, setPending] = useState(false);
-
-  useEffect(() => {
-    setPending(false);
-  }, [pathname]);
+  const [navTarget, setNavTarget] = useState<string | null>(null);
+  const pending = navTarget === href && pathname !== href;
 
   return (
     <Link
       href={href}
       prefetch
-      onClick={() => setPending(true)}
+      onClick={() => setNavTarget(href)}
       aria-busy={pending}
       className={cn(
         "inline-flex items-center gap-2 transition-opacity",

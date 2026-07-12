@@ -9,7 +9,7 @@
 
 import { ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { CarouselNavButton } from "@/components/listings/carousel/CarouselNavButton";
 import { ContainerSVG } from "@/components/ui/ContainerSVG";
 import { useLocale } from "@/lib/i18n/locale-context";
@@ -129,10 +129,7 @@ export function ListingsMobilePager({
 }: ListingsMobilePagerProps) {
   const [index, setIndex] = useState(0);
   const touchStartX = useRef<number | null>(null);
-
-  useEffect(() => {
-    setIndex(0);
-  }, [listings]);
+  const safeIndex = listings.length > 0 ? Math.min(index, listings.length - 1) : 0;
 
   const goPrev = useCallback(() => {
     setIndex((current) => (current - 1 + listings.length) % listings.length);
@@ -144,7 +141,7 @@ export function ListingsMobilePager({
 
   if (listings.length === 0) return null;
 
-  const item = listings[index]!;
+  const item = listings[safeIndex]!;
 
   return (
     <div
@@ -188,7 +185,7 @@ export function ListingsMobilePager({
 
       {listings.length > 1 ? (
         <p className="mt-2 text-center font-mono text-[10px] tracking-wide text-cm-ink-muted uppercase">
-          {index + 1} / {listings.length}
+          {safeIndex + 1} / {listings.length}
         </p>
       ) : null}
     </div>

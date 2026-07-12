@@ -20,9 +20,11 @@ export function CrmRepresentativeFormFields({
   representative,
 }: CrmRepresentativeFormFieldsProps) {
   return (
-    <div className="space-y-6">
-      <section className="space-y-4">
-        <h3 className="font-display text-sm font-semibold text-cm-ink">Στοιχεία τιμολόγησης</h3>
+    <div className="space-y-5">
+      <section className="space-y-3">
+        <h3 className="font-mono text-[10px] tracking-[0.14em] text-cm-muted uppercase">
+          Στοιχεία τιμολόγησης
+        </h3>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="sm:col-span-2">
             <label className={labelClass} htmlFor="companyName">
@@ -93,8 +95,10 @@ export function CrmRepresentativeFormFields({
         </div>
       </section>
 
-      <section className="space-y-4">
-        <h3 className="font-display text-sm font-semibold text-cm-ink">Επικοινωνία</h3>
+      <section className="space-y-3">
+        <h3 className="font-mono text-[10px] tracking-[0.14em] text-cm-muted uppercase">
+          Επικοινωνία
+        </h3>
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <label className={labelClass} htmlFor="name">

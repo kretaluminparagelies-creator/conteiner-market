@@ -27,7 +27,7 @@ export default async function AdminRepresentativesPage({
   return (
     <CrmShellPage
       title="Αντιπρόσωποι"
-      description="Πλήρης διαχείριση — καρτέλα, σημειώσεις, ιστορικό αποστολών."
+      description="Λίστα αντιπροσώπων depo — καρτέλα τιμολόγησης και ιστορικό αποστολών."
     >
       <Suspense
         fallback={

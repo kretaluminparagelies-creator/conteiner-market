@@ -60,10 +60,9 @@ export function DepotShell({ children }: DepotShellProps) {
   const [pendingHref, setPendingHref] = useState<string | null>(null);
   const headerPath = pendingHref ?? pathname;
   const meta = pageMeta[headerPath] ?? { title: "Αποθήκη" };
-  const isNavigating = pendingHref !== null && pendingHref !== pathname;
+  const isNavigating = pendingHref !== null && pathname !== pendingHref;
 
   useEffect(() => {
-    setPendingHref(null);
     mainRef.current?.scrollTo(0, 0);
   }, [pathname]);
 

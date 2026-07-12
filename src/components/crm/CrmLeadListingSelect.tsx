@@ -29,62 +29,69 @@ export function CrmLeadListingSelect({
   initialOption,
   canEdit,
 }: CrmLeadListingSelectProps) {
-  const [selectedSlug, setSelectedSlug] = useState(listingSlug ?? "");
-  const [selectedLabel, setSelectedLabel] = useState(initialOption?.label ?? listingSlug ?? "");
+  const linkedSlug = listingSlug ?? "";
+  const linkedLabel = initialOption?.label ?? listingSlug ?? "";
+  const [draft, setDraft] = useState<{ slug: string; label: string } | null>(null);
+  const selectedSlug = draft?.slug ?? linkedSlug;
+  const selectedLabel = draft?.label ?? linkedLabel;
+
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<LeadListingOption[]>([]);
+  const [searchResults, setSearchResults] = useState<LeadListingOption[]>([]);
   const [searchError, setSearchError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
   const [searching, startSearch] = useTransition();
 
-  useEffect(() => {
-    setSelectedSlug(listingSlug ?? "");
-    setSelectedLabel(initialOption?.label ?? listingSlug ?? "");
-  }, [listingSlug, initialOption]);
+  const trimmedQuery = query.trim();
+  const results = trimmedQuery.length >= 2 ? searchResults : [];
 
   useEffect(() => {
-    const trimmed = query.trim();
-    if (trimmed.length < 2) {
-      setResults([]);
-      setSearchError(null);
-      return;
-    }
+    if (trimmedQuery.length < 2) return;
 
     const timer = window.setTimeout(() => {
       startSearch(async () => {
         try {
           setSearchError(null);
-          const options = await searchLeadListingOptionsAction(trimmed);
-          setResults(options);
+          const options = await searchLeadListingOptionsAction(trimmedQuery);
+          setSearchResults(options);
         } catch {
           setSearchError("Αποτυχία αναζήτησης.");
-          setResults([]);
+          setSearchResults([]);
         }
       });
     }, 300);
 
     return () => window.clearTimeout(timer);
-  }, [query]);
+  }, [trimmedQuery]);
+
+  const handleQueryChange = (value: string) => {
+    setQuery(value);
+    if (value.trim().length < 2) {
+      setSearchResults([]);
+      setSearchError(null);
+    }
+  };
 
   const applySelection = (slug: string, label: string) => {
-    setSelectedSlug(slug);
-    setSelectedLabel(label);
+    setDraft({ slug, label });
     setQuery("");
-    setResults([]);
+    setSearchResults([]);
+    setSearchError(null);
 
     startTransition(async () => {
       await updateLeadListingSlugAction(leadId, slug);
+      setDraft(null);
     });
   };
 
   const clearSelection = () => {
-    setSelectedSlug("");
-    setSelectedLabel("");
+    setDraft({ slug: "", label: "" });
     setQuery("");
-    setResults([]);
+    setSearchResults([]);
+    setSearchError(null);
 
     startTransition(async () => {
       await updateLeadListingSlugAction(leadId, "");
+      setDraft(null);
     });
   };
 
@@ -116,7 +123,7 @@ export function CrmLeadListingSelect({
           <input
             type="search"
             value={query}
-            onChange={(event) => setQuery(event.target.value)}
+            onChange={(event) => handleQueryChange(event.target.value)}
             placeholder="Αναζήτηση καταχώρισης (τουλάχιστον 2 χαρακτήρες)…"
             className={inputClass}
             aria-label="Αναζήτηση καταχώρισης"
@@ -143,7 +150,7 @@ export function CrmLeadListingSelect({
                 </li>
               ))}
             </ul>
-          ) : query.trim().length >= 2 && !searching && !searchError ? (
+          ) : trimmedQuery.length >= 2 && !searching && !searchError ? (
             <p className="text-xs text-cm-sub">Δεν βρέθηκαν καταχωρίσεις.</p>
           ) : null}
         </div>

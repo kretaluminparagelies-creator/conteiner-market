@@ -8,7 +8,7 @@
 "use client";
 
 import { Check, ChevronDownIcon, Package, X } from "lucide-react";
-import { useEffect, useId, useLayoutEffect, useRef, useState, type RefObject } from "react";
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type RefObject } from "react";
 import { createPortal } from "react-dom";
 import { ContainerTypeInfoButton } from "@/components/home/ContainerTypeInfoButton";
 import { Label } from "@/components/ui/label";
@@ -73,7 +73,7 @@ export function HeroContainerTypeMultiSelect({
           })()
         : t.heroSearch.containerTypesSelected.replace("{count}", String(selectedIds.length));
 
-  const updatePanelPosition = () => {
+  const updatePanelPosition = useCallback(() => {
     const trigger = triggerRef.current;
     if (!trigger) return;
 
@@ -107,14 +107,14 @@ export function HeroContainerTypeMultiSelect({
     left = Math.max(margin, left);
 
     setPanelStyle({ top, left, width: PANEL_WIDTH });
-  };
+  }, [panelAnchorRef]);
 
   useLayoutEffect(() => {
     if (!open) return;
     updatePanelPosition();
     const frame = requestAnimationFrame(() => updatePanelPosition());
     return () => cancelAnimationFrame(frame);
-  }, [open, selectedIds.length]);
+  }, [open, selectedIds.length, updatePanelPosition]);
 
   useEffect(() => {
     if (!open) return;
@@ -149,7 +149,7 @@ export function HeroContainerTypeMultiSelect({
         window.removeEventListener("scroll", handleScroll, true);
       }
     };
-  }, [open]);
+  }, [open, updatePanelPosition]);
 
   const toggleId = (id: string) => {
     const next = selectedIds.includes(id)

@@ -35,7 +35,6 @@ import type { Listing, ListingType, ArchiveReason, RentalLocation, StockConditio
 import {
   buildPaginatedResult,
   getPageRange,
-  paginateSlice,
   parsePageParam,
   type PaginatedSlice,
 } from "@/lib/crm/pagination";
@@ -167,18 +166,23 @@ export async function fetchAdminListingsPaginatedFromSupabase(
   return buildPaginatedResult(items, count ?? 0, page);
 }
 
-function applyHistoryFilters(request: any, query: AdminHistoryQuery) {
-  let next = request.eq("active", false);
+type FilterableQuery = {
+  eq: (column: string, value: unknown) => FilterableQuery;
+  ilike: (column: string, pattern: string) => FilterableQuery;
+};
 
-  if (query.type) next = next.eq("type", query.type);
-  if (query.listingType) next = next.eq("listing_type", query.listingType);
-  if (query.stockCondition) next = next.eq("stock_condition", query.stockCondition);
-  if (query.archiveReason) next = next.eq("archive_reason", query.archiveReason);
-  if (query.rentalLocation) next = next.eq("rental_location", query.rentalLocation);
-  if (query.isOffer === "yes") next = next.eq("is_offer", true);
-  if (query.isOffer === "no") next = next.eq("is_offer", false);
+function applyHistoryFilters<Q extends FilterableQuery>(request: Q, query: AdminHistoryQuery): Q {
+  let next = request.eq("active", false) as Q;
+
+  if (query.type) next = next.eq("type", query.type) as Q;
+  if (query.listingType) next = next.eq("listing_type", query.listingType) as Q;
+  if (query.stockCondition) next = next.eq("stock_condition", query.stockCondition) as Q;
+  if (query.archiveReason) next = next.eq("archive_reason", query.archiveReason) as Q;
+  if (query.rentalLocation) next = next.eq("rental_location", query.rentalLocation) as Q;
+  if (query.isOffer === "yes") next = next.eq("is_offer", true) as Q;
+  if (query.isOffer === "no") next = next.eq("is_offer", false) as Q;
   if (query.containerNumber?.trim()) {
-    next = next.ilike("container_number", `%${query.containerNumber.trim()}%`);
+    next = next.ilike("container_number", `%${query.containerNumber.trim()}%`) as Q;
   }
 
   return next;

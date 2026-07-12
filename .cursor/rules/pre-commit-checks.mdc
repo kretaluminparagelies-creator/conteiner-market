@@ -1,0 +1,27 @@
+---
+description: Always run lint, tests, and build before finishing code changes
+alwaysApply: true
+---
+
+# Pre-commit verification
+
+Before declaring a coding task complete, or before any git commit/push, run all three:
+
+```bash
+npm run lint
+npm test
+npm run build
+```
+
+## Rules
+
+- Never finish a task that changed code without running `npm run lint`.
+- `npm run build` alone is not enough — it type-checks but does not run ESLint.
+- If lint fails, fix the issues before commit/push.
+- Report lint/test/build status in the final summary when the user asked for a check or before deploy.
+
+## Common lint fixes in this project
+
+- Avoid `useEffect(() => setState(...))` for syncing props — derive state or use draft/derived patterns.
+- Remove unused imports after refactors (especially `paginateSlice`).
+- Do not use `any` — use a narrow generic or proper Supabase query type.

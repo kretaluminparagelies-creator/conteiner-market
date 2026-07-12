@@ -16,7 +16,7 @@ import type { PaginatedSlice } from "@/lib/crm/pagination";
 import { setSearchParam } from "@/lib/crm/pagination";
 import { useCrmUrlFilters } from "@/lib/hooks/useCrmUrlFilters";
 import type { ArchiveReason, Listing, ListingType, RentalLocation, StockCondition } from "@/lib/types/listing";
-import { resolveIsOffer, resolveStockCondition } from "@/lib/utils/listing-carousel-filters";
+import { resolveStockCondition } from "@/lib/utils/listing-carousel-filters";
 
 type CrmHistoryPanelProps = {
   result: PaginatedSlice<Listing>;

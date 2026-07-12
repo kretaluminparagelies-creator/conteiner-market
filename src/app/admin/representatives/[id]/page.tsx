@@ -11,6 +11,10 @@ import { CrmRepresentativeDetailCard } from "@/components/crm/CrmRepresentativeD
 import { CrmShellPage } from "@/components/crm/CrmShellPage";
 import { loadCrmRepresentativeProfile } from "@/lib/crm/actions/representative-actions";
 import { isDepotEnabled } from "@/lib/depot/config";
+import {
+  representativeDisplayLabel,
+  representativeSearchSubtitle,
+} from "@/lib/depot/filter-representatives";
 
 type RepresentativeDetailPageProps = {
   params: Promise<{ id: string }>;
@@ -29,7 +33,10 @@ export default async function AdminRepresentativeDetailPage({
   if (!profile) notFound();
 
   return (
-    <CrmShellPage title={profile.representative.name} description="Καρτέλα αντιπροσώπου">
+    <CrmShellPage
+      title={representativeDisplayLabel(profile.representative)}
+      description={representativeSearchSubtitle(profile.representative) ?? "Καρτέλα αντιπροσώπου"}
+    >
       <Suspense
         fallback={
           <div className="rounded-xl border border-cm-border px-4 py-10 text-center text-sm text-cm-sub">
