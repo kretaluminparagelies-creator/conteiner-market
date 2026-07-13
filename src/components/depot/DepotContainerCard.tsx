@@ -5,9 +5,15 @@
  * @copyright 2026 Katsoulakis. All rights reserved.
  */
 
-import Image from "next/image";
+"use client";
+
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
+import {
+  DepotMobileContainerGallery,
+  DepotMobileContainerGalleryPanel,
+} from "@/components/depot/DepotMobileContainerGallery";
+import { useIsMobileLayout } from "@/lib/hooks/useIsMobileLayout";
 import type { DepotContainer } from "@/lib/depot/types";
 import { depotStatusLabels } from "@/lib/depot/status";
 import { containerTypeById } from "@/lib/constants/container-types";
@@ -28,50 +34,51 @@ export function DepotContainerCard({
   selected = false,
   action,
 }: DepotContainerCardProps) {
+  const isMobile = useIsMobileLayout();
+  const [galleryExpanded, setGalleryExpanded] = useState(false);
   const typeLabel = containerTypeById[container.containerType]?.name.el ?? container.containerType;
 
   const body = (
     <article
       className={cn(
-        "flex gap-3 rounded-2xl border bg-white p-3 shadow-cm-light-xs transition-colors",
+        "rounded-2xl border bg-white p-3 shadow-cm-light-xs transition-colors",
         selected
           ? "border-cm-accent bg-cm-accent/8"
           : "border-cm-light-border-strong",
       )}
     >
-      <div className="relative size-20 shrink-0 overflow-hidden rounded-xl bg-cm-light-bg">
-        {container.images[0] ? (
-          <Image
-            src={container.images[0]}
-            alt=""
-            fill
-            unoptimized
-            sizes="80px"
-            className="object-cover"
-          />
-        ) : (
-          <div className="flex h-full items-center justify-center font-mono text-[10px] text-cm-ink-muted">
-            No photo
-          </div>
-        )}
-      </div>
+      <div className="flex gap-3">
+        <DepotMobileContainerGallery
+          container={container}
+          variant="thumb"
+          expanded={galleryExpanded}
+          onExpandedChange={setGalleryExpanded}
+        />
 
-      <div className="min-w-0 flex-1">
-        <p className="font-mono text-[11px] font-bold tracking-[0.08em] text-cm-ink">
-          {container.containerNumber}
-        </p>
-        <p className="mt-0.5 text-sm font-semibold text-cm-ink-sub">{typeLabel}</p>
-        <p className="mt-1 font-mono text-[10px] text-cm-ink-muted">
-          Grade {container.grade} · {depotStatusLabels[container.status]}
-        </p>
-        {container.salePrice !== undefined ? (
-          <p className="mt-1 text-sm font-bold text-cm-accent">
-            €{container.salePrice.toLocaleString("el-GR")}
+        <div className="min-w-0 flex-1">
+          <p className="font-mono text-[11px] font-bold tracking-[0.08em] text-cm-ink">
+            {container.containerNumber}
           </p>
-        ) : null}
+          <p className="mt-0.5 text-sm font-semibold text-cm-ink-sub">{typeLabel}</p>
+          <p className="mt-1 font-mono text-[10px] text-cm-ink-muted">
+            Grade {container.grade} · {depotStatusLabels[container.status]}
+          </p>
+          {container.salePrice !== undefined ? (
+            <p className="mt-1 text-sm font-bold text-cm-accent">
+              €{container.salePrice.toLocaleString("el-GR")}
+            </p>
+          ) : null}
+          {isMobile && container.images.filter(Boolean).length > 0 && !galleryExpanded ? (
+            <p className="mt-1 text-[11px] text-cm-accent">Πάτα φωτό για gallery</p>
+          ) : null}
+        </div>
+
+        {action ? <div className="shrink-0 self-center">{action}</div> : null}
       </div>
 
-      {action ? <div className="shrink-0 self-center">{action}</div> : null}
+      {isMobile && galleryExpanded ? (
+        <DepotMobileContainerGalleryPanel container={container} />
+      ) : null}
     </article>
   );
 

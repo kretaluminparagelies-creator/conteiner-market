@@ -7,7 +7,6 @@
 
 "use client";
 
-import Image from "next/image";
 import { Check, Copy } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
@@ -29,6 +28,7 @@ import { openViberDispatch, openWhatsAppDispatch } from "@/lib/depot/messaging-l
 import { buildDepotMobileShareText } from "@/lib/depot/share-text";
 import { DepotAvailableList } from "@/components/depot/DepotAvailableList";
 import { DepotContainerCard } from "@/components/depot/DepotContainerCard";
+import { DepotMobileContainerGallery } from "@/components/depot/DepotMobileContainerGallery";
 import {
   DepotRepresentativePicker,
   type DepotRecipientMode,
@@ -101,28 +101,7 @@ function PhotoShareContinueCard({
 }
 
 function ContainerPreview({ container }: { container: DepotContainer }) {
-  return (
-    <div className="overflow-hidden rounded-2xl border border-cm-light-border-strong bg-white">
-      {container.images[0] ? (
-        <div className="relative aspect-[4/3] bg-cm-light-bg">
-          <Image
-            src={container.images[0]}
-            alt=""
-            fill
-            unoptimized
-            sizes="(max-width: 512px) 100vw, 512px"
-            className="object-cover"
-          />
-        </div>
-      ) : null}
-      <div className="px-4 py-3">
-        <p className="font-mono text-sm font-bold">{container.containerNumber}</p>
-        <p className="text-sm text-cm-ink-sub">
-          {container.containerType} · Grade {container.grade}
-        </p>
-      </div>
-    </div>
-  );
+  return <DepotMobileContainerGallery container={container} variant="hero" />;
 }
 
 export function DepotMobileDispatchForm({
