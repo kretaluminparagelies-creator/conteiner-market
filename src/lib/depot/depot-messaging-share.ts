@@ -104,46 +104,35 @@ export type DepotPhotoShareProgress = {
   total: number;
 };
 
-export async function shareContainerPhotosSequentially(options: {
+export async function shareContainerPhotoAtIndex(options: {
   containerId: string;
   containerNumber: string;
+  imageIndex: number;
   imageCount: number;
   text: string;
   firstPhotoFile?: File | null;
-  onProgress?: (progress: DepotPhotoShareProgress) => void;
 }): Promise<DepotPhotoShareResult> {
-  const { containerId, containerNumber, imageCount, text, firstPhotoFile, onProgress } = options;
+  const { containerId, containerNumber, imageIndex, imageCount, text, firstPhotoFile } = options;
 
-  if (imageCount <= 0) return "unsupported";
-
-  if (imageCount === 1) {
-    onProgress?.({ current: 1, total: 1 });
-    if (firstPhotoFile) return shareDepotPhotoFile(firstPhotoFile, text);
-    return shareDepotWithPhoto({ text, containerId, containerNumber });
+  if (imageCount <= 0 || imageIndex < 0 || imageIndex >= imageCount) {
+    return "unsupported";
   }
 
-  for (let index = 0; index < imageCount; index += 1) {
-    onProgress?.({ current: index + 1, total: imageCount });
+  const caption =
+    imageCount === 1
+      ? text
+      : imageIndex === 0
+        ? `${text}\n\nΦωτό 1/${imageCount}`
+        : `Φωτό ${imageIndex + 1}/${imageCount}`;
 
-    const caption =
-      index === 0 ? `${text}\n\nΦωτό 1/${imageCount}` : `Φωτό ${index + 1}/${imageCount}`;
+  const file =
+    imageIndex === 0 && firstPhotoFile
+      ? firstPhotoFile
+      : await fetchShareImageFile(containerId, containerNumber, imageIndex);
 
-    const file =
-      index === 0 && firstPhotoFile
-        ? firstPhotoFile
-        : await fetchShareImageFile(containerId, containerNumber, index);
+  if (!file) return "failed";
 
-    if (!file) {
-      if (index === 0) return "failed";
-      continue;
-    }
-
-    const result = await shareDepotPhotoFile(file, caption);
-    if (result === "cancelled") return "cancelled";
-    if (index === 0 && result !== "shared") return result;
-  }
-
-  return "shared";
+  return shareDepotPhotoFile(file, caption);
 }
 
 function pickSharePayload(file: File, text: string): ShareData | null {

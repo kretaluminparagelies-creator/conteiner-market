@@ -188,7 +188,7 @@ export function DepotPhotoInput({
 
       {images.length > 0 ? (
         <p className="text-xs text-cm-ink-sub">
-          Η πρώτη φωτό (Κύρια) στέλνεται στο Viber. Πάτα μια άλλη για να γίνει κύρια.
+          Η πρώτη φωτό (Κύρια) είναι η κάρτα προσφοράς στο Viber. Όλες οι φωτό στέλνονται μία-μία.
         </p>
       ) : null}
 

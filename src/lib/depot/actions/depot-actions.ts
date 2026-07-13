@@ -140,6 +140,7 @@ export async function dispatchDepotContainerAction(formData: FormData) {
       ok: true as const,
       shareText: buildDepotMobileShareText(dispatch.container),
       imageUrl: dispatch.container.images[0],
+      imageCount: dispatch.container.images.filter(Boolean).length,
     };
   } catch (error) {
     const message = error instanceof Error ? error.message : "Αποτυχία αποστολής.";
@@ -181,6 +182,7 @@ export async function shareDepotContainerExternallyAction(formData: FormData) {
       ok: true as const,
       shareText: buildDepotMobileShareText(container),
       imageUrl: container.images[0],
+      imageCount: container.images.filter(Boolean).length,
     };
   } catch (error) {
     const message = error instanceof Error ? error.message : "Αποτυχία αποστολής.";
