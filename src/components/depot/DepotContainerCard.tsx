@@ -35,7 +35,15 @@ export function DepotContainerCard({
   action,
 }: DepotContainerCardProps) {
   const isMobile = useIsMobileLayout();
-  const [galleryExpanded, setGalleryExpanded] = useState(false);
+  const [galleryState, setGalleryState] = useState<{ containerId: string; open: boolean }>({
+    containerId: container.id,
+    open: false,
+  });
+  const galleryExpanded =
+    galleryState.containerId === container.id ? galleryState.open : false;
+  const setGalleryExpanded = (open: boolean) => {
+    setGalleryState({ containerId: container.id, open });
+  };
   const typeLabel = containerTypeById[container.containerType]?.name.el ?? container.containerType;
 
   const body = (
@@ -67,9 +75,6 @@ export function DepotContainerCard({
             <p className="mt-1 text-sm font-bold text-cm-accent">
               €{container.salePrice.toLocaleString("el-GR")}
             </p>
-          ) : null}
-          {isMobile && container.images.filter(Boolean).length > 0 && !galleryExpanded ? (
-            <p className="mt-1 text-[11px] text-cm-accent">Πάτα φωτό για gallery</p>
           ) : null}
         </div>
 
