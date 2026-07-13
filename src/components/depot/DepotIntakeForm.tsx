@@ -50,7 +50,7 @@ export function DepotIntakeForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
-      <DepotPhotoInput images={images} onChange={setImages} />
+      <DepotPhotoInput images={images} onChange={setImages} dualMobileCapture />
 
       <div>
         <label className={labelClass} htmlFor="containerNumber">

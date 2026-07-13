@@ -122,15 +122,7 @@ export function DepotShell({ children }: DepotShellProps) {
             </p>
             <span className="font-mono text-[10px] text-cm-ink-muted">{appVersionLabel}</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <DepotLogoutButton />
-            <Link
-              href="/admin"
-              className="rounded-lg border border-cm-light-border-strong px-2.5 py-1 font-mono text-[10px] text-cm-ink-muted transition-colors hover:text-cm-ink"
-            >
-              CRM
-            </Link>
-          </div>
+          <DepotLogoutButton />
         </div>
 
         <nav className="grid grid-cols-4 border-t border-cm-light-border-strong">
