@@ -8,8 +8,8 @@
 "use client";
 
 import Image from "next/image";
-import { Camera, ImagePlus, Loader2, X } from "lucide-react";
-import { useRef, useState } from "react";
+import { Camera, ImagePlus, Loader2, Star, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { prepareListingImage } from "@/lib/crm/compress-image-browser";
 import { useIsMobileLayout } from "@/lib/hooks/useIsMobileLayout";
 
@@ -33,13 +33,34 @@ export function DepotPhotoInput({
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
   const legacyInputRef = useRef<HTMLInputElement>(null);
+  const imagesRef = useRef(images);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    imagesRef.current = images;
+  }, [images]);
 
   const clearInputs = () => {
     if (cameraInputRef.current) cameraInputRef.current.value = "";
     if (galleryInputRef.current) galleryInputRef.current.value = "";
     if (legacyInputRef.current) legacyInputRef.current.value = "";
+  };
+
+  const uploadFile = async (file: File): Promise<string> => {
+    const prepared = await prepareListingImage(file);
+    const response = await fetch("/api/depot/upload-image", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(prepared),
+    });
+
+    const payload = (await response.json()) as { url?: string; error?: string };
+    if (!response.ok || !payload.url) {
+      throw new Error(payload.error ?? "Αποτυχία ανεβάσματος.");
+    }
+
+    return payload.url;
   };
 
   const handleFiles = async (fileList: FileList | null) => {
@@ -48,36 +69,46 @@ export function DepotPhotoInput({
     setUploading(true);
     setError(null);
 
-    try {
-      const next = [...images];
+    const failures: string[] = [];
+    let current = [...imagesRef.current];
 
-      for (const file of Array.from(fileList)) {
-        const prepared = await prepareListingImage(file);
-        const response = await fetch("/api/depot/upload-image", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(prepared),
-        });
-
-        const payload = (await response.json()) as { url?: string; error?: string };
-        if (!response.ok || !payload.url) {
-          throw new Error(payload.error ?? "Αποτυχία ανεβάσματος.");
-        }
-
-        next.push(payload.url);
+    for (const file of Array.from(fileList)) {
+      try {
+        const url = await uploadFile(file);
+        current = [...current, url];
+        imagesRef.current = current;
+        onChange(current);
+      } catch (err) {
+        const label = file.name?.trim() || "εικόνα";
+        failures.push(
+          err instanceof Error && err.message ? `${label}: ${err.message}` : label,
+        );
       }
-
-      onChange(next);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Αποτυχία φωτογραφίας.");
-    } finally {
-      setUploading(false);
-      clearInputs();
     }
+
+    if (failures.length > 0) {
+      setError(
+        failures.length === fileList.length
+          ? failures.join(" · ")
+          : `Μερικές απέτυχαν: ${failures.join(" · ")}`,
+      );
+    }
+
+    setUploading(false);
+    clearInputs();
   };
 
   const removeImage = (index: number) => {
-    onChange(images.filter((_, itemIndex) => itemIndex !== index));
+    const next = images.filter((_, itemIndex) => itemIndex !== index);
+    imagesRef.current = next;
+    onChange(next);
+  };
+
+  const setPrimaryImage = (index: number) => {
+    if (index <= 0 || index >= images.length) return;
+    const next = [images[index]!, ...images.filter((_, itemIndex) => itemIndex !== index)];
+    imagesRef.current = next;
+    onChange(next);
   };
 
   return (
@@ -155,12 +186,18 @@ export function DepotPhotoInput({
         </>
       )}
 
+      {images.length > 0 ? (
+        <p className="text-xs text-cm-ink-sub">
+          Η πρώτη φωτό (Κύρια) στέλνεται στο Viber. Πάτα μια άλλη για να γίνει κύρια.
+        </p>
+      ) : null}
+
       {error ? <p className="text-sm font-medium text-red-600">{error}</p> : null}
 
       {images.length > 0 ? (
         <div className="grid grid-cols-2 gap-3">
           {images.map((src, index) => (
-            <div key={src} className="relative overflow-hidden rounded-xl border border-cm-light-border-strong">
+            <div key={`${src}-${index}`} className="relative overflow-hidden rounded-xl border border-cm-light-border-strong">
               <Image
                 src={src}
                 alt=""
@@ -169,6 +206,20 @@ export function DepotPhotoInput({
                 unoptimized
                 className="h-28 w-full object-cover"
               />
+              {index === 0 ? (
+                <span className="absolute top-2 left-2 inline-flex items-center gap-0.5 rounded-full bg-cm-accent/90 px-2 py-0.5 font-mono text-[9px] text-white uppercase">
+                  <Star className="size-3" aria-hidden="true" />
+                  Κύρια
+                </span>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setPrimaryImage(index)}
+                  className="absolute top-2 left-2 rounded-full bg-black/55 px-2 py-0.5 font-mono text-[9px] text-white"
+                >
+                  Κύρια
+                </button>
+              )}
               <button
                 type="button"
                 onClick={() => removeImage(index)}
