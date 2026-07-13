@@ -25,13 +25,20 @@ export async function GET(request: Request) {
   }
 
   const container = await getDepotContainerById(containerId);
-  const imageUrl = container?.images[0];
+  const indexParam = new URL(request.url).searchParams.get("index");
+  const imageIndex =
+    indexParam !== null ? Math.max(0, Number.parseInt(indexParam, 10) || 0) : 0;
+  const imageUrl = container?.images[imageIndex];
   if (!imageUrl) {
     return NextResponse.json({ error: "No image" }, { status: 404 });
   }
 
   const download = new URL(request.url).searchParams.get("download") === "1";
-  const filename = safeContainerImageFilename(container?.containerNumber ?? "container");
+  const filename = safeContainerImageFilename(
+    container?.containerNumber ?? "container",
+    "jpg",
+    imageIndex,
+  );
 
   const imageResponse = await fetch(imageUrl);
   if (!imageResponse.ok) {

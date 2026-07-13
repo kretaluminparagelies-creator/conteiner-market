@@ -18,8 +18,8 @@ import {
 import {
   canShareDepotPhoto,
   fetchShareImageFile,
-  shareDepotPhotoFile,
-  shareDepotWithPhoto,
+  shareContainerPhotosSequentially,
+  type DepotPhotoShareProgress,
 } from "@/lib/depot/depot-messaging-share";
 import { buildOfferCardFile } from "@/lib/depot/offer-card";
 import { filterAvailableContainers } from "@/lib/depot/filters";
@@ -42,6 +42,22 @@ type DepotMobileDispatchFormProps = {
 };
 
 type SendApp = "viber" | "whatsapp";
+
+function ShareProgressOverlay({ progress }: { progress: DepotPhotoShareProgress }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 px-6">
+      <div className="w-full max-w-xs rounded-2xl bg-white px-6 py-5 text-center shadow-lg">
+        <p className="text-sm text-cm-ink-sub">Περιμένετε…</p>
+        <p className="mt-2 font-display text-xl font-bold text-cm-ink">
+          Αποστολή {progress.current}/{progress.total}
+        </p>
+        <p className="mt-2 text-xs text-cm-ink-sub">
+          Πάτα Μοιρασμός και διάλεξε Viber ή WhatsApp
+        </p>
+      </div>
+    </div>
+  );
+}
 
 function ContainerPreview({ container }: { container: DepotContainer }) {
   return (
@@ -89,6 +105,7 @@ export function DepotMobileDispatchForm({
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
+  const [shareProgress, setShareProgress] = useState<DepotPhotoShareProgress | null>(null);
   const [cardFile, setCardFile] = useState<File | null>(null);
   const photoShareSupported = useMemo(() => canShareDepotPhoto(), []);
 
@@ -178,14 +195,17 @@ export function DepotMobileDispatchForm({
     });
   };
 
-  const trySharePhoto = async (container: DepotContainer, text: string) => {
-    const card = await buildCardFor(container);
-    if (card) return shareDepotPhotoFile(card, text);
-    if (shareImageFile) return shareDepotPhotoFile(shareImageFile, text);
-    return shareDepotWithPhoto({
-      text,
+  const shareAllPhotos = async (container: DepotContainer, text: string) => {
+    const imageCount = container.images.filter(Boolean).length;
+    const firstPhotoFile = imageCount > 0 ? await buildCardFor(container) : null;
+
+    return shareContainerPhotosSequentially({
       containerId: container.id,
       containerNumber: container.containerNumber,
+      imageCount,
+      text,
+      firstPhotoFile,
+      onProgress: setShareProgress,
     });
   };
 
@@ -200,7 +220,7 @@ export function DepotMobileDispatchForm({
       return;
     }
 
-    const photoResult = await trySharePhoto(container, text);
+    const photoResult = await shareAllPhotos(container, text);
     if (photoResult === "shared" || photoResult === "cancelled") {
       return;
     }
@@ -221,12 +241,13 @@ export function DepotMobileDispatchForm({
     const phone = useExternalShare ? undefined : selectedRepresentative?.phone;
 
     setSending(true);
+    setShareProgress(null);
 
     try {
       let photoShared = false;
 
       if (photoShareSupported) {
-        const photoResult = await trySharePhoto(containerSnapshot, text);
+        const photoResult = await shareAllPhotos(containerSnapshot, text);
         if (photoResult === "cancelled") {
           return;
         }
@@ -262,6 +283,7 @@ export function DepotMobileDispatchForm({
         await openAppWithPhoto(app, containerSnapshot, shareTextValue, phone);
       }
     } finally {
+      setShareProgress(null);
       setSending(false);
     }
   };
@@ -269,9 +291,11 @@ export function DepotMobileDispatchForm({
   const handleResend = async (app: SendApp) => {
     if (!shareText || !displayContainer) return;
     setSending(true);
+    setShareProgress(null);
     try {
       await openAppWithPhoto(app, displayContainer, shareText, recipientPhone);
     } finally {
+      setShareProgress(null);
       setSending(false);
     }
   };
@@ -309,6 +333,7 @@ export function DepotMobileDispatchForm({
   if (shareReady && shareText) {
     return (
       <div className="space-y-5">
+        {shareProgress ? <ShareProgressOverlay progress={shareProgress} /> : null}
         {displayContainer ? <ContainerPreview container={displayContainer} /> : null}
 
         <div className="space-y-3 rounded-2xl border border-cm-accent/25 bg-cm-accent/5 p-4">
@@ -411,6 +436,7 @@ export function DepotMobileDispatchForm({
 
   return (
     <div className="space-y-5">
+      {shareProgress ? <ShareProgressOverlay progress={shareProgress} /> : null}
       <button
         type="button"
         onClick={() => setContainerId("")}
@@ -459,7 +485,13 @@ export function DepotMobileDispatchForm({
           disabled={sending || !canSubmit || !selected}
           className="w-full rounded-2xl bg-cm-accent px-4 py-4 font-display text-base font-bold text-white shadow-cm-accent transition-transform active:scale-[0.98] disabled:opacity-60"
         >
-          {sending ? "Προετοιμασία..." : photoShareSupported ? "Στείλε με Viber" : "Άνοιξε Viber"}
+          {sending
+            ? shareProgress
+              ? `Περιμένετε… ${shareProgress.current}/${shareProgress.total}`
+              : "Προετοιμασία..."
+            : photoShareSupported
+              ? "Στείλε με Viber"
+              : "Άνοιξε Viber"}
         </button>
         <button
           type="button"
@@ -467,7 +499,13 @@ export function DepotMobileDispatchForm({
           disabled={sending || !canSubmit || !selected}
           className="w-full rounded-2xl border border-cm-accent bg-white px-4 py-4 font-display text-base font-bold text-cm-accent transition-transform active:scale-[0.98] disabled:opacity-60"
         >
-          {sending ? "Προετοιμασία..." : photoShareSupported ? "Στείλε με WhatsApp" : "Άνοιξε WhatsApp"}
+          {sending
+            ? shareProgress
+              ? `Περιμένετε… ${shareProgress.current}/${shareProgress.total}`
+              : "Προετοιμασία..."
+            : photoShareSupported
+              ? "Στείλε με WhatsApp"
+              : "Άνοιξε WhatsApp"}
         </button>
       </div>
     </div>
