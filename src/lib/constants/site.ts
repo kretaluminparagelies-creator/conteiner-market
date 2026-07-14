@@ -5,6 +5,8 @@
  * @copyright 2025 Katsoulakis. All rights reserved.
  */
 
+import { company, formatCompanyAddressEl, formatCompanyAddressEn } from "@/lib/constants/company";
+
 export const site = {
   name: "Container Market",
   nameFull: "Container Market GR",
@@ -12,16 +14,16 @@ export const site = {
   description:
     "Container Market GR — πουλάμε και ενοικιάζουμε δικά μας shipping containers στην Ελλάδα. Άμεση επαφή, χωρίς ενδιάμεσους, παράδοση σε όλη τη χώρα.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
-  author: "Logiworkpass P.C.",
+  author: company.legalNameLatin,
   /** Shared with LogiWork — Resend verified @logiworkpass.com */
-  contactEmail: "support@logiworkpass.com",
+  contactEmail: company.contactEmail,
+  contactPhone: company.phoneDisplay,
   locale: "el_GR",
   language: "el",
   copyrightYear: 2026,
-  /** All containers are at / ship from our base — not per-listing */
   headquarters: {
-    el: "Έδρα μας — Ελλάδα",
-    en: "Our headquarters — Greece",
+    el: formatCompanyAddressEl(),
+    en: formatCompanyAddressEn(),
   },
 } as const;
 
@@ -46,4 +48,5 @@ export const seoKeywords = [
   "νέο κοντέινερ",
   "container buyback greece",
   "Logiworkpass",
+  "LOGIWORKPASS",
 ] as const;

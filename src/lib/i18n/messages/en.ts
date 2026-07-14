@@ -460,7 +460,7 @@ export const en: Messages = {
       terms: {
         metaTitle: "Terms of Use",
         metaDescription:
-          "Terms of use for Container Market GR — buy, rent containers and storage space from Logiworkpass P.C.",
+          "Terms of use for Container Market GR — buy, rent containers and storage space from LOGIWORKPASS P.C.",
         title: "Terms of use",
         intro:
           "Terms governing use of the website and our container purchase, rental, and storage space services.",
@@ -468,7 +468,7 @@ export const en: Messages = {
       privacy: {
         metaTitle: "Privacy Policy",
         metaDescription:
-          "Privacy policy and personal data protection (GDPR) — Container Market GR / Logiworkpass P.C.",
+          "Privacy policy and personal data protection (GDPR) — Container Market GR / LOGIWORKPASS P.C.",
         title: "Privacy policy",
         intro: "How we collect, use, and protect your personal data under the GDPR.",
       },
@@ -481,7 +481,7 @@ export const en: Messages = {
       returns: {
         metaTitle: "Returns & Withdrawal Policy",
         metaDescription:
-          "14-day withdrawal right, return conditions, and refunds — Container Market GR / Logiworkpass P.C.",
+          "14-day withdrawal right, return conditions, and refunds — Container Market GR / LOGIWORKPASS P.C.",
         title: "Returns & withdrawal policy",
         intro:
           "How to exercise your right of withdrawal, when returns are accepted, and when refunds are issued.",

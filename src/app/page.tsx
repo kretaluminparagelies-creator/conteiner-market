@@ -15,6 +15,7 @@ import { Stats } from "@/components/home/Stats";
 import { PageShell } from "@/components/layout/PageShell";
 import { fetchPublicListings } from "@/lib/data/listings-server";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { company } from "@/lib/constants/company";
 import { site } from "@/lib/constants/site";
 
 const organizationSchema = {
@@ -32,6 +33,7 @@ const organizationSchema = {
     "@type": "ContactPoint",
     contactType: "customer service",
     email: site.contactEmail,
+    telephone: site.contactPhone,
     availableLanguage: ["Greek", "English"],
     areaServed: "GR",
   },
@@ -44,10 +46,13 @@ const localBusinessSchema = {
   url: site.url,
   description: site.description,
   email: site.contactEmail,
+  telephone: site.contactPhone,
   address: {
     "@type": "PostalAddress",
+    streetAddress: company.addressLine,
+    postalCode: company.postalCode,
+    addressLocality: "Athens",
     addressCountry: "GR",
-    addressLocality: "Greece",
   },
   areaServed: {
     "@type": "Country",

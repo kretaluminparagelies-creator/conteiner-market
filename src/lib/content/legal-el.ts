@@ -6,6 +6,7 @@
  */
 
 import { site } from "@/lib/constants/site";
+import { company, legalCompanyDetailsEl } from "@/lib/constants/company";
 
 export type LegalSection = {
   id: string;
@@ -15,10 +16,11 @@ export type LegalSection = {
   paragraphsAfterBullets?: string[];
 };
 
-const companyName = "Logiworkpass P.C.";
-const siteName = "Container Market GR";
+const companyName = company.legalNameLatin;
+const siteName = site.nameFull;
 const siteUrl = "containermarket.gr";
 const contactEmail = site.contactEmail;
+const companyDetails = legalCompanyDetailsEl(siteName);
 
 export const termsSections: LegalSection[] = [
   {
@@ -90,11 +92,7 @@ export const termsSections: LegalSection[] = [
   {
     id: "company",
     title: "9. Στοιχεία Εταιρείας",
-    paragraphs: [
-      `${companyName} — ${siteName}`,
-      `Email: ${contactEmail}`,
-      "Ελλάδα — πανελλαδική εξυπηρέτηση",
-    ],
+    paragraphs: companyDetails,
   },
 ];
 
@@ -206,11 +204,7 @@ export const privacySections: LegalSection[] = [
   {
     id: "contact",
     title: "9. Στοιχεία Επικοινωνίας",
-    paragraphs: [
-      `${companyName} — ${siteName}`,
-      `Email: ${contactEmail}`,
-      "Ελλάδα — πανελλαδική εξυπηρέτηση",
-    ],
+    paragraphs: companyDetails,
   },
 ];
 
@@ -280,9 +274,7 @@ export const cookiesSections: LegalSection[] = [
     title: "8. Στοιχεία Επικοινωνίας",
     paragraphs: [
       "Για οποιαδήποτε πληροφορία σχετικά με τη χρήση cookies μπορείτε να επικοινωνήσετε με την Εταιρεία:",
-      `${companyName} — ${siteName}`,
-      `Email: ${contactEmail}`,
-      "Ελλάδα — πανελλαδική εξυπηρέτηση",
+      ...companyDetails,
     ],
   },
 ];
@@ -339,10 +331,6 @@ export const returnsSections: LegalSection[] = [
   {
     id: "contact",
     title: "6. Στοιχεία Επικοινωνίας",
-    paragraphs: [
-      `${companyName} — ${siteName}`,
-      `Email: ${contactEmail}`,
-      "Ελλάδα — πανελλαδική εξυπηρέτηση",
-    ],
+    paragraphs: companyDetails,
   },
 ];

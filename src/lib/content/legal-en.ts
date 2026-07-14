@@ -7,11 +7,13 @@
 
 import type { LegalSection } from "@/lib/content/legal-el";
 import { site } from "@/lib/constants/site";
+import { company, legalCompanyDetailsEn } from "@/lib/constants/company";
 
-const companyName = "Logiworkpass P.C.";
-const siteName = "Container Market GR";
+const companyName = company.legalNameLatin;
+const siteName = site.nameFull;
 const siteUrl = "containermarket.gr";
 const contactEmail = site.contactEmail;
+const companyDetails = legalCompanyDetailsEn(siteName);
 
 export const termsSections: LegalSection[] = [
   {
@@ -83,11 +85,7 @@ export const termsSections: LegalSection[] = [
   {
     id: "company",
     title: "9. Company details",
-    paragraphs: [
-      `${companyName} — ${siteName}`,
-      `Email: ${contactEmail}`,
-      "Greece — nationwide service",
-    ],
+    paragraphs: companyDetails,
   },
 ];
 
@@ -193,11 +191,7 @@ export const privacySections: LegalSection[] = [
   {
     id: "contact",
     title: "9. Contact details",
-    paragraphs: [
-      `${companyName} — ${siteName}`,
-      `Email: ${contactEmail}`,
-      "Greece — nationwide service",
-    ],
+    paragraphs: companyDetails,
   },
 ];
 
@@ -265,12 +259,7 @@ export const cookiesSections: LegalSection[] = [
   {
     id: "contact",
     title: "8. Contact details",
-    paragraphs: [
-      "For any information about cookie use, contact the Company:",
-      `${companyName} — ${siteName}`,
-      `Email: ${contactEmail}`,
-      "Greece — nationwide service",
-    ],
+    paragraphs: ["For any information about cookie use, contact the Company:", ...companyDetails],
   },
 ];
 
@@ -326,10 +315,6 @@ export const returnsSections: LegalSection[] = [
   {
     id: "contact",
     title: "6. Contact details",
-    paragraphs: [
-      `${companyName} — ${siteName}`,
-      `Email: ${contactEmail}`,
-      "Greece — nationwide service",
-    ],
+    paragraphs: companyDetails,
   },
 ];

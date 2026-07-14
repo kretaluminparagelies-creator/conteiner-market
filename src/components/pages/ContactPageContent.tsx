@@ -10,9 +10,8 @@
 import { useSearchParams } from "next/navigation";
 import { ContactLeadForm } from "@/components/pages/ContactLeadForm";
 import { ContactPhotoLayout } from "@/components/pages/ContactPhotoLayout";
+import { site } from "@/lib/constants/site";
 import { useLocale } from "@/lib/i18n/locale-context";
-
-const contactPhone = "+30 210 000 0000";
 
 export function ContactPageContent() {
   const { t } = useLocale();
@@ -25,7 +24,7 @@ export function ContactPageContent() {
     phoneLabel: t.common.phone,
     areaLabel: t.common.area,
     areaValue: page.areaValue,
-    contactPhone,
+    contactPhone: site.contactPhone,
   };
 
   if (isSellFlow) {
