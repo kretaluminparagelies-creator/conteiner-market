@@ -21,18 +21,20 @@ function supabaseOrigin(): string | null {
 
 function buildProductionContentSecurityPolicy(): string {
   const supabase = supabaseOrigin();
-  const connectSrc = ["'self'", supabase].filter(Boolean).join(" ");
+  const turnstile = "https://challenges.cloudflare.com";
+  const connectSrc = ["'self'", supabase, turnstile].filter(Boolean).join(" ");
   const imgSrc =
     "'self' data: blob: https://images.pexels.com https://images.unsplash.com" +
     (supabase ? ` ${supabase}` : "");
 
   const directives = [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' 'unsafe-eval'",
+    `script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' 'unsafe-eval' ${turnstile}`,
     "style-src 'self' 'unsafe-inline'",
     `img-src ${imgSrc}`,
     "font-src 'self' https://fonts.gstatic.com",
     `connect-src ${connectSrc}`,
+    `frame-src ${turnstile}`,
     "worker-src 'self' blob:",
     "child-src 'self' blob:",
     "object-src 'none'",

@@ -7,10 +7,11 @@
 
 "use client";
 
-import { useState, useTransition } from "react";
+import { useCallback, useState, useTransition } from "react";
 import type { ContactFormFlow } from "@/lib/crm/resolve-lead-source";
 import { submitContactLeadAction } from "@/lib/crm/actions/lead-actions";
 import { useLocale } from "@/lib/i18n/locale-context";
+import { resetTurnstile, TurnstileField } from "@/components/pages/TurnstileField";
 
 type ContactLeadFormProps = {
   theme?: "dark" | "light";
@@ -30,6 +31,8 @@ const lightInputClass = "input-light w-full rounded-lg px-3 py-2.5 text-sm outli
 const lightLabelClass =
   "mb-1.5 block font-mono text-[10px] font-semibold tracking-[0.14em] text-cm-ink-muted uppercase";
 
+const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim() ?? "";
+
 export function ContactLeadForm({
   theme = "dark",
   flow,
@@ -39,6 +42,7 @@ export function ContactLeadForm({
   const { t } = useLocale();
   const page = t.pages.contact;
   const [message, setMessage] = useState<{ type: "error" | "success"; text: string } | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
   const isLight = theme === "light";
 
@@ -49,16 +53,33 @@ export function ContactLeadForm({
   const fieldGap = compact ? "space-y-1.5" : "space-y-4";
   const formPadding = compact ? "p-3.5 md:p-4" : "p-5 md:p-6";
 
+  const handleTokenChange = useCallback((token: string | null) => {
+    setTurnstileToken(token);
+  }, []);
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setMessage(null);
     const form = event.currentTarget;
     const formData = new FormData(form);
 
+    if (turnstileSiteKey) {
+      if (!turnstileToken) {
+        setMessage({
+          type: "error",
+          text: "Ολοκλήρωσε την επαλήθευση ασφαλείας πριν την αποστολή.",
+        });
+        return;
+      }
+      formData.set("cf-turnstile-response", turnstileToken);
+    }
+
     startTransition(async () => {
       const result = await submitContactLeadAction(formData);
       if (result?.error) {
         setMessage({ type: "error", text: result.error });
+        resetTurnstile();
+        setTurnstileToken(null);
         return;
       }
       setMessage({
@@ -66,6 +87,8 @@ export function ContactLeadForm({
         text: page.formSuccess ?? "Το μήνυμά σας στάλθηκε. Θα επικοινωνήσουμε σύντομα.",
       });
       form.reset();
+      resetTurnstile();
+      setTurnstileToken(null);
     });
   };
 
@@ -168,9 +191,19 @@ export function ContactLeadForm({
 
         <input type="hidden" name="flow" value={flow} />
 
+        {turnstileSiteKey ? (
+          <div className="pt-1">
+            <TurnstileField
+              siteKey={turnstileSiteKey}
+              theme={isLight ? "light" : "dark"}
+              onTokenChange={handleTokenChange}
+            />
+          </div>
+        ) : null}
+
         <button
           type="submit"
-          disabled={pending}
+          disabled={pending || (Boolean(turnstileSiteKey) && !turnstileToken)}
           className={[
             "rounded-lg font-display text-sm font-semibold transition-all disabled:opacity-50",
             compact ? "px-4 py-2" : "px-5 py-2.5",

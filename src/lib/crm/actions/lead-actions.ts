@@ -19,6 +19,7 @@ import {
 import { resolveLeadSourceFromForm } from "@/lib/crm/resolve-lead-source";
 import type { LeadStatus } from "@/lib/crm/types";
 import { sendLeadNotification } from "@/lib/email/send-lead-notification";
+import { isTurnstileConfigured, verifyTurnstileToken } from "@/lib/security/turnstile";
 
 export async function updateLeadStatusAction(leadId: string, status: LeadStatus) {
   await requireCrmSession();
@@ -56,6 +57,7 @@ export async function submitContactLeadAction(formData: FormData) {
   const source = resolveLeadSourceFromForm(formData);
   const interest = String(formData.get("interest") ?? "").trim() || undefined;
   const listingSlug = String(formData.get("listingSlug") ?? "").trim() || undefined;
+  const turnstileToken = String(formData.get("cf-turnstile-response") ?? "").trim();
 
   if (!name || !email || !message) {
     return { error: "Συμπλήρωσε όνομα, email και μήνυμα." };
@@ -63,6 +65,13 @@ export async function submitContactLeadAction(formData: FormData) {
 
   if (!email.includes("@")) {
     return { error: "Μη έγκυρο email." };
+  }
+
+  if (isTurnstileConfigured()) {
+    const ok = await verifyTurnstileToken(turnstileToken);
+    if (!ok) {
+      return { error: "Η επαλήθευση ασφαλείας απέτυχε. Δοκίμασε ξανά." };
+    }
   }
 
   try {
